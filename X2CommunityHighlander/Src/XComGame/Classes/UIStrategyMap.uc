@@ -7,6 +7,7 @@
 //           UIStrategyMap_HUD
 //
 //	LWS:	 Adding hook to override what gets displayed for the resistance HQ icon
+//	robojumper: fix tooltips
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -164,7 +165,11 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	Navigator.LoopSelection = true;
 	Navigator.OnSelectedIndexChanged = OnNavigationChanged;
 
-	OnNavigationChanged(0);
+	// robojumper: fixed tooltips
+	if (`ISCONTROLLERACTIVE)
+	{
+		OnNavigationChanged(0);
+	}
 	
 	if (!bCursorAlwaysVisible)
 	{
@@ -341,25 +346,7 @@ simulated function SelectMapItemNearestLocation(vector2D Loc)
 
 	if (SelectedMapItem != NewSelection)
 	{
-		if (UIStrategyMapItem_Continent(NewSelection) != none)
-		{
-			SelectedMapItem = NewSelection;
-			if (ActiveTooltip == none || ActiveTooltip.ID != SelectedMapItem.CachedTooltipId)
-			{
-				HideTooltip();
-				ShowTooltip(SelectedMapItem);
-			}
-
-			if (!bCursorAlwaysVisible)
-			{
-				TargetCursorMeshOpacity = 0.0;
-				CursorMeshOpacity = 0.0;
-				CursorMesh.SetOpacity(0.0);
-			}
-
-			return;
-		}
-
+		// robojumper: removed hackery for continent bonus tooltips
 		SetSelectedMapItem(NewSelection);
 	}
 }
@@ -431,7 +418,8 @@ simulated function SetSelectedMapItem(UIStrategyMapItem Selection, optional bool
 		}
 	}
 
-	UpdateButtonHelp();
+	// robojumper: this removes tooltips, so comment it out
+	//UpdateButtonHelp();
 }
 
 simulated function OnNavigationChanged(int NewIndex)
@@ -1481,8 +1469,8 @@ simulated function ShowTooltip(UIStrategyMapItem MapItem)
 	ActiveTooltip = UITextTooltip( XComHQPresentationLayer(Movie.Pres).m_kTooltipMgr.GetTooltipByID(MapItem.CachedTooltipId) );
 	if (ActiveTooltip != none)
 	{
-		if(!ActiveTooltip.MatchesID(MapItem.m_iTooltipDataIndex))
-			return;
+		/*if(!ActiveTooltip.MatchesID(MapItem.m_iTooltipDataIndex))
+			return;*/ // robojumper: redundant
 
 		if (ActiveTooltip.del_OnMouseIn != none)
 		{   
@@ -1619,6 +1607,11 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_DOWN:
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_LEFT:
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_RIGHT:
+		// robojumper: consume all navigator ones to prevent navigator from selecting items (which causes broken tooltips)
+		case class'UIUtilities_Input'.const.FXS_ARROW_UP:
+		case class'UIUtilities_Input'.const.FXS_ARROW_DOWN:
+		case class'UIUtilities_Input'.const.FXS_ARROW_LEFT:
+		case class'UIUtilities_Input'.const.FXS_ARROW_RIGHT:
 			break;
 		default:
 			return super.OnUnrealCommand(cmd, arg);

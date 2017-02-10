@@ -8,6 +8,9 @@
     <AssemblyName>X2CommunityHighlander</AssemblyName>
     <RootNamespace>X2CommunityHighlander</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Localization\" />
@@ -24,7 +27,6 @@
     <Content Include="Config\XComUI.ini">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
@@ -142,6 +144,9 @@
     <Content Include="Src\XComGame\Classes\UINarrativeMgr.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\UIOptionsPCScreen.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\UIPauseMenu.uc">
       <SubType>Content</SubType>
     </Content>
@@ -181,6 +186,15 @@
     <Content Include="Src\XComGame\Classes\UIStrategyMap.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\UIStrategyMapItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\UIStrategyMapItem_Continent.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\UIStrategyMapItem_Region.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\UIStrategyMap_HUD.uc">
       <SubType>Content</SubType>
     </Content>
@@ -206,6 +220,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\UITextContainer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\UITooltipMgr.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\UIUtilities_Image.uc">
