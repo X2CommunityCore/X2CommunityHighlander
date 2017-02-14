@@ -11,6 +11,7 @@ class X2AbilityToHitCalc extends Object
 
 var array<ShotModifierInfo> HitModifiers;       // Configured in the ability template to provide always-on modifiers.
 
+// Issue #13 - Remove protection of ShotBreakdown
 var ShotBreakdown m_ShotBreakdown;    //  Temp used to calculate shot info and hit chance
 var protected bool          m_bDebugModifiers;  //  Temp used to display logging in AddModifier
 
