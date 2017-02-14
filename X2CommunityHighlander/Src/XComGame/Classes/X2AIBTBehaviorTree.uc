@@ -2,7 +2,8 @@ class X2AIBTBehaviorTree extends Object
 	native(AI)
 	config(AI);
 
-var config array<BehaviorTreeNode> Behaviors; // LW making non-private so it can be modified via code
+// Issue #17 - allow modification of behaviors (removed private)
+var config array<BehaviorTreeNode> Behaviors;
 var private native Map_Mirror BehaviorsMap{TMap<FName, INT>};  //  maps table name to index into Behaviors array
 
 var config array<EquivalentAbilityNames> EquivalentAbilities;
