@@ -831,6 +831,7 @@ static function X2AbilityTemplate RapidFire2()
 	Template.AddShooterEffectExclusions();
 
 	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	// Issue #10 - add GameplayVisibilityCondition to RapidFire2
 	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
 
 	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
