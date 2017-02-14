@@ -4,7 +4,6 @@
 //  PURPOSE: Defines basic abilities that support tactical game play in X-Com 2. 
 //           Movement, firing weapons, overwatch, etc.
 //           
-//  LWS : fixed rare movement bug that could cause teleporting of 1 unit within a pod
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -382,12 +381,17 @@ simulated static function XComGameState MoveAbility_BuildInterruptGameState( XCo
 				{
 					class'Helpers'.static.RemoveTileSubset(ValidTileList, ValidTileList, OccupiedTiles);
 				}
-				//LWS : handle use-case where ValidTileList has been reduced to 0 elements. Allow units to occupy same tile in this case
+
+
+				// Start Issue #11 - fixed rare movement bug that could cause teleporting of 1 unit within a pod
+				// handle use-case where ValidTileList has been reduced to 0 elements. Allow units to occupy same tile in this case
 				// reset the ValidTilesList back to the default, so that a tile will be selected instead of allowing a (0,0,0) tiles to be entered by default
 				if (ValidTileList.Length == 0)
 				{
 					ValidTileList = AbilityContext.InputContext.MovementPaths[MovingUnitIndex].MovementTiles;
 				}
+				// End Issue #11
+
 				NumMovementTiles = ValidTileList.Length;
 				UseInterruptStep = Min(InterruptStep, NumMovementTiles - 1);
 
