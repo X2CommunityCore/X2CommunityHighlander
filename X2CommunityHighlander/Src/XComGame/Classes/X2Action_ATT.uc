@@ -3,7 +3,6 @@
 //  AUTHOR:  Dan Kaplan  --  4/28/2015
 //  PURPOSE: Starts and controls the ATT sequence when dropping off reinforcements
 //           
-//   LWS: Added code to prevent too many units from being added, to prevent t-pose units
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -37,6 +36,7 @@ private function AddUnitsToMatinee(XComGameStateContext InContext)
 
 	foreach InContext.AssociatedState.IterateByClassType(class'XComGameState_Unit', GameStateUnit)
 	{
+		// Start Issue #15 - add conditional to prevent t-posed units in matinee
 		if (UnitIndex <= 4) // LWS Added to prevent more than 4 units being added, resulting in t-poses in matinee
 		{
 			IsMec = GameStateUnit.GetMyTemplate().CharacterGroupName == 'AdventMEC';
@@ -45,6 +45,7 @@ private function AddUnitsToMatinee(XComGameStateContext InContext)
 	
 			UnitIndex++;
 		}
+		// End Issue #15
 
 		MatineeUnitRefs.AddItem(GameStateUnit.GetReference());
 
