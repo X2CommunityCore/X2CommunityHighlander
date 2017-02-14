@@ -447,8 +447,8 @@ static function bool GetFurthestReachableTileOnPath(out TTile FurthestReachable,
 			{
 				// Try floor tile.  Fixes failures with pathing from different elevations returning mid-air points that aren't in the tile cache.
 				FloorTile = PathTile;
-                // LWS: Add the 'true' flag to this search so it has a better chance at finding a valid tile. Drone pods have difficulty finding
-                // valid paths without this flag set.
+				// Issue #5 - Add the 'true' flag to this search so it has a better chance at finding a valid tile. Drone pods have difficulty finding
+				// valid paths without this flag set. 'true' enables UnlimitedSearch for FloorTileZ.
 				FloorTile.Z = World.GetFloorTileZ(PathTile, true);
 				if( FloorTile.Z != PathTile.Z && 
 				   (UnitVisualizer.m_kReachableTilesCache.IsTileReachable(FloorTile) 
