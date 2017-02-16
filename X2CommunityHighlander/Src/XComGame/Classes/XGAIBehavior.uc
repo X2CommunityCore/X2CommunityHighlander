@@ -10,8 +10,6 @@
 // LWS Mods
 //  tracktwo - GetTileWithinOneActionPointMove: Bugfix for flying units to allow them to find valid stopping
 //             points along the path that are within movement range.
-//  tracktwo - BT_StartGetDestinations: If the bIgnoreHazards flag is set, force a cache miss on the tile cache
-//             before evaluating possible destinations. This ensures we can treat hazard tiles as valid destinations.
 //  tracktwo - ScoreDestinationTile: Do not score tiles based on cover value if this unit doesn't use cover.
 //  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
 //             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
@@ -689,6 +687,10 @@ simulated function BT_StartGetDestinations(bool bFiltered=false, bool bSkipBuild
 	DebugScore.Location = m_kUnit.GetGameStateLocation();
 	DebugTileScores.AddItem(DebugScore);
 
+		// Start Issue #22
+		// 
+		//  tracktwo - BT_StartGetDestinations: If the bIgnoreHazards flag is set, force a cache miss on the tile cache
+		//             before evaluating possible destinations. This ensures we can treat hazard tiles as valid destinations.
     // LWS Mods: If we have the "bIgnoreHazards" bit set, force a cache miss. This is needed
     // because we may have run the tile-cache on this same unit without the flag set, and in
     // that case it won't be re-run.
@@ -704,6 +706,7 @@ simulated function BT_StartGetDestinations(bool bFiltered=false, bool bSkipBuild
     {
         m_kUnit.m_kReachableTilesCache.ForceCacheUpdate();
     }
+		// End Issue #22
 
 	m_kUnit.m_kReachableTilesCache.UpdateTileCacheIfNeeded();
 	if( !ShouldAvoidTilesWithCover() && !UnitState.IsCivilian() && !IsMeleeMove() )
