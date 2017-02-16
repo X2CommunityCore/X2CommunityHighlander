@@ -8,6 +8,8 @@
 class X2Effect_PersistentStatChange extends X2Effect_ModifyStats;
 
 var array<StatChange>	m_aStatChanges;
+
+// Issue #25 - mechanism for reapplying (used for fixing bug for disorient and overwatch cancelling)
 var bool				bForceReapplyOnRefresh; // LWS: new boolean to control forcing re-application
 
 simulated function AddPersistentStatChange(ECharStatType StatType, float StatAmount, optional EStatModOp InModOp=MODOP_Addition )

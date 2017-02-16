@@ -4,8 +4,7 @@
 //  PURPOSE: Provides static functions that create X2Effects which can be applied to
 //           ability templates. Allows for effect reuse across different abilities.
 //           
-//  PI:	 Modified to force disorienting to reapply on refresh so that the OnEffect removal of overwatch will trigger
-//       Modified bind to use a eCleanup_BeginTactical cleanup policy on the Immobilized value it sets on the target
+//  PI:	 Modified bind to use a eCleanup_BeginTactical cleanup policy on the Immobilized value it sets on the target
 //       unit. Avoids a very rare bug where a mission can end with this soldier still affected by the ability, so the
 //       unit can never again move.
 //---------------------------------------------------------------------------------------
@@ -580,7 +579,9 @@ static function X2Effect_PersistentStatChange CreateDisorientedStatusEffect(opti
 	PersistentStatChangeEffect.bRemoveWhenTargetDies = true;
 	PersistentStatChangeEffect.bIsImpairingMomentarily = true;
 
-	PersistentStatChangeEffect.bForceReapplyOnRefresh = true; // LWS: added to fix bug where disorient applied to an already-disoriented unit won't remove overwatch
+	// Issue #25
+	// LWS: reapply added to fix bug where disorient applied to an already-disoriented unit won't remove overwatch
+	PersistentStatChangeEffect.bForceReapplyOnRefresh = true; 
 
 	PersistentStatChangeEffect.DamageTypes.AddItem(class'X2Item_DefaultDamageTypes'.default.DisorientDamageType);
 	if( bIsMentalDamage )
