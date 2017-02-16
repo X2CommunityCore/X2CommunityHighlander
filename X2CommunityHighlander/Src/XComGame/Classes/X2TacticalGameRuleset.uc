@@ -1573,7 +1573,8 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
     `XEVENTMGR.TriggerEvent('CleanupTacticalMission', BattleData, none, NewGameState);
 		// End Issue #29
 
-	//LWS : Friendly bodies and timed loot recovered if either triad or tactical objectives
+	// Issue #32 - alter if conditional for triad objectives
+	//             Friendly bodies and timed loot recovered if either triad or tactical objectives
 	if( (HasAnyTriadObjective(BattleData) && BattleData.AllTriadObjectivesCompleted()) ||  BattleData.AllTacticalObjectivesCompleted())
 	{
 		// recover all dead soldiers, remove all other soldiers from play/clear deathly ailments
@@ -1608,40 +1609,41 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
 			}
 		}
 	}
-	//LWS : Corpses and other auto-loot bucket only retrieved on tactical victory
+	// Issue #32 - alter if conditional for triad objectives
+	//             Corpses and other auto-loot bucket only retrieved on tactical victory
 	if( BattleData.AllTacticalObjectivesCompleted() )
 	{
 		// 7/29/15 Non-explicitly-picked-up loot is now once again only recovered if the sweep objective was completed
 		RolledLoot = BattleData.AutoLootBucket;
 	}
-	else
+	else if (!HasAnyTriadObjective(BattleData) || !BattleData.AllTriadObjectivesCompleted())
 	{
-		//LWS: Adding this to prevent capture/bleedout on triad victory
-		if (!HasAnyTriadObjective(BattleData) || !BattleData.AllTriadObjectivesCompleted())
+		// Adding this to prevent capture/bleedout on triad victory
+		// It may be the case that the user lost as a result of their remaining units being mind-controlled. Consider them captured (before the mind-control effect gets wiped).
+		foreach History.IterateByClassType(class'XComGameState_Unit', UnitState)
 		{
-			//It may be the case that the user lost as a result of their remaining units being mind-controlled. Consider them captured (before the mind-control effect gets wiped).
-			foreach History.IterateByClassType(class'XComGameState_Unit', UnitState)
+			if (XComHQ.IsUnitInSquad(UnitState.GetReference()))
 			{
-				if (XComHQ.IsUnitInSquad(UnitState.GetReference()))
+				if (UnitState.IsMindControlled())
 				{
-					if (UnitState.IsMindControlled())
-					{
-						UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', UnitState.ObjectID));
-						UnitState.bCaptured = true;
-						NewGameState.AddStateObject(UnitState);
-					}
+					UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', UnitState.ObjectID));
+					UnitState.bCaptured = true;
+					NewGameState.AddStateObject(UnitState);
 				}
-				// Start Issue #30 - bug fix for bleeding out units
-				//LWS : Fix bug the bleeding-out units don't get cleaned up properly
-				if (UnitState.bBleedingOut)
-				{
-					BleedOutEffect = UnitState.GetUnitAffectedByEffectState(class'X2StatusEffects'.default.BleedingOutName);
-					BleedOutEffect.RemoveEffect(NewGameState, NewGameState, false);
-				}
-				// End Issue #30
 			}
+
+
+			// Start Issue #30 - bug fix for bleeding out units
+			//LWS : Fix bug the bleeding-out units don't get cleaned up properly
+			if (UnitState.bBleedingOut)
+			{
+				BleedOutEffect = UnitState.GetUnitAffectedByEffectState(class'X2StatusEffects'.default.BleedingOutName);
+				BleedOutEffect.RemoveEffect(NewGameState, NewGameState, false);
+			}
+			// End Issue #30
 		}
 	}
+	// End Issue #32
 
 	//Backwards compatibility support for campaigns started when mission objectives could only have one loot table
 	MissionIndex = class'XComTacticalMissionManager'.default.arrMissions.Find('MissionName', BattleData.MapData.ActiveMission.MissionName);
@@ -1697,6 +1699,8 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
 	`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 }
 
+// Start Issue #32
+// helper for checking if BattleData has any triad objectives
 static function bool HasAnyTriadObjective(XComGameState_BattleData Battle)
 {
 	local int ObjectiveIndex;
@@ -1711,6 +1715,7 @@ static function bool HasAnyTriadObjective(XComGameState_BattleData Battle)
 
 	return false;
 }
+// Start Issue #32
 
 static function name GetObjectiveLootTable(MissionObjectiveDefinition MissionObj)
 {
