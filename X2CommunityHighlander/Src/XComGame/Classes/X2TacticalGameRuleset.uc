@@ -10,8 +10,6 @@
 
 // LWS Modifications
 //
-// tracktwo - Replaced hardcoded check for 'Terror' mission when determining whether or not
-//            to enable the unit radius manager with a function call into Helpers_LW.
 // amineri - Added code to allow dynamic swapping of transition map to allow alternatives to the skyranger interior 
 // tracktwo - Add trigger event to CleanupTacticalMission to allow mods to perform additional cleanup.
 // tracktwo - Fire the 'SquadConcealmentBroken' event immediately on mission start for non-concealment missions. Ensures
@@ -282,10 +280,14 @@ simulated function BuildLocalStateObjectCache()
 	VisibilityMgr = Spawn(class'X2GameRulesetVisibilityManager', self);
 	VisibilityMgr.RegisterForNewGameStateEvent();
 
+	// Start Issue #26
+	// tracktwo - Replaced hardcoded check for 'Terror' mission when determining whether or not
+	//            to enable the unit radius manager with a function call into Helpers_LW.
     if (class'Helpers_LW'.static.ShouldUseRadiusManagerForMission(BattleDataState.MapData.ActiveMission.sType))
 	{
 		UnitRadiusManager = Spawn( class'X2UnitRadiusManager', self );
 	}
+	// End Issue #26
 
 	CachedHistory.RegisterOnObliteratedGameStateDelegate(OnObliterateGameState);
 	CachedHistory.RegisterOnNewGameStateDelegate(OnNewGameState);

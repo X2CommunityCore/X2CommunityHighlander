@@ -15,7 +15,9 @@ struct ProjectileSoundMapping
 	var string DeathSoundPath;
 };
 
-var config const array<string> RadiusManagerMissionTypes;        // The list of mission types to enable the radius manager to display rescue rings.
+// Issue #26
+// The list of mission types to enable the radius manager to display rescue rings.
+var config const array<string> RadiusManagerMissionTypes;       
 
 // If true, enable the yellow alert movement system.
 var config const bool EnableYellowAlert;
@@ -118,10 +120,12 @@ simulated static function class<object> LWCheckForRecursiveOverride(class<object
 	return CurrentBestClass;
 }
 
+// Start Issue #26 - allow radius manager to be usable on more than just 'Terror' missions
 static function bool ShouldUseRadiusManagerForMission(String MissionName)
 {
     return default.RadiusManagerMissionTypes.Find(MissionName) >= 0;
 }
+// End Issue #26
 
 static function bool YellowAlertEnabled()
 {
