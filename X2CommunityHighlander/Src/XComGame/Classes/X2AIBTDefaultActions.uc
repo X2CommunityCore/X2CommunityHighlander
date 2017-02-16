@@ -4,10 +4,6 @@ class X2AIBTDefaultActions extends X2AIBTLeafNode
 	native(AI)
 	dependson(XGAIBehavior);
 
-// LWS Mods:
-//
-// tracktwo - DoNoiseAlert: Apply the alert only to aliens within a configurable sound range rather than all units on the map.
-
 var delegate<BTActionDelegate> m_dActionFn;
 var name m_MoveProfile;
 
@@ -1118,6 +1114,11 @@ function bt_status SetNoCoverMovement()
 	return BTS_SUCCESS;
 }
 
+
+// Start Issue #21 - Adding configurable sound range to DoNoiseAlert AI Behaviour
+// LWS Mods:
+//
+// tracktwo - DoNoiseAlert: Apply the alert only to aliens within a configurable sound range rather than all units on the map.
 function bt_status DoNoiseAlert() // contents basically stolen from SeqAct_DropAlert
 {
 	local XComGameStateHistory History;
@@ -1211,6 +1212,7 @@ function BuildVisualizationForNoiseAlert(XComGameState VisualizeGameState, out a
 	SoundAndFlyOver.SetSoundAndFlyOverParameters(None, class'X2Action_Yell'.default.m_sYellMessage, '', eColor_Bad);
 	OutVisualizationTracks.AddItem(BuildTrack);
 }
+// End Issue #21
 
 function bt_status RunCivilianExitMap()
 {

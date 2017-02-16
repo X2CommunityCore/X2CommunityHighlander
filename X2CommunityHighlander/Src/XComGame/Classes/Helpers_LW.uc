@@ -131,6 +131,7 @@ static function bool DynamicEncounterZonesDisabled()
 	return default.DisableDynamicEncounterZones;
 }
 
+// Dependant Issues - Issue #21 (configurable sound range for DoNoiseAlert)
 // Copied from XComGameState_Unit::GetEnemiesInRange, except will retrieve all units on the alien team within
 // the specified range.
 static function GetAlienUnitsInRange(TTile kLocation, int nMeters, out array<StateObjectReference> OutEnemies)
