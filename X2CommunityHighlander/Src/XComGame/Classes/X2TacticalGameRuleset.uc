@@ -8,9 +8,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Modifications
-//
-// amineri - Added code to allow dynamic swapping of transition map to allow alternatives to the skyranger interior 
 class X2TacticalGameRuleset extends X2GameRuleset 
 	dependson(X2GameRulesetVisibilityManager, X2TacticalGameRulesetDataStructures, XComGameState_BattleData)
 	config(GameCore)
@@ -2147,6 +2144,8 @@ simulated state CreateTacticalGame
 		return false;
 	}
 
+	// Start Issue #31
+	// amineri - Added code to allow dynamic swapping of transition map to allow alternatives to the skyranger interior 
 	//LWS: Added for hook to change transition map to allow DLC/mods to dynamically change the pre/post tactical mission loading scene
 	simulated function UpdateTransitionMap()
 	{
@@ -2164,6 +2163,7 @@ simulated state CreateTacticalGame
 			`MAPS.SetTransitionMap(OverrideMapName);
 		}
 	}
+	// End Issue #31
 
 Begin:
 	`SETLOC("Start of Begin Block");
@@ -2183,7 +2183,7 @@ Begin:
 	bShowDropshipInteriorWhileGeneratingMap = ShowDropshipInterior();
 	if(bShowDropshipInteriorWhileGeneratingMap)
 	{		
-		//LWS: Add hook to change the transition map here
+		// Issue #31 - Add hook to change the transition map here
 		UpdateTransitionMap();
 
 		`MAPS.AddStreamingMap(`MAPS.GetTransitionMap(), DropshipLocation, DropshipRotation, false);
@@ -2260,7 +2260,7 @@ Begin:
 
 		`MAPS.ClearPreloadedLevels();
 		`MAPS.RemoveStreamingMapByName(`MAPS.GetTransitionMap(), false);
-		//LWS: Revert the transition map to default here in case previous code had changed it
+		// Issue #31 - Revert the transition map to default here in case previous code had changed it
 		`MAPS.ResetTransitionMap();
 	}
 
