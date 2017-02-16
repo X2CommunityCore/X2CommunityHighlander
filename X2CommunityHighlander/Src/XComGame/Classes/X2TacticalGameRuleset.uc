@@ -11,7 +11,6 @@
 // LWS Modifications
 //
 // amineri - Added code to allow dynamic swapping of transition map to allow alternatives to the skyranger interior 
-// tracktwo - Add trigger event to CleanupTacticalMission to allow mods to perform additional cleanup.
 class X2TacticalGameRuleset extends X2GameRuleset 
 	dependson(X2GameRulesetVisibilityManager, X2TacticalGameRulesetDataStructures, XComGameState_BattleData)
 	config(GameCore)
@@ -1570,8 +1569,11 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
 	BattleData = XComGameState_BattleData(NewGameState.CreateStateObject(class'XComGameState_BattleData', BattleData.ObjectID));
 	NewGameState.AddStateObject(BattleData);
 
+		// Start Issue #29
+		// tracktwo - Add trigger event to CleanupTacticalMission to allow mods to perform additional cleanup.
     // LWS MOD: Let mods handle any necessary cleanup before we do recovery.
     `XEVENTMGR.TriggerEvent('CleanupTacticalMission', BattleData, none, NewGameState);
+		// End Issue #29
 
 	//LWS : Friendly bodies and timed loot recovered if either triad or tactical objectives
 	if( (HasAnyTriadObjective(BattleData) && BattleData.AllTriadObjectivesCompleted()) ||  BattleData.AllTacticalObjectivesCompleted())
