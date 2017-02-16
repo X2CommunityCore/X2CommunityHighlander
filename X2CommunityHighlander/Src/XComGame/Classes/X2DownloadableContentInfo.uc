@@ -375,6 +375,7 @@ static function int OverrideItemEnvironmentDamagePreview(XComGameState_Ability A
     return -1;
 }
 
+/// Start Issue #23
 /// <summary>
 /// Called from X2Effect_ApplyFireToWorld::AddWorldEffectTickEvents
 /// Allows DLC/Mods to override the world fire environment damage effects of fire
@@ -383,3 +384,4 @@ static function bool OverrideWorldFireTickEvent(X2Effect_ApplyFireToWorld Effect
 {
     return false;
 }
+/// End Issue #23

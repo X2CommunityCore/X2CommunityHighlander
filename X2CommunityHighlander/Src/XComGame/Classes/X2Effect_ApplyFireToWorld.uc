@@ -407,10 +407,12 @@ event AddWorldEffectTickEvents( XComGameState NewGameState, XComGameState_WorldE
 	local XComGameState_EnvironmentDamage DamageEvent;
 	local XComDestructibleActor TileActor;
 
+	// Start Issue #23 - variables for fire damage mod hook
 	// PI Added
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local int i;
 	local bool bAnyOverride;
+	// End Issue #23 - variables for fire damage mod hook
 
 	//Spread before reducing the intensity
 	GetFireSpreadTiles(OutTiles, TickingWorldEffect);
@@ -433,6 +435,7 @@ event AddWorldEffectTickEvents( XComGameState NewGameState, XComGameState_WorldE
 		}
 	}
 
+	// Start Issue #23 - opportunity for dlc/mods to override world fire tick event
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	for(i = 0; i < DLCInfos.Length; ++i)
 	{
@@ -445,6 +448,7 @@ event AddWorldEffectTickEvents( XComGameState NewGameState, XComGameState_WorldE
 	{
 		return;
 	}
+	// End Issue #23
 	
 	if (DestroyedTiles.Length > 0)
 	{
