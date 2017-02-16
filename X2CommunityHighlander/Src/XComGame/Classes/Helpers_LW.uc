@@ -49,10 +49,12 @@ var config bool NoPeekInYellowAlert;
 // if it is not set (at 0), then the game will default to GetMaxSoldiersAllowedOnMission
 var config int LowStrengthTriggerCount;
 
+// Start Issue #24
 // these variables control various world effects, to prevent additional voxel check that can cause mismatch between preview and effect
 var config bool bWorldPoisonShouldDisableExtraLOSCheck;
 var config bool bWorldSmokeShouldDisableExtraLOSCheck;
 var config bool bWorldSmokeGrenadeShouldDisableExtraLOSCheck;
+// End Issue #24
 
 // This is to double check in grenade targeting that the affected unit is actually in a tile that will get the world effect, not just that it is occupying such a tile.
 // This can occur because tiles are only 1 meter high, so many unit occupy multiple vertical tiles, but only really count as occupying the one at their feet in other places.
