@@ -12,11 +12,6 @@
 //
 // amineri - Added code to allow dynamic swapping of transition map to allow alternatives to the skyranger interior 
 // tracktwo - Add trigger event to CleanupTacticalMission to allow mods to perform additional cleanup.
-// tracktwo - Fire the 'SquadConcealmentBroken' event immediately on mission start for non-concealment missions. Ensures
-//            hostile civilians start panicked (and in red alert) in these missions so they run instead of walk away from
-//            XCOM.
-// tracktwo - Civilians don't flee aliens on missions where aliens aren't shooting them. We don't want them firing 'yell'
-//            alerts when an alien gets close to them.
 class X2TacticalGameRuleset extends X2GameRuleset 
 	dependson(X2GameRulesetVisibilityManager, X2TacticalGameRulesetDataStructures, XComGameState_BattleData)
 	config(GameCore)
@@ -878,6 +873,8 @@ function ApplyStartOfMatchConditions()
 	}
 	else
 	{
+		
+		// Start Issue #27
 		// LWS Mods: Fire the concealment broken event immediately upon mission start if it's a non-conceal
 		// mission.
 		foreach History.IterateByClassType(class'XComGameState_Player', PlayerState)
@@ -888,6 +885,7 @@ function ApplyStartOfMatchConditions()
 				break;
 			}
 		}
+		// End Issue #27
 
 		BattleDataState = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 		if(!BattleDataState.DirectTransferInfo.IsDirectMissionTransfer) // only apply phantom at the start of the first leg of a multi-part mission
@@ -1245,9 +1243,15 @@ function EventListenerReturn HandleNeutralReactionsOnMovement(Object EventData, 
 			continue;
 		}
 
-        // LWS Mods: Civilians don't flee aliens if they aren't targets.
-        if ( !bAIAttacksCivilians && MoverTeam != eTeam_XCom )
-            continue;
+		// Start Issue #28
+		// tracktwo - Civilians don't flee aliens on missions where aliens aren't shooting them.
+		//            We don't want them firing 'yell'
+		//            alerts when an alien gets close to them.
+		if ( !bAIAttacksCivilians && MoverTeam != eTeam_XCom )
+		{
+			continue;
+		}
+		// End Issue #28
 
 		// Non-rescue behavior is kicked off here.
 		if( class'Helpers'.static.IsTileInRange(CivilianState.TileLocation, MovedToTile, MaxTileDistSq) 
