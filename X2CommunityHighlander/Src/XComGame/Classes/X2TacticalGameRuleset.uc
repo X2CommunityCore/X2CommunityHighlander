@@ -1554,7 +1554,8 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
 	local XComGameState_XpManager XpManager, NewXpManager;
 	local int MissionIndex;
 	local MissionDefinition RefMission;
-	local XComGameState_Effect BleedOutEffect; // LWS added -- bug fix for bleeding out units
+	// Issue #30 - bug fix for bleeding out units
+	local XComGameState_Effect BleedOutEffect; 
 
 	History = `XCOMHISTORY;
 	
@@ -1633,12 +1634,14 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
 						NewGameState.AddStateObject(UnitState);
 					}
 				}
+				// Start Issue #30 - bug fix for bleeding out units
 				//LWS : Fix bug the bleeding-out units don't get cleaned up properly
 				if (UnitState.bBleedingOut)
 				{
 					BleedOutEffect = UnitState.GetUnitAffectedByEffectState(class'X2StatusEffects'.default.BleedingOutName);
 					BleedOutEffect.RemoveEffect(NewGameState, NewGameState, false);
 				}
+				// End Issue #30
 			}
 		}
 	}
