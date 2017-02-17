@@ -1313,10 +1313,12 @@ static function BoundEffectAdded(X2Effect_Persistent PersistentEffect, const out
 		return;
 
 	// Immobilize to prevent scamper, panic, or movement from enabling this unit to move again.
+	
+	// Issue #43
 	// PI Mods: Change cleanup policy to eCleanup_BeginTactical. I can think of no good reason why bind should
 	// persist across missions. I am unsure how it can even happen, but we have had a tester with a unit with a
 	// stuck eCleanup_Never Immobilized value, meaning they can never move or act in missions.
-	//UnitState.SetUnitFloatValue(class'X2Ability_DefaultAbilitySet'.default.ImmobilizedValueName, 1, eCleanup_Never);
+	// old code was: UnitState.SetUnitFloatValue(class'X2Ability_DefaultAbilitySet'.default.ImmobilizedValueName, 1, eCleanup_Never);
 	UnitState.SetUnitFloatValue(class'X2Ability_DefaultAbilitySet'.default.ImmobilizedValueName, 1, eCleanup_BeginTactical);
 }
 
