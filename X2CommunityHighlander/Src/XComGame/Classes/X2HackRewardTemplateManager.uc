@@ -100,6 +100,8 @@ static function bool AcquireHackRewards(
 	local array<Name> PossibleHackRewards;
 	local bool AttemptedBestHack;
 	local XComGameState_Unit HackTargetUnit;
+
+	// Variable for Issue #39
 	local XComLWTuple OverrideHackRewardTuple;
 
 	HackWasASuccess = false;
@@ -145,6 +147,7 @@ static function bool AcquireHackRewards(
 	//  Now we have all rewards that were not replaced by something better. Award those.
 	foreach Templates(Template)
 	{
+		// Start Issue #39
 		//set up a Tuple for return value - true means don't award this hack reward (can also be used to avoid negative effects)
 		OverrideHackRewardTuple = new class'XComLWTuple';
 		OverrideHackRewardTuple.Id = 'OverrideHackRewards';
@@ -159,7 +162,10 @@ static function bool AcquireHackRewards(
 		`XEVENTMGR.TriggerEvent('PreAcquiredHackReward', OverrideHackRewardTuple, Template, NewGameState);
 
 		if(!OverrideHackRewardTuple.Data[0].b)
+		{
 			Template.OnHackRewardAcquired(Hacker, HackTarget, NewGameState);
+		}
+		// End Issue #39
 
 		HackWasASuccess = HackWasASuccess || !Template.bResultsInHackFailure;
 	}
