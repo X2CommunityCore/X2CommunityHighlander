@@ -301,7 +301,8 @@ static function BleedingOutVisualizationRemoved(XComGameState VisualizeGameState
 	UpdateUnitFlag(BuildTrack, VisualizeGameState.GetContext());
 }
 
-//LWS -- reworked to allow DLC/Mods to alter bleedout chance
+// Start Issue #45
+// reworked to allow DLC/Mods to alter bleedout chance
 static function int GetBleedOutChance(XComGameState_Unit UnitState, int OverkillDamage)
 {
 	local int BleedoutChance;
@@ -322,6 +323,7 @@ static function int GetBleedOutChance(XComGameState_Unit UnitState, int Overkill
 
 	return Tuple.Data[0].i;
 }
+// End Issue #45
 
 //this just adds the rupture flyover text, any sort of checking if this should happen, should happen elsewhere.
 static function RuptureVisualization(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack)
