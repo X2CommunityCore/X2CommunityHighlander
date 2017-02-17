@@ -4,9 +4,6 @@
 //  PURPOSE: Provides static functions that create X2Effects which can be applied to
 //           ability templates. Allows for effect reuse across different abilities.
 //           
-//  PI:	 Modified bind to use a eCleanup_BeginTactical cleanup policy on the Immobilized value it sets on the target
-//       unit. Avoids a very rare bug where a mission can end with this soldier still affected by the ability, so the
-//       unit can never again move.
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -344,7 +341,8 @@ static function X2Effect_Burning CreateBurningStatusEffect(int DamagePerTick, in
 
 	BurningEffect = new class'X2Effect_Burning';
 	BurningEffect.EffectName = default.BurningName;
-	BurningEffect.BuildPersistentEffect(default.BURNING_TURNS,,false,,eGameRule_PlayerTurnBegin); //LW bugfix so fire doesn't go away when the source dies
+	// Issue #44 - bugfix so fire doesn't go away when the source dies
+	BurningEffect.BuildPersistentEffect(default.BURNING_TURNS,,false,,eGameRule_PlayerTurnBegin); 
 	BurningEffect.SetDisplayInfo(ePerkBuff_Penalty, default.BurningFriendlyName, default.BurningFriendlyDesc, "img:///UILibrary_PerkIcons.UIPerk_burn");
 	BurningEffect.SetBurnDamage(DamagePerTick, DamageSpreadPerTick, 'Fire');
 	BurningEffect.VisualizationFn = BurningVisualization;
@@ -422,7 +420,8 @@ static function X2Effect_Burning CreateAcidBurningStatusEffect(int DamagePerTick
 
 	BurningEffect = new class'X2Effect_Burning';
 	BurningEffect.EffectName = default.AcidBurningName;
-	BurningEffect.BuildPersistentEffect(default.ACID_BURNING_TURNS, ,false, , eGameRule_PlayerTurnBegin); // LW fix so acid effect doesn't go way when source dies
+	// Issue #44 - bugfix so acid doesn't go away when the source dies
+	BurningEffect.BuildPersistentEffect(default.ACID_BURNING_TURNS, ,false, , eGameRule_PlayerTurnBegin);
 	BurningEffect.SetDisplayInfo(ePerkBuff_Penalty, default.AcidBurningFriendlyName, default.AcidBurningFriendlyDesc, "img:///UILibrary_PerkIcons.UIPerk_burn");
 	BurningEffect.SetBurnDamage(DamagePerTick, DamageSpreadPerTick, 'Acid');
 	BurningEffect.VisualizationFn = AcidBurningVisualization;
