@@ -6,12 +6,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Mods
-// tracktwo - Disable immunity flyover visuals if the unit is "immune" to the damage by virtue 
-//            of already being affected by it. This is only used in certain behavior nodes to
-//            allow scampering to bypass the hardcoded limitation that AI won't enter any 
-//            hazard tiles.
-
 class X2Effect extends Object
 	abstract
 	native(Core)
@@ -194,6 +188,9 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 /// </summary>
 simulated function ApplyEffectToWorld(const out EffectAppliedData ApplyEffectParameters, XComGameState NewGameState);
 
+
+
+
 /// <summary>
 /// Override to associate X2Action classes with visualizer classes. When the visualizer requests a game state to construct a visualization block, this method is 
 /// is called on any ability effects that contributed to the new game state. The types of visualization that effects need to perform depends highly on the
@@ -232,6 +229,8 @@ simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState
 	}
 	bShouldShowImmunity = bIsFirstImmunityVisualized && ((bShowImmunity && EffectApplyResult == 'AA_UnitIsImmune') || (bShowImmunityAnyFailure && EffectApplyResult != 'AA_Success'));
 
+		// Start Issue #22
+		//
     // LWS Mods: Don't show immunity if the unit is already affected by the damage types in question. See also the
     // changes in XGAIBehavior: by temporarily setting the units as immune to hazards they are already affected by
     // we can get them to scamper through hazard tiles instead of standing out in the open like a bunch of dummies.
@@ -253,7 +252,7 @@ simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState
             bShouldShowImmunity = false;
         }
     }
-    // END LWS Mods
+		// End Issue #22
 
 	if (bShouldShowImmunity && XComGameState_Unit(BuildTrack.StateObject_NewState) != none)
 	{

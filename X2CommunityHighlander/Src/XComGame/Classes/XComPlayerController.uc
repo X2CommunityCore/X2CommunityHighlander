@@ -1354,6 +1354,8 @@ simulated function SetupDropshipMatinee()
 	local float NumLost;
 	local float TotalNum;
 	local float PercentLost;
+
+	// Variables for Issue #31
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS  added
 	local int i; // LWS  added
 
@@ -1471,7 +1473,9 @@ simulated function SetupDropshipMatinee()
 		{
 			UnitPawn = Unit.CreatePawn(self, ZeroVector, ZeroRotation);
 
+			// Start Issue #31
 			//LWS - add hook to allow streaming in soldier attachments to the loading screen
+			//      only does so if the transition function returns true
 			DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 			for(i = 0; i < DLCInfos.Length; ++i)
 			{
@@ -1481,6 +1485,7 @@ simulated function SetupDropshipMatinee()
 					break; // only needs to be done once
 				}
 			}
+			// End Issue #31
 
 			UnitPawn.Mesh.bUpdateSkelWhenNotRendered = true;
 			UnitPawn.SetBase(CineDummy);

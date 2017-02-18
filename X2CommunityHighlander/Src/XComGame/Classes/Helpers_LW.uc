@@ -15,7 +15,9 @@ struct ProjectileSoundMapping
 	var string DeathSoundPath;
 };
 
-var config const array<string> RadiusManagerMissionTypes;        // The list of mission types to enable the radius manager to display rescue rings.
+// Issue #26
+// The list of mission types to enable the radius manager to display rescue rings.
+var config const array<string> RadiusManagerMissionTypes;       
 
 // If true, enable the yellow alert movement system.
 var config const bool EnableYellowAlert;
@@ -49,10 +51,12 @@ var config bool NoPeekInYellowAlert;
 // if it is not set (at 0), then the game will default to GetMaxSoldiersAllowedOnMission
 var config int LowStrengthTriggerCount;
 
+// Start Issue #24
 // these variables control various world effects, to prevent additional voxel check that can cause mismatch between preview and effect
 var config bool bWorldPoisonShouldDisableExtraLOSCheck;
 var config bool bWorldSmokeShouldDisableExtraLOSCheck;
 var config bool bWorldSmokeGrenadeShouldDisableExtraLOSCheck;
+// End Issue #24
 
 // This is to double check in grenade targeting that the affected unit is actually in a tile that will get the world effect, not just that it is occupying such a tile.
 // This can occur because tiles are only 1 meter high, so many unit occupy multiple vertical tiles, but only really count as occupying the one at their feet in other places.
@@ -116,10 +120,12 @@ simulated static function class<object> LWCheckForRecursiveOverride(class<object
 	return CurrentBestClass;
 }
 
+// Start Issue #26 - allow radius manager to be usable on more than just 'Terror' missions
 static function bool ShouldUseRadiusManagerForMission(String MissionName)
 {
     return default.RadiusManagerMissionTypes.Find(MissionName) >= 0;
 }
+// End Issue #26
 
 static function bool YellowAlertEnabled()
 {
@@ -131,6 +137,7 @@ static function bool DynamicEncounterZonesDisabled()
 	return default.DisableDynamicEncounterZones;
 }
 
+// Dependant Issues - Issue #21 (configurable sound range for DoNoiseAlert)
 // Copied from XComGameState_Unit::GetEnemiesInRange, except will retrieve all units on the alien team within
 // the specified range.
 static function GetAlienUnitsInRange(TTile kLocation, int nMeters, out array<StateObjectReference> OutEnemies)

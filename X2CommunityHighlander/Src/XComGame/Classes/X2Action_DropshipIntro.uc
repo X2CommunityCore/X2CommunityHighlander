@@ -10,7 +10,6 @@
 //              should populate your matinee.
 //           5) That's it! You've now modded in more intro slots!
 //           
-//	LWS :	Adding breakdown of FindDropshipMatinee to work with AlternateMissionIntros
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -102,16 +101,19 @@ private function AddUnitsToMatinee()
 						" Unit with ObjectID " $ UnitRef.ObjectID $ " is in the squad but does not exist in the history. This is very bad!\n" $
 						" Talk to David B.");
 				}
-				//LWS - HAX to prevent more than 6 units when using default intro
+
+				// Start Issue #16 - prevent loading more than 6 units into the
+				//                   default dropship inttro or the final mission intro
 				if (bDefaultIntro && UsedSlots.Length >= default.DropshipSlotCount)
 				{
 					break;	
 				}
-				//LWS - HAX to prevent more than 6 units in final mission
+
 				if (`TACTICALMISSIONMGR.ActiveMission.MissionName == 'AssaultAlienFortress_LW' && UsedSlots.Length >= 6)
 				{
 					break;
 				}
+				// End Issue #16
 			}
 		}
 	}
@@ -169,11 +171,13 @@ private function FindDropshipMatinee()
 {
 	local XComTacticalMissionManager MissionManager;
 	local string MatineePrefix;
-	local MissionIntroDefinition MissionIntro; // LWS Added for debugging purposes
+	local MissionIntroDefinition MissionIntro;
 	local MissionIntroSequence IntroSequence;
 
 	MissionManager = `TACTICALMISSIONMGR;
 
+	// LWS broke up this accessor to make it easier to debug the intermediate
+	// variables, no behaviour change.
 	MissionIntro = MissionManager.GetActiveMissionIntroDefinition();
 	IntroSequence = MissionIntro.MatineeSequences[MatineeSequenceIndex];
 	MatineePrefix = IntroSequence.MatineeCommentPrefixes[MatineeIndex];

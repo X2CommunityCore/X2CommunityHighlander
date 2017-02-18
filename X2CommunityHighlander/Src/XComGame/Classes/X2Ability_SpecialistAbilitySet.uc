@@ -4,7 +4,6 @@
 //  DATE:    17 Jul 2014
 //  PURPOSE: Defines abilities used by the Specialist class.
 //   
-//	LWS:	 Fixing RevivalProtocol so that it can fix stunned effect        
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -704,7 +703,8 @@ static function X2AbilityTemplate RevivalProtocol()
 
 	Template.AddTargetEffect(RemoveAdditionalEffectsForRevivalProtocolAndRestorativeMist());
 	Template.AddTargetEffect(RemoveAllEffectsByDamageType());
-	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateStunRecoverEffect()); // LWS: Added
+	// Issue #9 - Add StunRecover effect on target.
+	Template.AddTargetEffect(class'X2StatusEffects'.static.CreateStunRecoverEffect());
 	Template.AddTargetEffect(new class'X2Effect_RestoreActionPoints');      //  put the unit back to full actions
 
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
@@ -2016,8 +2016,11 @@ static function X2Effect_RemoveEffects RemoveAdditionalEffectsForRevivalProtocol
 	RemoveEffects.EffectNamesToRemove.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 	RemoveEffects.EffectNamesToRemove.AddItem(class'X2AbilityTemplateManager'.default.PanickedName);
 	RemoveEffects.EffectNamesToRemove.AddItem(class'X2StatusEffects'.default.UnconsciousName);
-	RemoveEffects.EffectNamesToRemove.AddItem(class'X2AbilityTemplateManager'.default.StunnedName); // LWS Added
-	RemoveEffects.DamageTypes.AddItem('mental'); // LWS Added
+	// Start Issue #9 - Remove Stun Effect and Mental Damage Type Effect on Revival Protocol
+	RemoveEffects.EffectNamesToRemove.AddItem(class'X2AbilityTemplateManager'.default.StunnedName);
+	RemoveEffects.DamageTypes.AddItem('mental');
+	// End Issue #9
+
 	return RemoveEffects;
 }
 

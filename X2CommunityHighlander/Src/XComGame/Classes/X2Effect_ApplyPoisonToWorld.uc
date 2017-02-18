@@ -47,6 +47,7 @@ simulated function AddX2ActionsForVisualization_Tick(XComGameState VisualizeGame
 {
 }
 
+// Issue #24 - Allow config of LOS handling for effect
 static simulated function bool FillRequiresLOSToTargetLocation( ) { return !class'Helpers_LW'.default.bWorldPoisonShouldDisableExtraLOSCheck; }
 static simulated function int GetTileDataDynamicFlagValue() { return 16; }  //TileDataContainsPoison
 
