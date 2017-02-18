@@ -358,7 +358,9 @@ simulated function UITooltip GetTooltipByID( int ID )
 
 	foreach Tooltips(Tooltip)
 	{ 
-		// robojumper: unbreak tooltips
+		// robojumper: #2 unbreak tooltips
+		// previously, we'd use .ID == ID, but that's broken
+		// see issue text for details
 		if( Tooltip.MatchesID(ID) )
 			return Tooltip; 
 	}

@@ -7,7 +7,7 @@
 //           UIStrategyMap_HUD
 //
 //	LWS:	 Adding hook to override what gets displayed for the resistance HQ icon
-//	robojumper: fix tooltips
+//	robojumper: #2 fix tooltips
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -165,7 +165,8 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	Navigator.LoopSelection = true;
 	Navigator.OnSelectedIndexChanged = OnNavigationChanged;
 
-	// robojumper: fixed tooltips
+	// robojumper: #2 fix tooltips
+	// selecting an item via UINavigator breaks Mouse tooltips
 	if (`ISCONTROLLERACTIVE)
 	{
 		OnNavigationChanged(0);
@@ -347,6 +348,7 @@ simulated function SelectMapItemNearestLocation(vector2D Loc)
 	if (SelectedMapItem != NewSelection)
 	{
 		// robojumper: removed hackery for continent bonus tooltips
+		// since tooltips are fixed (#2)
 		SetSelectedMapItem(NewSelection);
 	}
 }
@@ -418,7 +420,9 @@ simulated function SetSelectedMapItem(UIStrategyMapItem Selection, optional bool
 		}
 	}
 
-	// robojumper: this removes tooltips, so comment it out
+	// robojumper: #2 fix tooltips
+	// this removes tooltips, so comment it out
+	// was redundant anyway (look at the beginning of the function)
 	//UpdateButtonHelp();
 }
 
@@ -1470,7 +1474,7 @@ simulated function ShowTooltip(UIStrategyMapItem MapItem)
 	if (ActiveTooltip != none)
 	{
 		/*if(!ActiveTooltip.MatchesID(MapItem.m_iTooltipDataIndex))
-			return;*/ // robojumper: redundant
+			return;*/ // robojumper: #2 fix tooltips -- redundant
 
 		if (ActiveTooltip.del_OnMouseIn != none)
 		{   
@@ -1607,7 +1611,7 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_DOWN:
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_LEFT:
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_RIGHT:
-		// robojumper: consume all navigator ones to prevent navigator from selecting items (which causes broken tooltips)
+		// robojumper: #2 fix tooltips -- consume all navigator ones to prevent navigator from selecting items (which causes broken tooltips)
 		case class'UIUtilities_Input'.const.FXS_ARROW_UP:
 		case class'UIUtilities_Input'.const.FXS_ARROW_DOWN:
 		case class'UIUtilities_Input'.const.FXS_ARROW_LEFT:

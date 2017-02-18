@@ -3,7 +3,7 @@
 //  AUTHOR:  Brit Steiner       -- 01/31/12
 //           Tronster           -- 04/10/12
 //  PURPOSE: Controls the game side of the Options screen. (No longer PC only, rename? - 2.6.12)
-//  robojumper: fix tooltips: RenableMechaListItems() removes all tooltips, so do it before setting tooltips
+//  robojumper: #2 fix tooltips: RenableMechaListItems() removes all tooltips, so do it before setting tooltips
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -1454,7 +1454,7 @@ function SetVideoTabSelected()
 	VideoTabMC = Movie.GetVariableObject(MCPath$".TabGroup.Tab1");
 	if(VideoTabMC != none)
 		VideoTabMC.ActionScriptVoid("select");
-	// robojumper: unbreak tooltips
+	// robojumper: #2 unbreak tooltips
 	RenableMechaListItems(ePCTabVideo_Max);
 	// NOTE: Keeping the actual widgets of removed settings so that the remaining
 	//		 ones are still operational - KD
@@ -1647,7 +1647,7 @@ function SetAudioTabSelected()
 		AudioTabMC.ActionScriptVoid("select");
 		
 	//ResetMechaListItems();
-	// robojumper: unbreak tooltips
+	// robojumper: #2 unbreak tooltips
 	RenableMechaListItems(ePCTabAudio_Max); 
 
 	// Master Volume: --------------------------------------------
@@ -1724,7 +1724,7 @@ function SetGameplayTabSelected()
 	if(GameplayTabMC != none)
 		GameplayTabMC.ActionScriptVoid("select");
 
-	// robojumperHighlander: Unbreak tooltips
+	// robojumper: #2 unbreak tooltips
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);	
 
 	SliderMapping.Length = 0;
@@ -1839,7 +1839,7 @@ function SetInterfaceTabSelected()
 		InterfaceTabMC.ActionScriptVoid("select");
 		
 	ResetMechaListItems();
-	// robojumper: unbreak tooltips
+	// robojumper: #2 unbreak tooltips
 	RenableMechaListItems(ePCTabInterface_Max);
 
 	// Key Bindings screen
@@ -3026,8 +3026,10 @@ function ResetMechaListItems()
 	List.SetSelectedIndex(-1);
 }
 
-// robojumperHighlander: all calls to this function will remove tooltps,
+// robojumper: #2 fix tooltips
+// all calls to this function will remove tooltps,
 // so calls have been moved up in function code
+// there are no changes here
 function RenableMechaListItems(int maxItems)
 {
 	local int i;

@@ -1,4 +1,4 @@
-// robojumper: fix tooltips
+// robojumper: #2 fix tooltips
 class UIStrategyMapItem extends UIPanel;
 
 
@@ -43,7 +43,7 @@ var StateObjectReference GeoscapeEntityRef;
 
 // The History index from the last time this visualizer was updated based on the associated GeoscapeEntity game state.
 var int HistoryIndexOnLastUpdate;
-// robojumper: deprecated
+// robojumper: #2 fix tooltips -- deprecated since we use the default CachedTooltipID
 var int m_iTooltipDataIndex;
 
 // Localized header string for this pin type
@@ -294,14 +294,13 @@ simulated function Remove()
 	super.Remove(); 
 }
 
-// robojumper: fix tooltips
+// robojumper: #2 fix tooltips
 function GenerateTooltip( string tooltipHTML )
 {
 	//local int TooltipID; 
 	if( tooltipHTML != "" )
 	{
 		CachedTooltipId = Movie.Pres.m_kTooltipMgr.AddNewTooltipTextBox(tooltipHTML, 15, 0, string(MCPath), , false, , true, , , , , , 0.0 /*no delay*/);
-		//m_iTooltipDataIndex = TooltipID;
 		Movie.Pres.m_kTooltipMgr.TextTooltip.SetUsePartialPath(CachedTooltipId, true);
 		bHasTooltip = true;
 	}

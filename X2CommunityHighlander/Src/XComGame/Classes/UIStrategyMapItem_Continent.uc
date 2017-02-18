@@ -3,7 +3,7 @@
 //  FILE:    UIStrategyMapItem_Continent
 //  AUTHOR:  Sam Batista -- 08/2014
 //  PURPOSE: This file represents a landing spot on the StrategyMap.
-//  robojumper: fix tooltips
+//  robojumper: #2 fix tooltips
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -24,6 +24,7 @@ simulated function UIStrategyMapItem InitMapItem(out XComGameState_GeoscapeEntit
 	return self;
 }
 
+// robojumper: #2 fix tooltips
 function GenerateTooltip(string NewTooltipHTML)
 {
 	//local int tooltipID;
