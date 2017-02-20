@@ -90,6 +90,10 @@ var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
 // but can be longer if the environment actor was configured with Toughness.AvailableFireFuelTurns
 var config array<int> FireEnvironmentDamageAfterNumTurns;
 
+
+// robojumper: Issue #1 screen extensions
+var config array<int> arrExtensionScreenKeys; // if a key is pressed that matches the key codes in here, show the extension panel (if possible)
+
 simulated static function class<object> LWCheckForRecursiveOverride(class<object> ClassToCheck)
 {
 	local int idx;
