@@ -4,9 +4,6 @@
 //  PURPOSE: Provides static functions that create X2Effects which can be applied to
 //           ability templates. Allows for effect reuse across different abilities.
 //           
-//  PI:	 Modified bind to use a eCleanup_BeginTactical cleanup policy on the Immobilized value it sets on the target
-//       unit. Avoids a very rare bug where a mission can end with this soldier still affected by the ability, so the
-//       unit can never again move.
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -304,7 +301,8 @@ static function BleedingOutVisualizationRemoved(XComGameState VisualizeGameState
 	UpdateUnitFlag(BuildTrack, VisualizeGameState.GetContext());
 }
 
-//LWS -- reworked to allow DLC/Mods to alter bleedout chance
+// Start Issue #45
+// reworked to allow DLC/Mods to alter bleedout chance
 static function int GetBleedOutChance(XComGameState_Unit UnitState, int OverkillDamage)
 {
 	local int BleedoutChance;
@@ -325,6 +323,7 @@ static function int GetBleedOutChance(XComGameState_Unit UnitState, int Overkill
 
 	return Tuple.Data[0].i;
 }
+// End Issue #45
 
 //this just adds the rupture flyover text, any sort of checking if this should happen, should happen elsewhere.
 static function RuptureVisualization(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack)
@@ -344,7 +343,8 @@ static function X2Effect_Burning CreateBurningStatusEffect(int DamagePerTick, in
 
 	BurningEffect = new class'X2Effect_Burning';
 	BurningEffect.EffectName = default.BurningName;
-	BurningEffect.BuildPersistentEffect(default.BURNING_TURNS,,false,,eGameRule_PlayerTurnBegin); //LW bugfix so fire doesn't go away when the source dies
+	// Issue #44 - bugfix so fire doesn't go away when the source dies
+	BurningEffect.BuildPersistentEffect(default.BURNING_TURNS,,false,,eGameRule_PlayerTurnBegin); 
 	BurningEffect.SetDisplayInfo(ePerkBuff_Penalty, default.BurningFriendlyName, default.BurningFriendlyDesc, "img:///UILibrary_PerkIcons.UIPerk_burn");
 	BurningEffect.SetBurnDamage(DamagePerTick, DamageSpreadPerTick, 'Fire');
 	BurningEffect.VisualizationFn = BurningVisualization;
@@ -422,7 +422,8 @@ static function X2Effect_Burning CreateAcidBurningStatusEffect(int DamagePerTick
 
 	BurningEffect = new class'X2Effect_Burning';
 	BurningEffect.EffectName = default.AcidBurningName;
-	BurningEffect.BuildPersistentEffect(default.ACID_BURNING_TURNS, ,false, , eGameRule_PlayerTurnBegin); // LW fix so acid effect doesn't go way when source dies
+	// Issue #44 - bugfix so acid doesn't go away when the source dies
+	BurningEffect.BuildPersistentEffect(default.ACID_BURNING_TURNS, ,false, , eGameRule_PlayerTurnBegin);
 	BurningEffect.SetDisplayInfo(ePerkBuff_Penalty, default.AcidBurningFriendlyName, default.AcidBurningFriendlyDesc, "img:///UILibrary_PerkIcons.UIPerk_burn");
 	BurningEffect.SetBurnDamage(DamagePerTick, DamageSpreadPerTick, 'Acid');
 	BurningEffect.VisualizationFn = AcidBurningVisualization;
@@ -1313,10 +1314,12 @@ static function BoundEffectAdded(X2Effect_Persistent PersistentEffect, const out
 		return;
 
 	// Immobilize to prevent scamper, panic, or movement from enabling this unit to move again.
+	
+	// Issue #43
 	// PI Mods: Change cleanup policy to eCleanup_BeginTactical. I can think of no good reason why bind should
 	// persist across missions. I am unsure how it can even happen, but we have had a tester with a unit with a
 	// stuck eCleanup_Never Immobilized value, meaning they can never move or act in missions.
-	//UnitState.SetUnitFloatValue(class'X2Ability_DefaultAbilitySet'.default.ImmobilizedValueName, 1, eCleanup_Never);
+	// old code was: UnitState.SetUnitFloatValue(class'X2Ability_DefaultAbilitySet'.default.ImmobilizedValueName, 1, eCleanup_Never);
 	UnitState.SetUnitFloatValue(class'X2Ability_DefaultAbilitySet'.default.ImmobilizedValueName, 1, eCleanup_BeginTactical);
 }
 

@@ -159,7 +159,7 @@ var transient bool bAOEBreadcrumb;
 simulated event PostBeginPlay()
 {
 	local AnimNotify_PlayParticleEffect ParticleNotify;
-	local XComGameState_Destructible DestructibleState; // LWS added
+	local XComGameState_Destructible DestructibleState; // Variable for Issue #54
 
 	super.PostBeginPlay();
 
@@ -171,12 +171,14 @@ simulated event PostBeginPlay()
 		TotalHealth = (Toughness != none) ? Toughness.Health : class'XComDestructibleActor_Toughness'.default.Health;
 		Health = TotalHealth;
 
+		// Start Issue #54
 		//LWSAdded -- configurable override for TotalHealth
 		DestructibleState = FindExistingState(none); // always try and pull from history
 		if (DestructibleState != none)
 		{
 			DestructibleState.OverrideDestructibleInitialHealth(self, false);
 		}
+		// End Issue #54
 	}
 
 	//Skeletal mesh overrides static mesh

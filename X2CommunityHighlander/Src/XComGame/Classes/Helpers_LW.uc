@@ -25,11 +25,14 @@ var config const bool EnableYellowAlert;
 // If true, hide havens on the geoscape
 var config const bool HideHavens;
 
+// Variable for Issue #52
 // If true, encounter zones will not be updated based XCOM's current position.
 var config bool DisableDynamicEncounterZones;
 
+// Start Issue #53
 var config bool EnableAvengerCameraSpeedControl;
 var config float AvengerCameraSpeedControlModifier;
+// End Issue #53
 
 // The radius (in meters) for which a civilian noise alert can be heard.
 var config int NoiseAlertSoundRange;
@@ -58,9 +61,11 @@ var config bool bWorldSmokeShouldDisableExtraLOSCheck;
 var config bool bWorldSmokeGrenadeShouldDisableExtraLOSCheck;
 // End Issue #24
 
+// Start Issue #48
 // This is to double check in grenade targeting that the affected unit is actually in a tile that will get the world effect, not just that it is occupying such a tile.
 // This can occur because tiles are only 1 meter high, so many unit occupy multiple vertical tiles, but only really count as occupying the one at their feet in other places.
 var config array<name> GrenadeRequiresWorldEffectToAffectUnit;
+// End Issue #48
 
 // Returns 'true' if the given mission type should enable the radius manager (e.g. the thingy
 // that controls rescue rings on civvies). This is done through a config var that lists the 
@@ -69,6 +74,7 @@ var config array<name> GrenadeRequiresWorldEffectToAffectUnit;
 var config bool EnableRestartMissionButtonInNonIronman;
 var config bool EnableRestartMissionButtonInIronman;
 
+// Start Issue #49
 // A list of replacement projectile sound effects mapping a projectile element to a sound cue name.
 // The 'ProjectileName' must be of the form ProjectileName_Index where ProjectileName is the name of the
 // projectile archetype, and Index is the index into the projectile array for the element that should have
@@ -81,6 +87,7 @@ var config bool EnableRestartMissionButtonInIronman;
 // The fire or death sound is the name of a sound cue loaded into the sound manager system. See the SoundCuePaths
 // array in XComSoundManager.
 var config array<ProjectileSoundMapping> ProjectileSounds;
+// End Issue #49
 
 //allow certain classes to be overridden recursively, so the override can be overridden
 var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
@@ -136,10 +143,13 @@ static function bool YellowAlertEnabled()
     return default.EnableYellowAlert;
 }
 
+// Start Issue #52
+// Disable the line of play based on local config
 static function bool DynamicEncounterZonesDisabled()
 {
 	return default.DisableDynamicEncounterZones;
 }
+// End Issue #52
 
 // Dependant Issues - Issue #21 (configurable sound range for DoNoiseAlert)
 // Copied from XComGameState_Unit::GetEnemiesInRange, except will retrieve all units on the alien team within
@@ -178,6 +188,9 @@ static function GetAlienUnitsInRange(TTile kLocation, int nMeters, out array<Sta
 	}
 }
 
+
+// Start Issue #49
+// Used by hooks added to X2UnifiedProjectile
 function static SoundCue FindFireSound(String ObjectArchetypeName, int Index)
 {
 	local String strKey;
@@ -221,3 +234,4 @@ function static SoundCue FindDeathSound(String ObjectArchetypeName, int Index)
 
 	return none;
 }
+// End Issue #49
