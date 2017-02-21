@@ -29,8 +29,10 @@ var config const bool HideHavens;
 // If true, encounter zones will not be updated based XCOM's current position.
 var config bool DisableDynamicEncounterZones;
 
+// Start Issue #53
 var config bool EnableAvengerCameraSpeedControl;
 var config float AvengerCameraSpeedControlModifier;
+// End Issue #53
 
 // The radius (in meters) for which a civilian noise alert can be heard.
 var config int NoiseAlertSoundRange;

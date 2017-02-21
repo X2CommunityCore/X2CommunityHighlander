@@ -43,12 +43,13 @@ function UpdateViewTarget(out TViewTarget OutVT, float DeltaTime)
 
 function XComCameraState SetCameraState( class<XComCameraState> NewStateClass, float InInterpTime )
 {
+	// Start Issue #53
 	//`log( "SetCameraState:"@CameraState@NewStateClass@InInterpTime@bHasOldCameraState @ "    " @ WorldInfo.TimeSeconds );
-
 	if (class'Helpers_LW'.default.EnableAvengerCameraSpeedControl)
 	{
 		InInterpTime *= class'Helpers_LW'.default.AvengerCameraSpeedControlModifier;
 	}
+	// End Issue #53
 
 	bHasOldCameraState = false;
 
@@ -68,7 +69,6 @@ function XComCameraState SetCameraState( class<XComCameraState> NewStateClass, f
 
 	AnimTime = 0.0f;
 	TotalAnimTime = InInterpTime;
-	//TotalAnimTime = 0.33f;
 
 	if ( !bHasOldCameraState )
 	{
