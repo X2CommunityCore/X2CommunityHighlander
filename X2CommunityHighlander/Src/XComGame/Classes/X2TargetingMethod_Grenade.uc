@@ -203,6 +203,10 @@ function Update(float DeltaTime)
 	super.Update(DeltaTime);
 }
 
+// Start Issue #48
+// This excludes targets that aren't within the proper area of effect (I think
+// this is to prevent stuff like acid and the like affect flying enemies), at
+// any rate this is a long war specific enhancement.
 function CheckForWorldEffectTileExclusion(out array<Actor> CurrentlyMarkedTargets, array<TTile>Tiles)
 {
 	local XComGameState_Item WeaponItem;
@@ -247,6 +251,7 @@ function CheckForWorldEffectTileExclusion(out array<Actor> CurrentlyMarkedTarget
 		CurrentlyMarkedTargets.RemoveItem (TargetActor);
 	}
 }
+// End Issue #48
 
 function GetTargetLocations(out array<Vector> TargetLocations)
 {
