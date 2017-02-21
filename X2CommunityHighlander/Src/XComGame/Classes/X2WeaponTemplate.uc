@@ -1,4 +1,3 @@
-// LWS:	 Modified to improve handling of localization of additional weapon categories
 //		 Modified to not display aim/crit chances by default for non-primary weapons
 
 class X2WeaponTemplate extends X2EquipmentTemplate
@@ -165,11 +164,14 @@ function string GetLocalizedCategory()
 	case 'heal':        return class'XGLocalizedData'.default.UtilityCatHeal;
 	case 'medikit':		return class'XGLocalizedData'.default.UtilityCatHeal;
 	case 'skulljack':	return class'XGLocalizedData'.default.UtilityCatSkulljack;
+	// Start Issue #50
+	// Modified to improve handling of localization of additional weapon categories
 	default:            
 		if(GetItemUnknownUtilityCategory() != "")  // LWS: add condition to try and pull from helper function in parent template
 			return GetItemUnknownUtilityCategory();
 		else
 			return class'XGLocalizedData'.default.WeaponCatUnknown;
+	// End Issue #50
 	}
 }
 
