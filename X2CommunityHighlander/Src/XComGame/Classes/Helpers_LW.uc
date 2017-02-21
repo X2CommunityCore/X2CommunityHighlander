@@ -25,6 +25,7 @@ var config const bool EnableYellowAlert;
 // If true, hide havens on the geoscape
 var config const bool HideHavens;
 
+// Variable for Issue #52
 // If true, encounter zones will not be updated based XCOM's current position.
 var config bool DisableDynamicEncounterZones;
 
@@ -136,10 +137,13 @@ static function bool YellowAlertEnabled()
     return default.EnableYellowAlert;
 }
 
+// Start Issue #52
+// Disable the line of play based on local config
 static function bool DynamicEncounterZonesDisabled()
 {
 	return default.DisableDynamicEncounterZones;
 }
+// End Issue #52
 
 // Dependant Issues - Issue #21 (configurable sound range for DoNoiseAlert)
 // Copied from XComGameState_Unit::GetEnemiesInRange, except will retrieve all units on the alien team within

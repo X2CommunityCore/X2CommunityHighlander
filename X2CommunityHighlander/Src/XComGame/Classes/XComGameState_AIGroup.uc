@@ -367,6 +367,8 @@ function bool ShouldMoveToIntercept(out Vector TargetInterceptLocation, XComGame
 		SpawnManager = `SPAWNMGR;
 		MissionManager = `TACTICALMISSIONMGR;
 		MissionManager.GetActiveMissionSchedule(ActiveMissionSchedule);
+
+		// Start Issue #52
 		// PI Mods: if dynamic encounter zones are disabled, use the original LoP as the encounter zone definitions.
 		// Otherwise, adjust the LoP based on the current LoP.
 		if (class'Helpers_LW'.static.DynamicEncounterZonesDisabled())
@@ -377,6 +379,7 @@ function bool ShouldMoveToIntercept(out Vector TargetInterceptLocation, XComGame
 		{
 			CurrentXComLocation = SpawnManager.GetCurrentXComLocation();
 		}
+		// End Issue #52
 		MyEncounterZone = SpawnManager.BuildEncounterZone(
 			BattleData.MapData.ObjectiveLocation,
 			CurrentXComLocation,
