@@ -1,5 +1,3 @@
-//		 Modified to not display aim/crit chances by default for non-primary weapons
-
 class X2WeaponTemplate extends X2EquipmentTemplate
 	native(Core) 
 	dependson(XGInventoryNativeBase, UIQueryInterfaceItem)
@@ -182,7 +180,7 @@ function int GetUIStatMarkup(ECharStatType Stat, optional XComGameState_Item Wea
 
 	if (Stat == eStat_Offense)
 	{
-		if (InventorySlot == eInvSlot_PrimaryWeapon) // LWS: Added conditional to prevent non-primary weapon aim modifiers from showing up in UI
+		if (InventorySlot == eInvSlot_PrimaryWeapon) // For Issue #51 - Added conditional to prevent non-primary weapon aim modifiers from showing up in UI
 		{
 			BonusAim = Aim;
 			if(Weapon != none)
@@ -200,7 +198,7 @@ function int GetUIStatMarkup(ECharStatType Stat, optional XComGameState_Item Wea
 
 	if (Stat == eStat_CritChance)
 	{
-		if (InventorySlot == eInvSlot_PrimaryWeapon) // LWS: Added conditional to prevent non-primary weapon crit modifiers from showing up in UI
+		if (InventorySlot == eInvSlot_PrimaryWeapon) // For Issue #51 - Added conditional to prevent non-primary weapon crit modifiers from showing up in UI
 		{
 			BonusCrit = CritChance;
 			if (Weapon != none)
