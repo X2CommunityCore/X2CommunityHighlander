@@ -303,6 +303,7 @@ static function bool DisableAIReinforcementFlare(XComGameState_AIReinforcementSp
     return false;
 }
 
+/// Start Issue #54
 /// <summary>
 /// Called from XComGameState_Destructible::OverrideDestructibleInitialHealth. (new helper)
 /// Allows DLC/Mods to override the initial health of destructible objects
@@ -312,6 +313,7 @@ static function bool OverrideDestructibleInitialHealth(out int NewHealth, XComGa
 {
     return false;
 }
+/// End Issue #54
 
 /// <summary>
 ///
