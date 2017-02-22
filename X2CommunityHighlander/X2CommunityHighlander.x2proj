@@ -159,6 +159,9 @@
     <Content Include="Src\XComGame\Classes\UINarrativeMgr.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\UIPanel.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\UIPauseMenu.uc">
       <SubType>Content</SubType>
     </Content>
