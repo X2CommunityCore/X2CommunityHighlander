@@ -142,6 +142,9 @@
     <Content Include="Src\XComGame\Classes\UINarrativeMgr.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\UIPanel.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\UIPauseMenu.uc">
       <SubType>Content</SubType>
     </Content>
@@ -161,6 +164,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\UIResistanceReport.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\UIScreen.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\UIScreenStack.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\UIShellDifficulty.uc">
