@@ -7,13 +7,19 @@ var UIPanel m_kContainer;
 var UIBGBox m_kBG;
 var UIList m_kIconList;
 var UITextContainer m_kTextBox;
-var UIPanel LeftConnector, UpDownConnector, RightConnector;
+var UIScrollingText m_kTitleText;
+var UIPanel m_kTitleSeparator;
+// left, middle, right
+var array<UIPanel> m_arrConnectors;
 
 var protected UIScreenComponent_ExtensionContainer ExtensionContainer;
+var UIPanel LastSelectedIcon;
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
 {
 	local vector2d centerpoint;
+	local int i;
+
 	super.InitScreen(InitController, InitMovie, InitName);
 	
 	ExtensionContainer = GetScreenExtending().GetExtensionContainer();
@@ -30,21 +36,40 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	m_kIconList = Spawn(class'UIList', m_kContainer);
 	m_kIconList.ItemPadding = 16;
 	m_kIconList.ScrollbarPadding = 16;
-	m_kIconList.InitList('', 16, 16, 48, m_kContainer.Height - 32);
+	m_kIconList.InitList('', 24, 32, 48, m_kContainer.Height - 64);
 	m_kIconList.OnSelectionChanged = SelectedItemChanged;
 	m_kIconList.OnItemClicked = OnItemClicked;
 	m_kIconList.OnItemDoubleClicked = OnItemClicked;
 
 	m_kTextBox = Spawn(class'UITextContainer', m_kContainer);
-	m_kTextBox.InitTextContainer('', "", 80, 16, m_kContainer.Width - 80 - 8, m_kContainer.Height - 32, false, '', true);
+	m_kTextBox.InitTextContainer('', "", 80, 64, m_kContainer.Width - 80 - 8, m_kContainer.Height - 96, false, '', true);
 
-	LeftConnector = Spawn(class'UIPanel', m_kContainer).InitPanel('', class'UIUtilities_Controls'.const.MC_GenericPixel);
-	LeftConnector.Hide();
-	UpDownConnector = Spawn(class'UIPanel', m_kContainer).InitPanel('', class'UIUtilities_Controls'.const.MC_GenericPixel);
-	UpDownConnector.Hide();
-	RightConnector = Spawn(class'UIPanel', m_kContainer).InitPanel('', class'UIUtilities_Controls'.const.MC_GenericPixel);
-	RightConnector.Hide();
+	m_kTitleText = Spawn(class'UIScrollingText', m_kContainer).InitScrollingText('', "", m_kContainer.Width - 80 - 8, 80, 16);
+
+	m_kTitleSeparator = Spawn(class'UIPanel', m_kContainer).InitPanel('', class'UIUtilities_Controls'.const.MC_GenericPixel);
+	m_kTitleSeparator.SetColor("0xfef4cb").SetAlpha(0.247);
+	m_kTitleSeparator.SetPosition(80, 48);
+	m_kTitleSeparator.SetSize(m_kContainer.Width - 80 - 8, 1);
+
+	for (i = 0; i < 3; i++)
+	{
+		m_arrConnectors.AddItem(Spawn(class'UIPanel', m_kContainer).InitPanel('', class'UIUtilities_Controls'.const.MC_GenericPixel));
+		m_arrConnectors[i].Hide();
+		m_arrConnectors[i].SetColor("0xfef4cb").SetAlpha(0.247);
+	}
+	m_arrConnectors[0].SetHeight(1);
+	m_arrConnectors[0].SetWidth(8);
+	m_arrConnectors[0].SetX(64);
 	
+	m_arrConnectors[1].SetWidth(1);
+	m_arrConnectors[1].SetX(72);
+	m_arrConnectors[1].SetY(32);
+	
+	m_arrConnectors[2].SetHeight(1);
+	m_arrConnectors[2].SetWidth(8);
+	m_arrConnectors[2].SetX(72);
+	m_arrConnectors[2].SetY(32);
+
 }
 
 simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
@@ -54,31 +79,52 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 	if (ItemIndex > INDEX_NONE)
 	{
 		Ext = GetExtensionForIndex(ItemIndex);
-		buildString = "";
-		buildString $= class'UIUtilities_Text'.static.AddFontInfo(Ext.displayString, Screen.bIsIn3D, true) $ "\n\n";
-		buildString $= class'UIUtilities_Text'.static.AddFontInfo(Ext.tooltipText, Screen.bIsIn3D) $ "\n\n";
+		//buildString $= class'UIUtilities_Text'.static.AddFontInfo(Ext.displayString, Screen.bIsIn3D, true) $ "\n\n";
+		//buildString = class'UIUtilities_Text'.static.AddFontInfo(Ext.tooltipText, Screen.bIsIn3D) $ "\n\n";
+		buildString = class'UIUtilities_Text'.static.GetColoredText(class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(Ext.displayString), eUIState_Header, 24);
+		m_kTitleText.SetHTMLText(buildString);
+		buildString = class'UIUtilities_Text'.static.GetColoredText(Ext.tooltipText, eUIState_Normal, 24);
+
 		m_kTextBox.text.Hide();
 		m_kTextBox.SetHTMLText(buildString);
+		// flush immediately to prevent 1 frame delay in description which causes flickering
+		Movie.ProcessQueuedCommands();
+		
+		if (LastSelectedIcon != none)
+		{
+			LastSelectedIcon.MC.FunctionVoid("hideSelectionBrackets");
+		}
+		LastSelectedIcon = m_kIconList.GetItem(ItemIndex);
+		LastSelectedIcon.MC.FunctionVoid("showSelectionBrackets");
 	}
-
 	RealizeConnectors();
-	
 }
 
 simulated function RealizeConnectors()
 {
 	local int idx;
-	local UIPanel LeftPanel;
+	local UIPanel currPanel;
+	local float fTime;
+	idx = m_kIconList.SelectedIndex;
 
 	if (idx > INDEX_NONE)
 	{
+		fTime = m_arrConnectors[0].bIsVisible ? 0.2 : 0.0;
+		m_arrConnectors[0].Show(); // internally guarded
+		m_arrConnectors[1].Show();
+		m_arrConnectors[2].Show();
 
+		// left connector
+		currPanel = m_kIconList.GetItem(idx);
+		m_arrConnectors[0].AddTween("_y", currPanel.Y + m_kIconList.Y + (currPanel.Height / 2), fTime, , "easeoutquad");
+		m_arrConnectors[1].AddTween("_height", currPanel.Y + m_kIconList.Y + (currPanel.Height / 2) - 32, fTime, , "easeoutquad");
+		
 	}
 	else
 	{
-		LeftConnector.Hide();
-		RightConnector.Hide();
-		UpDownConnector.Hide();
+		m_arrConnectors[0].Hide();
+		m_arrConnectors[1].Hide();
+		m_arrConnectors[2].Hide();
 	}
 }
 

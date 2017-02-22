@@ -9,7 +9,7 @@
 //--------------------------------------------------------------------------------------- 
 
 //LW2: added ini-managed control for bronzeman mode-type use of restart level button
-
+// robojumper: issue #1: screen extensions -- make modular and extensible
 class UIPauseMenu extends UIScreen;
 
 var int       m_iCurrentSelection;

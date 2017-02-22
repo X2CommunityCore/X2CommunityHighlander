@@ -242,6 +242,11 @@ simulated function UpdateData()
 	// trigger now to allow inserting new buttons
 	`XEVENTMGR.TriggerEvent('OnArmoryMainMenuUpdate', List, self);
 
+	// robojumper: issue #1: screen extensions start
+	// add extension items here directly
+	
+	// robojumper: issue #1: screen extensions end
+
 	class'UIUtilities_Strategy'.static.PopulateAbilitySummary(self, Unit);
 
 }
@@ -462,6 +467,15 @@ simulated function OnRemoved()
 	super.OnRemoved();
 	`HQPRES.m_kAvengerHUD.NavHelp.ClearButtonHelp();
 }
+
+
+// robojumper: issue #1: screen extensions start
+// we can't show an extension screen because we integrate extensions into the list
+simulated function bool CanShowExtensionScreen()
+{
+	return false;
+}
+// robojumper: issue #1: screen extensions end
 
 defaultproperties
 {

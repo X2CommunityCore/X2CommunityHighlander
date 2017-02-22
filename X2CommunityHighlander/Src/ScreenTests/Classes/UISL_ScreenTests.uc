@@ -15,13 +15,13 @@ event OnInit(UIScreen Screen)
 		TheExtension.iconPath = "img:///UILibrary_PerkIcons.UIPerk_evac";
 		TheExtension.displayString = "Fancy Dancy Title";
 		TheExtension.tooltipText = "doodledidoodledo";
-		TheExtensionContainer.Extensions.AddItem(TheExtension);
+		TheExtensionContainer.AddExtension(TheExtension);
 
 		TheExtension = new (TheExtensionContainer) class'UIScreenComponent_Extension';
 		TheExtension.iconPath = "img:///UILibrary_PerkIcons.UIPerk_locked";
 		TheExtension.displayString = "Fancy Dancy Title 2";
 		TheExtension.tooltipText = "something something boogaloo";
 		TheExtension.uiState = eUIState_Disabled;
-		TheExtensionContainer.Extensions.AddItem(TheExtension);
+		TheExtensionContainer.AddExtension(TheExtension);
 	}
 }
