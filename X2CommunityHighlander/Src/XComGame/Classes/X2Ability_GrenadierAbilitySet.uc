@@ -897,6 +897,7 @@ static function X2AbilityTemplate ChainShot2()
 	Template.AddShooterEffectExclusions();
 
 	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	// Issue #10 - add GameplayVisibilityCondition to ChainShot2
 	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
 
 	Template.AddTargetEffect(HoloTargetEffect());

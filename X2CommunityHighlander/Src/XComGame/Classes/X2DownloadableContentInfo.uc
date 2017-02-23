@@ -261,6 +261,7 @@ static function bool GetValidFloorSpawnLocations(out array<Vector> FloorPoints, 
 	return false;
 }
 
+/// Start Issue #31
 /// <summary>
 /// Called from X2TacticalGameRuleset:state'CreateTacticalGame':UpdateTransitionMap
 //  Allows DLC/Mods to override the transition map used for loading screens pre/post tactical missions
@@ -270,6 +271,7 @@ static function bool LoadingScreenOverrideTransitionMap(optional out string Over
 {
 	return false;
 }
+/// End Issue #31
 
 /// <summary>
 /// Called from XComParcelManager:ChooseSoldierSpawn
@@ -301,6 +303,7 @@ static function bool DisableAIReinforcementFlare(XComGameState_AIReinforcementSp
     return false;
 }
 
+/// Start Issue #54
 /// <summary>
 /// Called from XComGameState_Destructible::OverrideDestructibleInitialHealth. (new helper)
 /// Allows DLC/Mods to override the initial health of destructible objects
@@ -310,6 +313,7 @@ static function bool OverrideDestructibleInitialHealth(out int NewHealth, XComGa
 {
     return false;
 }
+/// End Issue #54
 
 /// <summary>
 ///
@@ -375,6 +379,7 @@ static function int OverrideItemEnvironmentDamagePreview(XComGameState_Ability A
     return -1;
 }
 
+/// Start Issue #23
 /// <summary>
 /// Called from X2Effect_ApplyFireToWorld::AddWorldEffectTickEvents
 /// Allows DLC/Mods to override the world fire environment damage effects of fire
@@ -383,3 +388,4 @@ static function bool OverrideWorldFireTickEvent(X2Effect_ApplyFireToWorld Effect
 {
     return false;
 }
+/// End Issue #23

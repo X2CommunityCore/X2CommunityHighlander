@@ -1,6 +1,9 @@
 class X2Effect_SmokeGrenade extends X2Effect_Persistent config(GameData);
 
 var int HitMod;
+
+// For Issue #36 - configure smoke cancelling flanking crit bonus
+//                 defaults to false, used for LW2 balancing
 var config bool bSmokeCancelsFlankCritBonus;
 
 function GetToHitAsTargetModifiers(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState, class<X2AbilityToHitCalc> ToHitType, bool bMelee, bool bFlanking, bool bIndirectFire, out array<ShotModifierInfo> ShotModifiers)
@@ -14,6 +17,7 @@ function GetToHitAsTargetModifiers(XComGameState_Effect EffectState, XComGameSta
 		ShotMod.Reason = FriendlyName;
 		ShotModifiers.AddItem(ShotMod);
 
+		// Start Issue #36 - smoke cancelling flanking crit bonus
 		if (default.bSmokeCancelsFlankCritBonus && bFlanking)
 		{
 			ShotMod.ModType = eHit_Crit;
@@ -22,6 +26,7 @@ function GetToHitAsTargetModifiers(XComGameState_Effect EffectState, XComGameSta
 
 			ShotModifiers.AddItem(ShotMod);
 		}
+		// End Issue #36
 	}
 }
 

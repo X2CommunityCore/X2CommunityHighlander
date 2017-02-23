@@ -1,9 +1,5 @@
 class X2Effect_Stunned extends X2Effect_Persistent;
 
-// LWS Mods:
-// tracktwo - Add UnitEndedTacticalPlay function to remove stun points on mission end. Avoids bugs with a unit
-//            starting with no action points because a previous mission ended while they were stunned.
-
 var localized string StunnedText;
 var localized string RoboticStunnedText;
 
@@ -285,12 +281,15 @@ private function bool ShouldCyberusBeKilledFromStun(const XComGameState_Unit Tar
 	return bStunCyberus;
 }
 
-// LWS Added: Clear stunned action points on mission end.
+// Start Issue #37
+// tracktwo - Add UnitEndedTacticalPlay function to remove stun points on mission end. Avoids bugs with a unit
+//            starting with no action points because a previous mission ended while they were stunned.
 function UnitEndedTacticalPlay(XComGameState_Effect EffectState, XComGameState_Unit UnitState)
 {
 	UnitState.StunnedActionPoints = 0;
 	UnitState.StunnedThisTurn = 0;
 }
+// End Issue #37
 
 defaultproperties
 {

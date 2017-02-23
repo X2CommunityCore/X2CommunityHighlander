@@ -46,11 +46,12 @@ function SetInitialState(XComDestructibleActor InVisualizer)
 	{
 		Health = InVisualizer.Toughness.Health;
 	}
-	OverrideDestructibleInitialHealth(InVisualizer);  // LWS Added to override initial health in this initialization case
+	OverrideDestructibleInitialHealth(InVisualizer);  // For Issue #54 - LWS Added to override initial health in this initialization case
 
 	bRequiresVisibilityUpdate = true;
 }
 
+// Start Issue #54
 //LWS Added -- helper to call hook to override destructible health
 function OverrideDestructibleInitialHealth(XComDestructibleActor Visualizer, optional bool SetCurrentHealth = true)
 {
@@ -70,6 +71,7 @@ function OverrideDestructibleInitialHealth(XComDestructibleActor Visualizer, opt
 		}
 	}
 }
+// End Issue #54
 
 function Actor FindOrCreateVisualizer( optional XComGameState Gamestate = none )
 {
@@ -222,7 +224,7 @@ function TakeDamage( XComGameState NewGameState, const int DamageAmount, const i
 		{
 			Health = Visualizer.Toughness.Health;
 		}
-		OverrideDestructibleInitialHealth(Visualizer); // LWS Added to override initial health in this initialization case
+		OverrideDestructibleInitialHealth(Visualizer); // For Issue #54 - LWS Added to override initial health in this initialization case
 	}
 
 	// update health and fire death messages, if needed

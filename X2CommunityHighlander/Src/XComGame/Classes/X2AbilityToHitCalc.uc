@@ -11,6 +11,7 @@ class X2AbilityToHitCalc extends Object
 
 var array<ShotModifierInfo> HitModifiers;       // Configured in the ability template to provide always-on modifiers.
 
+// Issue #13 - Remove protection of ShotBreakdown
 var ShotBreakdown m_ShotBreakdown;    //  Temp used to calculate shot info and hit chance
 var protected bool          m_bDebugModifiers;  //  Temp used to display logging in AddModifier
 
@@ -65,6 +66,9 @@ protected function FinalizeHitChance()
 	local EAbilityHitResult HitResult;
 	local float GrazeScale;
 	local int FinalGraze;
+
+	// Start Issue #14 - allow overriding of HitChance by mutating this instance
+	//                   of X2AbilityToHitCalc
 	local XComLWTuple OverrodeHitChanceTuple;
 
 	//set up a Tuple for return value - true means the to-hit calcs were overridden, so you should simply exit
@@ -76,7 +80,10 @@ protected function FinalizeHitChance()
 	`XEVENTMGR.TriggerEvent('OnFinalizeHitChance', OverrodeHitChanceTuple, self);
 
 	if(OverrodeHitChanceTuple.Data[0].b)
+	{
 		return;
+	}
+	// End Issue #14
 
 	`log("==" $ GetFuncName() $ "==\n", m_bDebugModifiers, 'XCom_HitRolls');
 	`log("Starting values...", m_bDebugModifiers, 'XCom_HitRolls');

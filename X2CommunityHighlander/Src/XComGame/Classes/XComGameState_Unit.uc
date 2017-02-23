@@ -9,8 +9,6 @@
 //---------------------------------------------------------------------------------------
 
 // LWS Mods: 
-// tracktwo - Temporarily make units that are ignoring hazards considered immune to any hazard
-//            damage type they are already affected by. See the changes in XGAIBehavior.
 // tracktwo - Clear the loot list when a unit is killed by explosives so the loot doesn't come back
 //            if they get resurrected and killed again.
 class XComGameState_Unit extends XComGameState_BaseObject 
@@ -6136,7 +6134,8 @@ event bool IsImmuneToDamage(name DamageType)
 	local StateObjectReference EffectRef;
 	local XComGameState_Effect EffectState;
 	local XComGameStateHistory History;
-    local XGAIBehavior AIBehavior; // LWS added
+	// Issue #22
+	local XGAIBehavior AIBehavior; // LWS added
 
 	History = `XCOMHISTORY;
 	
@@ -6152,6 +6151,9 @@ event bool IsImmuneToDamage(name DamageType)
 			return true;
 	}
 
+		// Start Issue #22
+		// tracktwo - Temporarily make units that are ignoring hazards considered immune to any hazard
+		//            damage type they are already affected by. See the changes in XGAIBehavior.
     // LWS Mods: Units already with given effect damage and with the 'bIgnoreHazards' flag should
     // be considered immune to it so they can path through affected tiles.
     AIBehavior = XGUnit(GetVisualizer()).m_kBehavior;
@@ -6161,6 +6163,7 @@ event bool IsImmuneToDamage(name DamageType)
     {
         return true;
     }
+		// End Issue #22
 	return false;
 }
 

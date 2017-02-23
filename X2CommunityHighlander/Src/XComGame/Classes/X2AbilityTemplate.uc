@@ -49,12 +49,16 @@ var array<X2AbilityCost>        AbilityCosts;
 var X2AbilityCooldown           AbilityCooldown;
 var X2AbilityToHitCalc          AbilityToHitCalc;
 var X2AbilityToHitCalc          AbilityToHitOwnerOnMissCalc;		// If !none, a miss on the main target will apply this chance to hit on the target's owner.
-var array<X2Condition>          AbilityShooterConditions; // LW removed protected
-var array<X2Condition>          AbilityTargetConditions; // LW removed protected
-var array<X2Condition>          AbilityMultiTargetConditions;  // LW removed protected      //  if conditions are set here, multi targets use these to filter instead of AbilityTargetConditions
+var array<X2Condition>          AbilityShooterConditions;
+var array<X2Condition>          AbilityTargetConditions;
+var array<X2Condition>          AbilityMultiTargetConditions;  //  if conditions are set here, multi targets use these to filter instead of AbilityTargetConditions
+
+// Start Issue #12 - Remove protectedwrite attributes from Effect Arrays
 var array<X2Effect> AbilityTargetEffects;            //  effects which apply to the main target only
 var array<X2Effect> AbilityMultiTargetEffects;       //  effects which apply to the multi targets only
 var array<X2Effect> AbilityShooterEffects;           //  effects which always apply to the shooter, regardless of targets
+// End Issue #12
+//
 var X2AbilityTargetStyle        AbilityTargetStyle;
 var X2AbilityMultiTargetStyle   AbilityMultiTargetStyle;
 var X2AbilityPassiveAOEStyle	AbilityPassiveAOEStyle;
