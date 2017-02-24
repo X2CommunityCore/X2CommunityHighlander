@@ -228,6 +228,7 @@ static function bool GetNumUtilitySlotsOverride(out int NumSlots, XComGameState_
 /// </summary> 
 static function GetMinimumRequiredUtilityItems(out int Value, XComGameState_Unit UnitState, XComGameState NewGameState);
 
+/// Start Issue #60
 /// <summary>
 /// Called from XComGameState_Ability:GetUIReticleIndex 
 //  Return true to immediately override the default with the out parameter (skipping any further DLCInfo checks)
@@ -236,6 +237,7 @@ static function bool SelectTargetingReticle(out int ReturnReticleIndex, XComGame
 {
 	return false;
 }
+/// End Issue #60
 
 /// <summary>
 /// Called from XComGameState_HeadquartersAlien:GetCurrentDoom 

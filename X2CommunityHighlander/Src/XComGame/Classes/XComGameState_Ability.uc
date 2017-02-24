@@ -1,5 +1,4 @@
 // LWS edits to make Ever Vigilant more versatile
-// LWS added hook to allow control of targeting reticle independent of weapontech, since it is used for other things
 
 class XComGameState_Ability extends XComGameState_BaseObject
 	dependson(X2TacticalGameRuleset, X2Effect, X2AbilityTemplate)
@@ -2498,6 +2497,8 @@ simulated function int GetUIReticleIndex()
 	local XComGameState_Item Weapon;
 	local name WeaponTech;
 	local name WeaponCategory;
+
+	// Variables for Issue #60
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS Added
 	local X2DownloadableContentInfo DLCInfo;  // LWS Added
 	local int ReturnReticleIndex;
@@ -2511,6 +2512,8 @@ simulated function int GetUIReticleIndex()
 		WeaponCategory = Weapon.GetWeaponCategory();
 	}
 
+	// Start Issue #60
+	// LWS added hook to allow control of targeting reticle independent of weapontech, since it is used for other things
 	//LWS : Adding hook to allow DLC/mods override control over the targeting reticle chosen
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	foreach DLCInfos(DLCInfo)
@@ -2520,6 +2523,7 @@ simulated function int GetUIReticleIndex()
 			return ReturnReticleIndex;
 		}
 	}
+	// End Issue #60
 
 	if (Template.Hostility == eHostility_Defensive)
 		return eUIReticle_Defensive;
