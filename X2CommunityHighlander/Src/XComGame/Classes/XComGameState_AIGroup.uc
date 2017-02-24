@@ -7,10 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Modifications:
-//
-// tracktwo - Add config var to control whether encounter zones dynamically adjust to XCOM's position.
-
 class XComGameState_AIGroup extends XComGameState_BaseObject
 	dependson(XComAISpawnManager, XComGameState_AIUnitData)
 	native(AI)
@@ -399,12 +395,14 @@ function bool ShouldMoveToIntercept(out Vector TargetInterceptLocation, XComGame
 
 		for( CornerIndex = EncounterCorners.Length - 1; CornerIndex >= 0; --CornerIndex )
 		{
-            //LWS: Ensure the potential patrol locations are on-map, otherwise the alert will fail to set.
-            EncounterCorners[CornerIndex] = World.FindClosestValidLocation(EncounterCorners[CornerIndex], false, false);
+			// Start Issue #67
+			//LWS: Ensure the potential patrol locations are on-map, otherwise the alert will fail to set.
+			EncounterCorners[CornerIndex] = World.FindClosestValidLocation(EncounterCorners[CornerIndex], false, false);
 			if( VSizeSq(CurrentGroupLocation - EncounterCorners[CornerIndex]) < DESTINATION_REACHED_SIZE_SQ )
 			{
 				EncounterCorners.Remove(CornerIndex, 1);
 			}
+			// End Issue #67
 		}
 
 		if( EncounterCorners.Length > 0 )
