@@ -1,5 +1,3 @@
-// LWS edits to make Ever Vigilant more versatile
-
 class XComGameState_Ability extends XComGameState_BaseObject
 	dependson(X2TacticalGameRuleset, X2Effect, X2AbilityTemplate)
 	implements(UIQueryInterfaceAbility)
@@ -1799,19 +1797,19 @@ function EventListenerReturn MeleeCounterattackListener(Object EventData, Object
 	return ELR_NoInterrupt;
 }
 
-// LWS -- Edits to make Ever Vigilant more versatile and respect a a slot setting to primary (so it won't force you to OW with a pistol if you have one)
-
 function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
 {
 	local XComGameState_Unit UnitState;
 	local UnitValue NonMoveActionsThisTurn;
-	local bool GotValue, FoundSlot;
 	local StateObjectReference OverwatchRef;
 	local XComGameState_Ability OverwatchState;
 	local XComGameStateHistory History;
 	local XComGameState NewGameState;
 	local EffectAppliedData ApplyData;
 	local X2Effect VigilantEffect;
+
+	// Variables for Issue #61
+	local bool GotValue, FoundSlot;
 	local array<SoldierClassAbilityType> SoldierAbilities;
 	local int k;
 
@@ -1825,6 +1823,9 @@ function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Objec
 		GotValue = UnitState.GetUnitValue('NonMoveActionsThisTurn', NonMoveActionsThisTurn);
 		if (!GotValue || NonMoveActionsThisTurn.fValue == 0)
 		{
+			// Start Issue #61
+			// LWS edits to make Ever Vigilant more versatile
+			// LWS -- Edits to make Ever Vigilant more versatile and respect a a slot setting to primary (so it won't force you to OW with a pistol if you have one)
 			// New Code starts here
 			FoundSlot = false;
 			SoldierAbilities = UnitState.GetEarnedSoldierAbilities();
@@ -1847,6 +1848,8 @@ function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Objec
 					OverwatchRef = UnitState.FindAbility('Overwatch');
 			}
 			// Ends here
+			// End Issue #61
+			
 			OverwatchState = XComGameState_Ability(History.GetGameStateForObjectID(OverwatchRef.ObjectID));
 			if (OverwatchState != none)
 			{
