@@ -11,7 +11,6 @@
 //
 // tracktwo - Add hook for ShouldMoveToIntercept to control whether a pod should move outside of normal
 //            patrol behavior and optionally where to move.
-// tracktwo - Add hook for ProcessReflexMove to allow mods to take extra actions when a pod scampers.
 // tracktwo - Add config var to control whether encounter zones dynamically adjust to XCOM's position.
 
 class XComGameState_AIGroup extends XComGameState_BaseObject
@@ -657,8 +656,11 @@ function ProcessReflexMoveActivate()
 
 					AIPlayer.QueueScamperBehavior(UnitStateObject, TargetStateObject, bUnitIsSurprised, Index == 0);
 
-                    // LWS Mods: Let mods do some additional work before the scamper
-                    `XEVENTMGR.TriggerEvent('ProcessReflexMove', UnitStateObject, self, NewGameState);
+					// Start Issue #65
+					// tracktwo - Add hook for ProcessReflexMove to allow mods to take extra actions when a pod scampers.
+					// LWS Mods: Let mods do some additional work before the scamper
+					`XEVENTMGR.TriggerEvent('ProcessReflexMove', UnitStateObject, self, NewGameState);
+					// End Issue #65
 				}
 
 				`TACTICALRULES.SubmitGameState(NewGameState);
