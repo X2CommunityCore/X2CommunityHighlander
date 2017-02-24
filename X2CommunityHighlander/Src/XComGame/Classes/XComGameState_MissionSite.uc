@@ -112,6 +112,8 @@ function bool CacheSelectedMissionData(int ForceLevel, int AlertLevel)
 	local XComGameState_HeadquartersXCom XComHQ;
 	local XComGameStateHistory History;
 	local int LeaderForceLevelMod;
+
+	/// Variables for Issue #68
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS: Added for hook
 	local int i; // LWS: Added for hook
 
@@ -177,12 +179,14 @@ function bool CacheSelectedMissionData(int ForceLevel, int AlertLevel)
 
 				NewEncounter.EncounterSpawnInfo.SpawnLocationActorTag = EncounterInfo.SpawnLocationActorTag;
 
+				/// Start Issue #68
 				//LWS: Added hook to allow post-creation adjustment of instantiated encounter info
 				DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 				for(i = 0; i < DLCInfos.Length; ++i)
 				{
 					DLCInfos[i].PostEncounterCreation(NewEncounter.SelectedEncounterName, NewEncounter.EncounterSpawnInfo, ForceLevel, AlertLevel, self);
 				}
+				/// End Issue #68
 
 				SelectedMissionData.SelectedEncounters.AddItem(NewEncounter);
 			}

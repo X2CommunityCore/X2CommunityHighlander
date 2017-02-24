@@ -248,11 +248,13 @@ static function int AddDoomModifier(XComGameState_HeadquartersAlien AlienHQ, boo
 	return 0;
 }
 
+/// Start Issue #68
 /// <summary>
 /// Called from XComGameState_MissionSite:CacheSelectedMissionData
 //  Encounter Data is modified immediately prior to being added to the SelectedMissionData
 /// </summary> 
 static function PostEncounterCreation(out name EncounterName, out PodSpawnInfo Encounter, int ForceLevel, int AlertLevel, optional XComGameState_BaseObject SourceObject);
+/// End Issue #68
 
 /// <summary>
 /// Called from XComGroupSpawn:GetValidFloorLocations

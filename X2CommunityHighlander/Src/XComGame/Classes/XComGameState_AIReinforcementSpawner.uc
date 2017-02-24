@@ -83,6 +83,8 @@ function EventListenerReturn OnReinforcementSpawnerCreated(Object EventData, Obj
 	local XComGameStateHistory History;
 	local Name CharTemplateName;
 	local X2CharacterTemplateManager CharTemplateManager;
+
+	/// Variables for Issue #68
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS: Added for hook
 	local int i; // LWS: Added for hook
 
@@ -118,6 +120,7 @@ function EventListenerReturn OnReinforcementSpawnerCreated(Object EventData, Obj
 	// build a character selection that will work at this location
 	SpawnManager.SelectPodAtLocation(NewSpawnerState.SpawnInfo, ForceLevel, AlertLevel);
 
+	/// Start Issue #68
 	// LWS : Added next 5 lines to allow DLC/Mods to override SpawnInfo data
 	//LWS - add call to DLCInfo hook to allow adjustment of select pod character selection
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
@@ -125,6 +128,7 @@ function EventListenerReturn OnReinforcementSpawnerCreated(Object EventData, Obj
 	{
 		DLCInfos[i].PostEncounterCreation(NewSpawnerState.SpawnInfo.EncounterID, NewSpawnerState.SpawnInfo, ForceLevel, AlertLevel, Self);
 	}
+	/// End Issue #68
 
 	// explicitly disabled all timed loot from reinforcement groups
 	NewSpawnerState.SpawnInfo.bGroupDoesNotAwardLoot = true;
