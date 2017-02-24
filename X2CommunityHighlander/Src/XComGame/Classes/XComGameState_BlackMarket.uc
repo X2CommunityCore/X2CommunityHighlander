@@ -320,6 +320,7 @@ function SetUpForSaleItems(XComGameState NewGameState)
 	}
 }
 
+// Issue #72 - remove private on function
 function OnUnitHeadCaptureFinished(const out HeadshotRequestInfo ReqInfo, TextureRenderTarget2D RenderTarget)
 {
 	local string TextureName;
