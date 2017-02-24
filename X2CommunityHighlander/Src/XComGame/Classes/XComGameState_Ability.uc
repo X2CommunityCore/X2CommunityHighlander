@@ -2938,14 +2938,16 @@ function bool DoesAbilityCauseSound()
 		}
 	}
 
-    // LWS: Don't forget to check multi-target effects!
-    foreach AbilityTemplate.AbilityMultiTargetEffects(AbilityEffect)
-    {
-        if (AbilityEffect.IsA('X2Effect_ApplyWeaponDamage'))
-        {
-            return true;
-        }
-    }
+	// Start Issue #62
+	// LWS: Don't forget to check multi-target effects!
+	foreach AbilityTemplate.AbilityMultiTargetEffects(AbilityEffect)
+	{
+			if (AbilityEffect.IsA('X2Effect_ApplyWeaponDamage'))
+			{
+					return true;
+			}
+	}
+	// End Issue #62
 
 	return false;
 }
