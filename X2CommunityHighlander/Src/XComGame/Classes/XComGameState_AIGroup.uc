@@ -9,8 +9,6 @@
 
 // LWS Modifications:
 //
-// tracktwo - Add hook for ShouldMoveToIntercept to control whether a pod should move outside of normal
-//            patrol behavior and optionally where to move.
 // tracktwo - Add config var to control whether encounter zones dynamically adjust to XCOM's position.
 
 class XComGameState_AIGroup extends XComGameState_BaseObject
@@ -272,72 +270,78 @@ function bool ShouldMoveToIntercept(out Vector TargetInterceptLocation, XComGame
 	local XComGameState_AIGroup NewGroupState;
 	local XComGameStateHistory History;
 	local Vector CurrentXComLocation;
-    local XComLWTuple Tuple;
-    local XComLWTValue Value;
-    local bool ShouldIntercept;
-    local XComWorldData World;
+
+	// Variables for Issue #66
+	local XComLWTuple Tuple;
+	local XComLWTValue Value;
+	local bool ShouldIntercept;
+	local XComWorldData World;
 
 	History = `XCOMHISTORY;
     World = `XWORLD;
 	BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 
-    // LWS: Mod override for AI intercept/patrol behavior.
-    // Input: Data[0] is an object with the pod in question
-    //        Data[1] is a bool indicating whether or not xcom has passed the group.
-    //
-    // Output:
-    //
-    //        If no additional data is returned, the algorithm proceeds as normal: Intercept if xcom has passed the pod midpoint, otherwise
-    //        try to patrol.
-    //
-    //        If Data[2] is an int, interpret it as follows:
-    //            0 -> Do not intercept or try to patrol. Leave the pod alone (the mod will control alerts for this pod)
-    //            1 -> Do not intercept, but patrol as normal.
-    //            2 -> Intercept. If Data[3,4,5] hold floats, this is the vector to move to, otherwise it will move according to 
-    //                 the usual behavior (e.g. to nearest soldier or objective).
-    //            Anything else: proceed as if no value was given.
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = 'ShouldMoveToIntercept';
-    Value.Kind = XCOMLWTVObject;
-    Value.o = self;
-    Tuple.Data.AddItem(Value);
-    Value.Kind = XComLWTVBool;
-    Value.b = XComSquadMidpointPassedGroup();
-    Tuple.Data.AddItem(Value);
-    
-    `XEVENTMGR.TriggerEvent('ShouldMoveToIntercept', Tuple, self, NewGameState);
+	// Start Issue #66
+	// tracktwo - Add hook for ShouldMoveToIntercept to control whether a pod should move outside of normal
+	//            patrol behavior and optionally where to move.
+	// LWS: Mod override for AI intercept/patrol behavior.
+	// Input: Data[0] is an object with the pod in question
+	//        Data[1] is a bool indicating whether or not xcom has passed the group.
+	//
+	// Output:
+	//
+	//        If no additional data is returned, the algorithm proceeds as normal: Intercept if xcom has passed the pod midpoint, otherwise
+	//        try to patrol.
+	//
+	//        If Data[2] is an int, interpret it as follows:
+	//            0 -> Do not intercept or try to patrol. Leave the pod alone (the mod will control alerts for this pod)
+	//            1 -> Do not intercept, but patrol as normal.
+	//            2 -> Intercept. If Data[3,4,5] hold floats, this is the vector to move to, otherwise it will move according to 
+	//                 the usual behavior (e.g. to nearest soldier or objective).
+	//            Anything else: proceed as if no value was given.
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'ShouldMoveToIntercept';
+	Value.Kind = XCOMLWTVObject;
+	Value.o = self;
+	Tuple.Data.AddItem(Value);
+	Value.Kind = XComLWTVBool;
+	Value.b = XComSquadMidpointPassedGroup();
+	Tuple.Data.AddItem(Value);
+	
+	`XEVENTMGR.TriggerEvent('ShouldMoveToIntercept', Tuple, self, NewGameState);
 
-    if (Tuple.Data.Length > 2 && Tuple.Data[2].Kind == XComLWTVInt)
-    {
-        switch(Tuple.Data[2].i)
-        {
-        case 0:
-            // Do nothing. Return and do not set a new alert for this pod.
-            return false;
-        case 1:
-            // Do not intercept, but continue patrols as normal
-            ShouldIntercept = false;
-            break;
-        case 2:
-            // Intercept.
-            ShouldIntercept = true;
-            if (Tuple.Data.Length == 6 && Tuple.Data[3].Kind == XComLWTVFloat && Tuple.Data[4].Kind == XComLWTVFloat && Tuple.Data[5].Kind == XComLWTVFloat)
-            {
-                TargetInterceptLocation.X = Tuple.Data[1].f;
-                TargetInterceptLocation.Y = Tuple.Data[2].f;
-                TargetInterceptLocation.Z = Tuple.Data[3].f;
-                return true;
-            }
-        default:
-            // Unknown: Standard behavior.
-            ShouldIntercept = XComSquadMidpointPassedGroup();
-        }
-    }
-    else
-    {
-        // Not our tuple or no return value. Intercept as before
-        ShouldIntercept = XComSquadMidpointPassedGroup();
-    }
+	if (Tuple.Data.Length > 2 && Tuple.Data[2].Kind == XComLWTVInt)
+	{
+		switch(Tuple.Data[2].i)
+		{
+		case 0:
+			// Do nothing. Return and do not set a new alert for this pod.
+			return false;
+		case 1:
+			// Do not intercept, but continue patrols as normal
+			ShouldIntercept = false;
+			break;
+		case 2:
+			// Intercept.
+			ShouldIntercept = true;
+			if (Tuple.Data.Length == 6 && Tuple.Data[3].Kind == XComLWTVFloat && Tuple.Data[4].Kind == XComLWTVFloat && Tuple.Data[5].Kind == XComLWTVFloat)
+			{
+					TargetInterceptLocation.X = Tuple.Data[1].f;
+					TargetInterceptLocation.Y = Tuple.Data[2].f;
+					TargetInterceptLocation.Z = Tuple.Data[3].f;
+					return true;
+			}
+		default:
+			// Unknown: Standard behavior.
+			ShouldIntercept = XComSquadMidpointPassedGroup();
+		}
+	}
+	else
+	{
+		// Not our tuple or no return value. Intercept as before
+		ShouldIntercept = XComSquadMidpointPassedGroup();
+	}
+	// End Issue #66
 
 	if (ShouldIntercept)
 	{
