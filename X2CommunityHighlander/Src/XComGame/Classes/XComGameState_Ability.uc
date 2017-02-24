@@ -260,6 +260,7 @@ event int GetShotBreakdownNative(AvailableTarget kTarget, out ShotBreakdown kBre
 	return GetShotBreakdown(kTarget, kBreakdown);
 }
 
+// Start Issue #63
 //This function is native for performance reasons, the script code below describes its function -- LWS made non-native so that new MultiTargetStyle code can work
 simulated function name GatherAbilityTargets(out array<AvailableTarget> Targets, optional XComGameState_Unit OverrideOwnerState)
 {
@@ -318,6 +319,7 @@ simulated function name GatherAbilityTargets(out array<AvailableTarget> Targets,
 	}
 	return 'AA_Success';
 }
+// End Issue #63
 
 simulated function int SortAvailableTargets(AvailableTarget TargetA, AvailableTarget TargetB)
 {
