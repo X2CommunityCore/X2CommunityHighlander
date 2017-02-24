@@ -372,6 +372,7 @@ static function int GetScienceScoreMod(bool bAddLabBonus)
     return 0;
 }
 
+/// Start Issue #64
 /// <summary>
 /// Called from XComGameState_Ability::GetItemEnvironmentDamagePreview
 /// Allows DLC/Mods to dynamically adjust environment damage for an item
@@ -380,6 +381,7 @@ static function int OverrideItemEnvironmentDamagePreview(XComGameState_Ability A
 {
     return -1;
 }
+/// End Issue #64
 
 /// Start Issue #23
 /// <summary>

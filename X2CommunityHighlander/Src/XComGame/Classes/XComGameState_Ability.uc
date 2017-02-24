@@ -1137,12 +1137,14 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 	MaxDamagePreview.Damage += Rupture;
 }
 
-// PI : Added DLCInfo hook so that DLC/Mods can override item environment damage
 event int GetEnvironmentDamagePreview( )
 {
 	local XComGameStateHistory History;
 	local int Damage;
 	local XComGameState_Item SourceItemState, SourceAmmoState, LoadedAmmoState;
+
+	/// Start Issue #64
+	// PI : Added DLCInfo hook so that DLC/Mods can override item environment damage
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local int i, TempDamage, ReturnDamage;
 	local bool bAnyOverride;
@@ -1161,6 +1163,7 @@ event int GetEnvironmentDamagePreview( )
 	{
 		return ReturnDamage;
 	}
+	/// End Issue #64
 
 	History = `XCOMHISTORY;
 	Damage = 0;
