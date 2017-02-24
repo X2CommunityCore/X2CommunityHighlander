@@ -4,7 +4,6 @@
 //  PURPOSE: This object represents the instance data for the Black Markets on the 
 //           X-Com 2 strategy game map
 //           
-//			//LW modifying to allow customization of BlackMarket goods for sale
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -138,7 +137,10 @@ function ResetBlackMarketGoods(XComGameState NewGameState)
 	SetUpForSaleItems(NewGameState);
 	UpdateBuyPrices();
 
+	// Start Issue #71
+	// LW xmodifying to allow customization of BlackMarket goods for sale
 	`XEVENTMGR.TriggerEvent('OverrideBlackMarketGoods', self, self, NewGameState);
+	// End Issue #71
 
 	bHasSeenNewGoods = false;
 }
