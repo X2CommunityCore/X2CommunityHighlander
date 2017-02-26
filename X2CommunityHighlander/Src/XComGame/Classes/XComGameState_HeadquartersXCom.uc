@@ -10,9 +10,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Mods:
-//
-//           GetScienceScore(): Trigger an event to let mods apply modifiers to the science rate.
 // tracktwo: GetCompletedResearchTechs(): Remove duplicate tech IDs from the returned list. Avoids listing the
 //           same repeatable tech multiple times in the archives.
 
@@ -2312,6 +2309,8 @@ function int GetScienceScore(optional bool bAddLabBonus = false)
 	local XComGameState_Unit Scientist;
 	local XComGameState_FacilityXCom FacilityState;
 	local int idx, Score;
+
+	// Variable for Issue #83
 	local array<X2DownloadableContentInfo> DLCInfos;
 
 	Score = default.XComHeadquarters_StartingScienceScore;
@@ -2341,12 +2340,14 @@ function int GetScienceScore(optional bool bAddLabBonus = false)
 		}
 	}
 
+	// Start Issue #83
 	// LWS MODS: Allow mods to adjust the science score
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	for(idx = 0; idx < DLCInfos.Length; ++idx)
 	{
 		Score += DLCInfos[idx].GetScienceScoreMod(bAddLabBonus);
 	}
+	// End Issue #83
 
 	return Score;
 }

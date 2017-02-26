@@ -366,6 +366,7 @@ static function string DLCAppendSockets(XComUnitPawn Pawn)
 	return "";
 }
 
+/// Start Issue #83
 /// <summary>
 /// Called from XComGameState_HeadquartersXCom::GetScienceScore
 /// Allows DLC/Mods to adjust the science score
@@ -375,6 +376,7 @@ static function int GetScienceScoreMod(bool bAddLabBonus)
 {
     return 0;
 }
+/// End Issue #83
 
 /// Start Issue #64
 /// <summary>
