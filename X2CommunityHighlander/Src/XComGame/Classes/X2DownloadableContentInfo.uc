@@ -239,6 +239,7 @@ static function bool SelectTargetingReticle(out int ReturnReticleIndex, XComGame
 }
 /// End Issue #60
 
+/// Start Issue #77
 /// <summary>
 /// Called from XComGameState_HeadquartersAlien:GetCurrentDoom 
 //  Return true to immediately override the default with the out parameter (skipping any further DLCInfo checks)
@@ -247,6 +248,7 @@ static function int AddDoomModifier(XComGameState_HeadquartersAlien AlienHQ, boo
 {
 	return 0;
 }
+/// End Issue #77
 
 /// Start Issue #68
 /// <summary>
