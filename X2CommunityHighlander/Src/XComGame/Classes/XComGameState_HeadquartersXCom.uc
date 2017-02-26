@@ -5353,6 +5353,7 @@ function array<StateObjectReference> GetCompletedResearchTechs()
 			CompletedTechs.AddItem(TechState.GetReference());
 	}
 
+	// Start Issue #84
 	// LWS mods: Strip duplicate entries before returning - some tech can be repeated multiple times, but we don't
 	// need to spam the archives with 15 ADVENT Datapads.
 	CompletedTechs.Sort(SortTechById);
@@ -5363,10 +5364,13 @@ function array<StateObjectReference> GetCompletedResearchTechs()
 			CompletedTechs.Remove(idx, 1);
 		}
 	}
+	// End Issue #84
 
 	return CompletedTechs;
 }
 
+// Start Issue #84
+// Sort function just for the code above.
 function int SortTechById(StateObjectReference RefA, StateObjectReference RefB)
 {
 	if (RefA.ObjectID < RefB.ObjectID)
@@ -5374,6 +5378,7 @@ function int SortTechById(StateObjectReference RefA, StateObjectReference RefB)
 
 	return RefB.ObjectID < RefA.ObjectID ? -1 : 0;
 }
+// End Issue #84
 
 //---------------------------------------------------------------------------------------
 function bool HasCompletedResearchTechs()
