@@ -126,6 +126,7 @@ function OnProjectCompleted()
 
 	`HQPRES.UIPsiTrainingComplete(ProjectFocus, AbilityTemplate);
 
+	// Issue #78 - Event Hook for PsiProject Completion
 	`XEVENTMGR.TriggerEvent('PostPsiProjectCompleted', self, self);
 }
 
