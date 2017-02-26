@@ -435,7 +435,7 @@ function EndOfMonth(XComGameState NewGameState)
 // #######################################################################################
 
 //---------------------------------------------------------------------------------------
-function int GetCurrentDoom(optional bool bIgnorePending = false, optional bool bIncludeUnavailable = false) // LWS : added second condition
+function int GetCurrentDoom(optional bool bIgnorePending = false, optional bool bIncludeUnavailable = false) // Issue #76 - added second condition
 {
 	local XComGameStateHistory History;
 	local XComGameState_MissionSite MissionState;
@@ -455,6 +455,7 @@ function int GetCurrentDoom(optional bool bIgnorePending = false, optional bool 
 
 	foreach History.IterateByClassType(class'XComGameState_MissionSite', MissionState)
 	{
+		// Issue #76 - allow counting of unavailable mission sites to Doom Counter
 		if(MissionState.Available || bIncludeUnavailable)
 		{
 			TotalDoom += MissionState.Doom;
