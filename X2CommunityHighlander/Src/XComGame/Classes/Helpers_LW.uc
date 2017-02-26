@@ -22,6 +22,7 @@ var config const array<string> RadiusManagerMissionTypes;
 // If true, enable the yellow alert movement system.
 var config const bool EnableYellowAlert;
 
+// Issue #75
 // If true, hide havens on the geoscape
 var config const bool HideHavens;
 

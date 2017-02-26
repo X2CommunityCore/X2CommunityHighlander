@@ -170,13 +170,13 @@ function string GetDisplayName()
 
 function bool CanBeScanned()
 {
-	// LW Mods: Allow the havens to be hidden.
+	// Issue #75 - Allow the havens to be hidden.
 	return !class'Helpers_LW'.default.HideHavens;
 }
 
 function bool ShouldBeVisible()
 {
-	// LW Mods: Allow the havens to be hidden.
+	// Issue #75 - Allow the havens to be hidden.
 	return !class'Helpers_LW'.default.HideHavens;
 }
 
@@ -220,7 +220,7 @@ function Rotator GetMeshRotator()
 
 protected function bool CanInteract()
 {
-	// LW Mods: Allow the havens to be hidden.
+	// Issue #75 - Allow the havens to be hidden.
 	return !class'Helpers_LW'.default.HideHavens;
 }
 
