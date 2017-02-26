@@ -277,8 +277,8 @@ function OnEndOfMonth(XComGameState NewGameState)
 	XComHQ = XComGameState_HeadquartersXCom(NewGameState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
 	NewGameState.AddStateObject(XComHQ);
 
-    // Give mods a hook before the end of month processing begins.
-    `XEVENTMGR.TriggerEvent('PreEndOfMonth', self, self, NewGameState);
+	// Issue #81 - Give mods a hook before the end of month processing begins.
+	`XEVENTMGR.TriggerEvent('PreEndOfMonth', self, self, NewGameState);
 
 	GiveSuppliesReward(NewGameState);
 	SetProjectedMonthInterval(`STRATEGYRULES.GameTime);
