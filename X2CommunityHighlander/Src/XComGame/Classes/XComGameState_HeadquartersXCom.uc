@@ -12,9 +12,6 @@
 
 // LWS Mods:
 //
-// Tracktwo: GetSoldierEvents(): Call a new GetDisplayName() function for Rookie Training projects rather than
-//           directly using the new class template. Allows subclasses to override and avoids enormous log spam
-//           about accesses to None.
 //           GetScienceScore(): Trigger an event to let mods apply modifiers to the science rate.
 // tracktwo: GetCompletedResearchTechs(): Remove duplicate tech IDs from the returned list. Avoids listing the
 //           same repeatable tech multiple times in the archives.
@@ -6642,10 +6639,16 @@ function GetSoldierEvents(out array<HQEvent> arrEvents)
 		if (TrainProject != none)
 		{			
 			UnitState = XComGameState_Unit(History.GetGameStateForObjectID(TrainProject.ProjectFocus.ObjectID));
-            // LWS Mod: Replace GetTrainingClassTemplate().DisplayName with new GetDisplayName() function.
+
+			// Start Issue #80
+			// Replace GetTrainingClassTemplate().DisplayName with new GetDisplayName() function.
+			// Tracktwo: GetSoldierEvents(): Call a new GetDisplayName() function for Rookie Training projects rather than
+			//           directly using the new class template. Allows subclasses to override and avoids enormous log spam
+			//           about accesses to None.
 			kEvent.Data = Caps(TrainProject.GetDisplayName()) @ TrainRookieEventLabel @ UnitState.GetName(eNameType_RankFull);
 			kEvent.Hours = TrainProject.GetCurrentNumHoursRemaining();
 			kEvent.ImagePath = class'UIUtilities_Image'.const.EventQueue_Staff;
+			// End Issue #80
 			
 			if (kEvent.Hours < 0)
 			{
