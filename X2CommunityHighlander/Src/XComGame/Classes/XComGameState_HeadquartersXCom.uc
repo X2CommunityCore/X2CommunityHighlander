@@ -10,9 +10,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// tracktwo: GetCompletedResearchTechs(): Remove duplicate tech IDs from the returned list. Avoids listing the
-//           same repeatable tech multiple times in the archives.
-
 class XComGameState_HeadquartersXCom extends XComGameState_Airship 
 	native(Core) 
 	config(GameData)
@@ -408,12 +405,15 @@ static function SetUpHeadquarters(XComGameState StartState, optional bool bTutor
 		{
 			AllStartingRegions.AddItem(IterateRegion);
 
+			// Start Issue #85
+			// always use RegionLink Static Method to allow for configuration
 			// Try to find an optimal starting region
 			//if(IterateRegion.CanBeStartingRegion(StartState))
 			if (class'XComGameState_RegionLink'.static.IsEligibleStartRegion(StartState, IterateRegion)) // LWS: replacement to allow configurability for start regions
 			{
 				BestStartingRegions.AddItem(IterateRegion);
 			}
+			// End Issue #85
 		}
 	}
 
