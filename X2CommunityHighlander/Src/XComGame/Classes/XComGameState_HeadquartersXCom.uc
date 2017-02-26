@@ -7264,6 +7264,8 @@ final function SetPendingPointOfTravel(const out XComGameState_GeoscapeEntity Ge
 	NewGameState.AddStateObject(XComHQ);
 	`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 	MapItem = `HQPRES.StrategyMap2D.GetMapItem(GeoscapeEntity);
+	
+	// Issue #87 - fix behaviour by adding `ISCONTROLLERACTIVE
 	if (MapItem != none && !bRTB && `ISCONTROLLERACTIVE)
 	{
 		//bsg-jneal (8.17.16): set the last map item to the selected point of travel then select it, this fixes an issue where the strategy map would focus back on a previously selected different map item incorrectly because LastSelectedMapItem was not updated before opening screens like Mission Ops.
