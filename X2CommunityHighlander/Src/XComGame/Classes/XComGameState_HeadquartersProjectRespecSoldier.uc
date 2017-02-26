@@ -16,6 +16,8 @@ function SetProjectFocus(StateObjectReference FocusRef, optional XComGameState N
 	local XComGameStateHistory History;
 	local XComGameState_GameTime TimeState;
 	local XComGameState_Unit UnitState;
+
+	// Variables for Issue #79
 	local XComLWTuple OverrideTuple; // LWS  added
 
 	History = `XCOMHISTORY;
@@ -26,6 +28,8 @@ function SetProjectFocus(StateObjectReference FocusRef, optional XComGameState N
 	//UnitState.PsiTrainingRankReset();
 	UnitState.SetStatus(eStatus_Training);
 	
+	// Start Issue #79
+	// Allow mods to listen to SolderRespecced and alter the project duration.
 	ProjectPointsRemaining = CalculatePointsToRespec();
 
 	OverrideTuple = new class'XComLWTuple';
@@ -40,6 +44,7 @@ function SetProjectFocus(StateObjectReference FocusRef, optional XComGameState N
 	`XEVENTMGR.TriggerEvent('SoldierRespecced', OverrideTuple, self, NewGameState);
 
 	ProjectPointsRemaining = OverrideTuple.Data[1].i;
+	// End Issue #79
 	InitialProjectPoints = ProjectPointsRemaining;
 
 	UpdateWorkPerHour(NewGameState);
