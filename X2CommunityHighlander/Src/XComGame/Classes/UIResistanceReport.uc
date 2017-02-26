@@ -293,11 +293,13 @@ simulated function String GetSupplyRewardString()
 	
 	if(SuppliesReward < 0)
 	{
+		// Start Issue #82 - collects negative monthly income (with displayOnly set)
 		//LWS : Modified to allow DLC/Mods to be able to process negative income events
 		if (!RESHQ().ProcessNegativeMonthlyIncome(SuppliesReward, true))
 		{
 			SuppliesReward = 0;
 		}
+		// End Issue #82
 	}
 
 	Prefix = (SuppliesReward < 0) ? "-" : "+";
