@@ -4,8 +4,6 @@
 //  PURPOSE: This object represents the instance data for X-Com's HQ in the 
 //           X-Com 2 strategy game
 //           
-// LWS		 Updated to prevent units with eStatus_OnMission from having gear stripped
-//			 Updated to make soldiers with eStatus_OnMission not be returned in GetDeployableSoldiers
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -1943,6 +1941,8 @@ function array<XComGameState_Unit> GetSoldiers(optional bool bDontIncludeSquad =
 		{
 			if (Soldier.IsSoldier() && !Soldier.IsDead())
 			{
+				// Conditional for Issue #86
+				// LWS Updated to prevent units with eStatus_OnMission from having gear stripped
 				// LWS: added condition to not retrieve soldiers with eStatus_OnMission when bDontIncludeSquad is true
 				if(!bDontIncludeSquad || (bDontIncludeSquad && !IsUnitInSquad(Soldier.GetReference()) && Soldier.GetStatus() != eStatus_OnMission))
 				{
@@ -1968,6 +1968,8 @@ function array<XComGameState_Unit> GetDeployableSoldiers(optional bool bDontIncl
 
 		if(Soldier != none)
 		{
+			// Conditional for Issue #86
+			// Updated to make soldiers with eStatus_OnMission not be returned in GetDeployableSoldiers
 			if(Soldier.IsSoldier() && Soldier.IsAlive() && Soldier.GetStatus() != eStatus_OnMission && (Soldier.GetStatus() == eStatus_Active || Soldier.GetStatus() == eStatus_PsiTraining || 
 				((bAllowWoundedSoldiers || Soldier.IgnoresInjuries()) && Soldier.IsInjured())))
 			{
