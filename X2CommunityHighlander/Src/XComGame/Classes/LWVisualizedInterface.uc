@@ -1,3 +1,4 @@
+// Start Issue #103
 //---------------------------------------------------------------------------------------
 //  FILE:    LWVisualizedInterface.uc
 //  AUTHOR:  tracktwo / Pavonis Interactive
@@ -7,3 +8,4 @@
 interface LWVisualizedInterface;
 
 function AppendAdditionalSyncActions(out VisualizationTrack BuildTrack);
+// End Issue #103
