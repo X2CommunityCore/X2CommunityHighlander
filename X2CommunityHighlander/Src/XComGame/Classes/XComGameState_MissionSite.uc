@@ -993,6 +993,7 @@ function bool AboutToExpire()
 
 function class<UIStrategyMapItem> GetUIClass()
 {
+	// Start Issue #94
 	local XComLWTuple OverrideTuple; // LW  added
 	local class<UIStrategyMapItem> MapItemClass;
 
@@ -1014,6 +1015,7 @@ function class<UIStrategyMapItem> GetUIClass()
 		if(MapItemClass != none)
 			return MapItemClass;
 	}
+	// End Issue #94
 	
 	if(MakesDoom())
 	{
