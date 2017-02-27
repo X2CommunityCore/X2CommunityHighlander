@@ -901,6 +901,11 @@ simulated function int GetItemSize()
 	return GetMyTemplate().iItemSize;
 }
 
+// Start Issue #90
+// Allow mods to override range returned, otherwise perform native behaviour,
+// which has been extracted out of native method.
+//
+// simulated native function int GetItemRange(const XComGameState_Ability AbilityState);
 simulated function int GetItemRange(const XComGameState_Ability AbilityState)
 {
 	local XComLWTuple OverrideTuple;
@@ -948,6 +953,7 @@ simulated function int GetItemRange(const XComGameState_Ability AbilityState)
 	}
 	return -1;
 }
+// End Issue #90
 
 // Start Issue #89
 //LW method added to generalize unequipping of items
@@ -971,7 +977,6 @@ simulated function bool ItemCanBeUnequipped()
 }
 // End Issue #89
 
-//simulated native function int GetItemRange(const XComGameState_Ability AbilityState);
 simulated native function int GetItemRadius(const XComGameState_Ability AbilityState);
 simulated native function float GetItemCoverage(const XComGameState_Ability AbilityState);
 
