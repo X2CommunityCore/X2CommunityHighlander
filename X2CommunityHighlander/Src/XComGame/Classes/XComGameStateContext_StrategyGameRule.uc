@@ -8,11 +8,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-//
-// LWS Changes:
-//
-// tracktwo - Copy bRemovedFromPlay settings from proxies back to the original units.
-//            Allows the reward code to more easily determine which unit(s) made it out.
 class XComGameStateContext_StrategyGameRule extends XComGameStateContext;
 
 enum StrategyGameRuleStateChange
@@ -775,12 +770,20 @@ static function CleanupProxyVips()
 			OriginalUnit.SetCurrentStat(eStat_HP, 0);
 			NewGameState.AddStateObject(OriginalUnit);
 		}
+		// Conditional for Issue #102
+		// tracktwo - Copy bRemovedFromPlay settings from proxies back to the original units.
+		//            Allows the reward code to more easily determine which unit(s) made it out.
 		else if((OriginalUnit.IsSoldier() && ProxyUnit.IsInjured()) || ProxyUnit.bRemovedFromPlay)
 		{
 			OriginalUnit = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', OriginalUnit.ObjectID));
 			OriginalUnit.SetCurrentStat(eStat_HP, ProxyUnit.GetCurrentStat(eStat_HP));
-            if (ProxyUnit.bRemovedFromPlay)
-                OriginalUnit.RemoveStateFromPlay();
+
+			// Start Issue #102
+			if (ProxyUnit.bRemovedFromPlay)
+			{
+				OriginalUnit.RemoveStateFromPlay();
+			}
+			// End Issue #102
 			NewGameState.AddStateObject(OriginalUnit);
 		}
 
