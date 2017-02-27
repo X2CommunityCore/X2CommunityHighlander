@@ -7,13 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Changes:
-//
-// tracktwo - Consider VIPs lost if they are not removed from play (i.e. they did not evac).
-//            Base game considered them all saved if not dead and the mission succeeded, which is
-//            insufficient for multi-VIP missions. This needs to be adjusted further if its desired
-//            to have multi-VIP missions that are not evac missions. 
-//
 class XComGameState_MissionSite extends XComGameState_GeoscapeEntity
 	native(Core);
 
@@ -1597,23 +1590,26 @@ simulated function StateObjectReference GetRewardVIP()
 simulated function int GetRewardVIPStatus(XComGameState_Unit Unit)
 {
 	local XComGameState_BattleData BattleData;
-    local XComLWTuple Tuple;
-    local XComLWTValue Value;
 
-    // LWS: Allow mod overrides for VIP status. Triggers the 'GetRewardVIPStatus' event with
-    // a tuple with 1 object data object - the unit being rewarded. EventSource is the mission site.
-    // If the handler returns a tuple with an int in data[1], that value is used as the return value.
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = 'GetRewardVIPStatus';
-    Value.Kind = XComLWTVObject;
-    Value.o = Unit;
-    Tuple.Data.AddItem(Value);
-    `XEVENTMGR.TriggerEvent('GetRewardVIPStatus', Tuple, self, none);
+	// Start Issue #92
+	local XComLWTuple Tuple;
+	local XComLWTValue Value;
 
-    if (Tuple.Data.Length == 2 && Tuple.Data[1].Kind == XComLWTVInt)
-    {
-        return Tuple.Data[1].i;
-    }
+	// LWS: Allow mod overrides for VIP status. Triggers the 'GetRewardVIPStatus' event with
+	// a tuple with 1 object data object - the unit being rewarded. EventSource is the mission site.
+	// If the handler returns a tuple with an int in data[1], that value is used as the return value.
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'GetRewardVIPStatus';
+	Value.Kind = XComLWTVObject;
+	Value.o = Unit;
+	Tuple.Data.AddItem(Value);
+	`XEVENTMGR.TriggerEvent('GetRewardVIPStatus', Tuple, self, none);
+
+	if (Tuple.Data.Length == 2 && Tuple.Data[1].Kind == XComLWTVInt)
+	{
+			return Tuple.Data[1].i;
+	}
+	// End Issue #92
 
 	if(Unit == none)
 		return eVIPStatus_Unknown;
