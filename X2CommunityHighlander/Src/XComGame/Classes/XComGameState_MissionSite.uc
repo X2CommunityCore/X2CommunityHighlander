@@ -1183,6 +1183,8 @@ function ConfirmMission()
 	local XComGameState_HeadquartersXCom XComHQ;
 	local XGStrategy StrategyGame;
 	local XComGameState NewGameState;
+
+	// Variable for Issue #93
 	local XComLWTuple OverrideTuple; // LW  added
 
 	NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Launch Mission Selected");
@@ -1209,6 +1211,7 @@ function ConfirmMission()
 	}
 	else
 	{
+		// Start Issue #93
 		//LWS : Added hook to allow circumventing the typical mission launch process 
 
 		//LW set up a Tuple -- false means launch tactical battle as normal, true means a listener is launching it
@@ -1222,9 +1225,10 @@ function ConfirmMission()
 
 		if (OverrideTuple.Data[0].b == false)
 		{
-			// Launch this Mission!
+			// Launch this Mission! - vanilla behaviour
 			StrategyGame.LaunchTacticalBattle(ObjectID);
 		}
+		// End Issue #93
 	}
 }
 
