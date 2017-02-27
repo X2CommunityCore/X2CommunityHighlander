@@ -725,6 +725,7 @@ simulated function WipeUpgradeTemplates()
 	Ammo = GetClipSize();
 }
 
+// Start Issue #88
 // LWS : Modified so that a weapon with only '' null modifications doesn't count as modified
 simulated function bool HasBeenModified()
 {
@@ -742,6 +743,7 @@ simulated function bool HasBeenModified()
 	}
 	return bHasBeenModified;
 }
+// End Issue #88
 
 simulated function bool IsStartingItem()
 {
@@ -798,8 +800,13 @@ simulated function array<WeaponAttachment> GetWeaponAttachments(optional bool bG
 		UpgradeTemplates = GetMyWeaponUpgradeTemplates();
 		for (i = 0; i < UpgradeTemplates.Length; ++i)
 		{
-            if (UpgradeTemplates[i] == none)
-                continue;
+			// Start Issue #88
+			// Blank names being allowed means 'none' template, guard here
+			if (UpgradeTemplates[i] == none)
+			{
+					continue;
+			}
+			// End Issue #88
 			for (j = 0; j < UpgradeTemplates[i].UpgradeAttachments.Length; ++j)
 			{
 				if (UpgradeTemplates[i].UpgradeAttachments[j].ApplyToWeaponTemplate != WeaponTemplate.DataName)
