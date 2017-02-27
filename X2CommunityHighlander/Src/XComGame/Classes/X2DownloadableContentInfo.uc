@@ -258,6 +258,7 @@ static function int AddDoomModifier(XComGameState_HeadquartersAlien AlienHQ, boo
 static function PostEncounterCreation(out name EncounterName, out PodSpawnInfo Encounter, int ForceLevel, int AlertLevel, optional XComGameState_BaseObject SourceObject);
 /// End Issue #68
 
+/// Start Issue #104
 /// <summary>
 /// Called from XComGroupSpawn:GetValidFloorLocations
 //  Allows DLC/Mods to override valid spawnable floor locations -- return true use FloorPoints and skip the defaults
@@ -266,6 +267,7 @@ static function bool GetValidFloorSpawnLocations(out array<Vector> FloorPoints, 
 {
 	return false;
 }
+/// End Issue #104
 
 /// Start Issue #31
 /// <summary>
