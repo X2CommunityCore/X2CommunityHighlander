@@ -949,6 +949,7 @@ simulated function int GetItemRange(const XComGameState_Ability AbilityState)
 	return -1;
 }
 
+// Start Issue #89
 //LW method added to generalize unequipping of items
 simulated function bool ItemCanBeUnequipped()
 {
@@ -968,6 +969,7 @@ simulated function bool ItemCanBeUnequipped()
 
 	return OverrideTuple.Data[0].b;
 }
+// End Issue #89
 
 //simulated native function int GetItemRange(const XComGameState_Ability AbilityState);
 simulated native function int GetItemRadius(const XComGameState_Ability AbilityState);
