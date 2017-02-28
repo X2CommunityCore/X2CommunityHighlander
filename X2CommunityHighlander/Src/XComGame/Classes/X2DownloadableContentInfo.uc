@@ -204,6 +204,7 @@ static function bool CanAddItemToInventory(out int bCanAddItem, const EInventory
 	return false;
 }
 
+/// Start Issue #118
 /// <summary>
 /// Called from XComGameState_Unit:DLCCanRemoveItemFromInventory 
 //  Return true to override the default with the out parameter
@@ -213,6 +214,7 @@ static function bool CanRemoveItemFromInventory(out int bCanRemoveItem,  XComGam
 {
 	return false;
 }
+/// End Issue #118
 
 /// Start Issue #114
 /// <summary>

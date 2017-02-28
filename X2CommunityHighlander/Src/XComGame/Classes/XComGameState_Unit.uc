@@ -8811,6 +8811,7 @@ function MakeItemsAvailable(XComGameState NewGameState, optional bool bStoreOldI
 			ItemState = XComGameState_Item(NewGameState.CreateStateObject(class'XComGameState_Item', ItemState.ObjectID));
 			NewGameState.AddStateObject(ItemState);
 
+			// Conditional for Issue #118
 			if (DLCCanRemoveItemFromInventory(CanRemoveItemFromInventory(ItemState, NewGameState), ItemState, NewGameState))
 			{
 				RemoveItemFromInventory(ItemState, NewGameState);
@@ -8836,6 +8837,7 @@ function MakeItemsAvailable(XComGameState NewGameState, optional bool bStoreOldI
 	ApplyBestGearLoadout(NewGameState);
 }
 
+// Start Issue #118
 // LWS: Added helper to query DLC/mods to determine if a particular item can be removed when making items available
 function bool DLCCanRemoveItemFromInventory(bool DefaultRemoval, XComGameState_Item ItemState, XComGameState NewGameState)
 {
@@ -8854,6 +8856,7 @@ function bool DLCCanRemoveItemFromInventory(bool DefaultRemoval, XComGameState_I
 	}
 	return DefaultRemoval;
 }
+// End Issue #118
 
 // Combines rookie and squaddie loadouts so that things like kevlar armor and grenades are included
 // Issue #117 - remove private from definition
