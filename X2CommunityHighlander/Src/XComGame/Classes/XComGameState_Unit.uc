@@ -5344,6 +5344,8 @@ function bool AddItemToInventory(XComGameState_Item Item, EInventorySlot Slot, X
 	local X2BodyPartTemplateManager BodyPartMgr;
 	local X2SimpleBodyPartFilter Filter;
 	local X2ItemTemplate ItemTemplate;
+
+	// Variable for Issue #114
 	local int NumSlots;
 
 	ItemTemplate = Item.GetMyTemplate();
@@ -5377,6 +5379,7 @@ function bool AddItemToInventory(XComGameState_Item Item, EInventorySlot Slot, X
 		}
 		else if (Slot == eInvSlot_Armor)
 		{
+			// Start Issue #114
 			NumSlots = GetNumUtilitySlots(Item, NewGameState);
 			if(NumSlots < 0)
 			{
@@ -5390,6 +5393,7 @@ function bool AddItemToInventory(XComGameState_Item Item, EInventorySlot Slot, X
 				SetBaseMaxStat(eStat_UtilityItems, NumSlots);
 				SetCurrentStat(eStat_UtilityItems, NumSlots);
 			}
+			// End Issue #114
 
 			//  must ensure appearance matches 
 			if (GetMyTemplate().bAppearanceDefinesPawn)
@@ -5734,6 +5738,8 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 {
 	local X2ItemTemplate ItemTemplate;
 	local X2ArmorTemplate ArmorTemplate;
+
+	// Variable for Issue #114
 	local int RemoveIndex, NumSlots;
 
 	if (CanRemoveItemFromInventory(Item, ModifyGameState))
@@ -5770,6 +5776,7 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 		switch(Item.InventorySlot)
 		{
 		case eInvSlot_Armor:
+			// Start Issue #114
 			NumSlots = GetNumUtilitySlots(Item, ModifyGameState);
 			if(NumSlots < 0)
 			{
@@ -5781,6 +5788,7 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 				SetBaseMaxStat(eStat_UtilityItems, NumSlots);
 				SetCurrentStat(eStat_UtilityItems, NumSlots);
 			}
+			// End Issue #114
 			break;
 		case eInvSlot_Backpack:
 			ModifyCurrentStat(eStat_BackpackSize, Item.GetItemSize());
@@ -5819,6 +5827,7 @@ simulated function bool SaveGameActive()
 }
 // End Issue #113
 
+// Start Issue #114
 //LW helper function - returns -1 if no override
 simulated function int GetNumUtilitySlots(optional XComGameState_Item Item, optional XComGameState CheckGameState)
 {
@@ -5836,6 +5845,7 @@ simulated function int GetNumUtilitySlots(optional XComGameState_Item Item, opti
 	}
 	return NumSlots;
 }
+// End Issue #114
 
 simulated function bool CanRemoveItemFromInventory(XComGameState_Item Item, optional XComGameState CheckGameState)
 {
@@ -8124,7 +8134,7 @@ function ValidateLoadout(XComGameState NewGameState)
 	local XComGameState_Item EquippedArmor, EquippedPrimaryWeapon, EquippedSecondaryWeapon; // Default slots
 	local XComGameState_Item EquippedHeavyWeapon, EquippedGrenade, EquippedAmmo, UtilityItem; // Special slots
 	local array<XComGameState_Item> EquippedUtilityItems; // Utility Slots
-	local int idx, NumSlots;
+	local int idx, NumSlots; // Variable for Issue #114
 	local int RequiredFilledUtilitySlots; // LWS Added
 
 	// Grab HQ Object
@@ -8226,6 +8236,7 @@ function ValidateLoadout(XComGameState NewGameState)
 	// UtilitySlots (Already grabbed equipped)
 	if(!IsMPCharacter())
 	{
+		// Start Issue #114
 		NumSlots = GetNumUtilitySlots(EquippedArmor, NewGameState);
 		if(NumSlots < 0)
 		{
@@ -8239,6 +8250,7 @@ function ValidateLoadout(XComGameState NewGameState)
 			SetBaseMaxStat(eStat_UtilityItems, NumSlots);
 			SetCurrentStat(eStat_UtilityItems, NumSlots);
 		}
+		// End Issue #114
 	}
 
 	// Remove Extra Utility Items

@@ -214,6 +214,7 @@ static function bool CanRemoveItemFromInventory(out int bCanRemoveItem,  XComGam
 	return false;
 }
 
+/// Start Issue #114
 /// <summary>
 /// Called from XComGameState_Unit:GetNumUtilitySlots 
 //  Return true to immediately override the default with the out parameter (skipping any further DLCInfo checks)
@@ -222,6 +223,7 @@ static function bool GetNumUtilitySlotsOverride(out int NumSlots, XComGameState_
 {
 	return false;
 }
+/// End Issue #114
 
 /// <summary>
 /// Called from XComGameState_Unit:ValidateLoadout
