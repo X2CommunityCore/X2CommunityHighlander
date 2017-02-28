@@ -2720,6 +2720,8 @@ function array<SoldierClassAbilityType> GetEarnedSoldierAbilities()
 	local array<SoldierClassAbilityType> EarnedAbilities, AbilityTree;
 	local SoldierClassAbilityType Ability;
 	local int i;
+
+	// Variables for Issue #106
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local X2DownloadableContentInfo DLCInfo;
 
@@ -2746,11 +2748,13 @@ function array<SoldierClassAbilityType> GetEarnedSoldierAbilities()
 		}
 	}
 
+	// Start Issue #106
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	foreach DLCInfos(DLCInfo)
 	{
 		DLCInfo.ModifyEarnedSoldierAbilities(EarnedAbilities, self);
 	}
+	// End Issue #106
 
 	return EarnedAbilities;
 }

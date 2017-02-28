@@ -166,6 +166,7 @@ static function FinalizeUnitAbilitiesForInit(XComGameState_Unit UnitState, out a
 /////////////////////////////////
 
 
+/// Start Issue #106
 /// <summary>
 /// Called from XComGameState_Unit::ModifyEarnedSoldierAbilities
 /// Allows DLC/Mods to adjust add to the EarnedSoldierAbilities
@@ -174,6 +175,7 @@ static function ModifyEarnedSoldierAbilities(out array<SoldierClassAbilityType> 
 {
     
 }
+/// End Issue #106
 
 /// <summary>
 /// Called from XComTacticalMissionManager:GetActiveMissionIntroDefinition before it returns the Default (but after any arrMission-specific override)
