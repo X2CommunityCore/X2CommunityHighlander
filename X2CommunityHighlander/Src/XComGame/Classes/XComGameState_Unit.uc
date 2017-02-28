@@ -2601,6 +2601,9 @@ function RollForAWCAbility()
 	local array<SoldierClassAbilityType> EligibleAbilities;
 	local int AbilityRank, Idx, RemIdx;
 	local X2SoldierClassTemplate SoldierClassTemplate;
+
+	// Start Issue #105
+	// Allow overriding AWC Abilities Roll
 	local XComLWTuple OverrideTuple; // LWS  added
 
 	//LWS set up a Tuple -- false means roll AWC ability as usual, true means skip it
@@ -2615,6 +2618,7 @@ function RollForAWCAbility()
 
 	if(!OverrideTuple.Data[0].b)
 	{
+		// End Issue #105
 		bRolledForAWCAbility = true;
 		EligibleAbilities = class'X2SoldierClassTemplateManager'.static.GetSoldierClassTemplateManager().GetCrossClassAbilities(GetSoldierClassTemplate());
 		
