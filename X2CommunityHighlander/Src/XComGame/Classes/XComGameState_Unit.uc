@@ -8856,6 +8856,7 @@ function bool DLCCanRemoveItemFromInventory(bool DefaultRemoval, XComGameState_I
 }
 
 // Combines rookie and squaddie loadouts so that things like kevlar armor and grenades are included
+// Issue #117 - remove private from definition
 function array<X2EquipmentTemplate> GetCompleteDefaultLoadout()
 {
 	local X2ItemTemplateManager ItemTemplateManager;
