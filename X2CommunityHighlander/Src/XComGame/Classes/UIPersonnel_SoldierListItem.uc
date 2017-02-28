@@ -33,6 +33,7 @@ simulated function InitListItem(StateObjectReference initUnitRef)
 
 	flagIcon = Unit.GetCountryTemplate().FlagImage;
 	//rankIcon = class'UIUtilities_Image'.static.GetRankIcon(iRank, SoldierClass.DataName);
+	// Issue #107
 	rankIcon = class'LWUtilities_Ranks'.static.GetRankIcon(iRank, SoldierClass.DataName, Unit);
 	classIcon = SoldierClass.IconImage;
 
@@ -45,6 +46,7 @@ simulated function InitListItem(StateObjectReference initUnitRef)
 	AS_UpdateDataSoldier(Caps(Unit.GetName(eNameType_Full)),
 					Caps(Unit.GetName(eNameType_Nick)),
 					//Caps(`GET_RANK_ABBRV(Unit.GetRank(), SoldierClass.DataName)),
+					// Issue #107
 					Caps(class'LWUtilities_Ranks'.static.GetShortRankName(Unit.GetRank(), SoldierClass.DataName, Unit)),
 					rankIcon,
 					Caps(SoldierClass != None ? SoldierClass.DisplayName : ""),

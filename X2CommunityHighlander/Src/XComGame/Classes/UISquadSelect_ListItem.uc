@@ -231,10 +231,12 @@ simulated function UpdateData(optional int Index = -1, optional bool bDisableEdi
 		bDismissDisabled = bDisableDismiss; //used in controller nav
 
 		//AS_SetFilled( class'UIUtilities_Text'.static.GetColoredText(Caps(class'X2ExperienceConfig'.static.GetRankName(Unit.GetRank(), Unit.GetSoldierClassTemplateName())), eUIState_Normal, 18),
+		// Issue #107
 		AS_SetFilled( class'UIUtilities_Text'.static.GetColoredText(Caps(class'LWUtilities_Ranks'.static.GetRankName(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit)), eUIState_Normal, 18),
 					  class'UIUtilities_Text'.static.GetColoredText(Caps(NameStr), eUIState_Normal, 22),
 					  class'UIUtilities_Text'.static.GetColoredText(Caps(Unit.GetName(eNameType_Nick)), eUIState_Header, 28),
 					  //Unit.GetSoldierClassTemplate().IconImage, class'UIUtilities_Image'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName()),
+						// Issue #107
 					  Unit.GetSoldierClassTemplate().IconImage, class'LWUtilities_Ranks'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit),
 					  class'UIUtilities_Text'.static.GetColoredText(m_strEdit, bDisableEdit ? eUIState_Disabled : eUIState_Normal),
 					  class'UIUtilities_Text'.static.GetColoredText(m_strDismiss, bDisableDismiss ? eUIState_Disabled : eUIState_Normal),

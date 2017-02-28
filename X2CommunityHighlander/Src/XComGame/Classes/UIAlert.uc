@@ -2467,6 +2467,7 @@ simulated function BuildTrainingCompleteAlert(string TitleLabel)
 	ClassName = Caps(ClassTemplate.DisplayName);
 	ClassIcon = ClassTemplate.IconImage;
 	//RankName = Caps(class'X2ExperienceConfig'.static.GetRankName(1, ClassTemplate.DataName));
+	// Issue #107
 	RankName = Caps(class'LWUtilities_Ranks'.static.GetRankName(1, ClassTemplate.DataName, UnitState));
 	
 	kTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
@@ -2531,6 +2532,7 @@ simulated function BuildPsiTrainingCompleteAlert(string TitleLabel)
 	ClassName = Caps(ClassTemplate.DisplayName);
 	ClassIcon = ClassTemplate.IconImage;
 	//RankName = Caps(class'X2ExperienceConfig'.static.GetRankName(UnitState.GetRank(), ClassTemplate.DataName));
+	// Issue #107
 	RankName = Caps(class'LWUtilities_Ranks'.static.GetRankName(UnitState.GetRank(), ClassTemplate.DataName, UnitState));
 
 	kTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));

@@ -107,6 +107,7 @@ simulated function UpdateData()
 		else if (Unit.IsSoldier())
 		{
 			//UnitTypeImage = class'UIUtilities_Image'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName());
+			// Issue #107
 			UnitTypeImage = class'LWUtilities_Ranks'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit);
 		}
 	}

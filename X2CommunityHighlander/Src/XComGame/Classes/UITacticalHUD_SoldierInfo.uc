@@ -132,6 +132,7 @@ simulated function SetStats( XGUnit kActiveUnit )
 		if( StateUnit.IsSoldier() )
 		{
 			//charRank = class'UIUtilities_Image'.static.GetRankIcon(StateUnit.GetRank(), StateUnit.GetSoldierClassTemplateName());
+			// Issue #107
 			charRank = class'LWUtilities_Ranks'.static.GetRankIcon(StateUnit.GetRank(), StateUnit.GetSoldierClassTemplateName(), StateUnit);
 			charClass = StateUnit.GetSoldierClassTemplate().IconImage;
 			isLeveledUp = StateUnit.CanRankUpSoldier();

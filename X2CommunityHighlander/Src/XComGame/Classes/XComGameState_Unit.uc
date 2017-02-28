@@ -3485,29 +3485,41 @@ function string GetName( ENameType eType )
 			return strFirstName @ strLastName;
 			break;
 		case eNameType_Rank:
+			// Issue #107
 			return class'LWUtilities_Ranks'.static.GetRankName(m_SoldierRank, m_SoldierClassTemplateName, self);
 			break;
 		case eNameType_RankLast:
+			// Issue #107
 			return class'LWUtilities_Ranks'.static.GetShortRankName(m_SoldierRank, m_SoldierClassTemplateName, self) @ strLastName;
 			break;
 		case eNameType_RankFull:
+			// Start Issue #107
 			if(bFirstNameBlank)
+			{
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName , self) @ strLastName;
+			}
 			return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strFirstName @ strLastName;
+			// End Issue #107
 			break;
 		case eNameType_FullNick:
+			// Start Issue #107
 			if( strNickName != "" )
 			{
 				if(bFirstNameBlank)
+				{
 					return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ "'"$strNickName$"'" @ strLastName;
+				}
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strFirstName @ "'"$strNickName$"'" @ strLastName;
 			}
 			else
 			{
 				if(bFirstNameBlank)
+				{
 					return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strLastName;
+				}
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strFirstName @ strLastName;
 			}
+			// End Issue #107
 			break;
 		}
 
@@ -3547,25 +3559,34 @@ function string GetMPName( ENameType eType )
 		break;
 	case eNameType_Rank:
 		//return `GET_RANK_STR(m_SoldierRank, m_MPCharacterTemplateName);
+		// Issue #107
 		return class'LWUtilities_Ranks'.static.GetRankName(m_SoldierRank, m_MPCharacterTemplateName, self);
 		break;
 	case eNameType_RankLast:
 		//return `GET_RANK_ABBRV(m_SoldierRank, m_MPCharacterTemplateName) @ strLastName;
+		// Issue #107
 		return class'LWUtilities_Ranks'.static.GetShortRankName(m_SoldierRank, m_MPCharacterTemplateName, self) @ strLastName;
 		break;
 	case eNameType_RankFull:
 		//return `GET_RANK_ABBRV( m_SoldierRank, m_MPCharacterTemplateName ) @ strFirstName @ strLastName;
+		// Issue #107
 		return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_MPCharacterTemplateName, self) @ strFirstName @ strLastName;
 		break;
 	case eNameType_FullNick:
 		if(IsSoldier())
 		{
 			if(strNickName != "")
+			{
 				//return `GET_RANK_ABBRV( m_SoldierRank, m_MPCharacterTemplateName ) @ strFirstName @ "'"$strNickName$"'" @ strLastName;
+				// Issue #107
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_MPCharacterTemplateName, self) @ strFirstName @ "'"$strNickName$"'" @ strLastName;
+			}
 			else
+			{
 				//return `GET_RANK_ABBRV( m_SoldierRank, m_MPCharacterTemplateName ) @ strFirstName @ strLastName;
+				// Issue #107
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_MPCharacterTemplateName, self) @ strFirstName @ strLastName;
+			}
 		}
 		else
 		{

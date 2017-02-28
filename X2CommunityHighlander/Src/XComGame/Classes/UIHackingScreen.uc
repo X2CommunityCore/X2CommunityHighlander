@@ -279,10 +279,12 @@ simulated function PopulateSoldierInfo()
 	Unit = XGUnit(UnitState.GetVisualizer());
 	
 	//AS_SetSoldierInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(`GET_RANK_STR(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName())), euiState_Faded, 17), 
+	// Issue #107
 	AS_SetSoldierInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(class'LWUtilities_Ranks'.static.GetRankName(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName(), UnitState)), euiState_Faded, 17), 
 						class'UIUtilities_Text'.static.GetColoredText(Caps(UnitState.GetName(eNameType_Full)), eUIState_Normal, 22), 
 						class'UIUtilities_Text'.static.GetColoredText(Caps(UnitState.GetNickName(false)), eUIState_Header, 30),
 						//class'UIUtilities_Image'.static.GetRankIcon(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName()),
+						// Issue #107
 						class'LWUtilities_Ranks'.static.GetRankIcon(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName(), UnitState),
 						UnitState.GetSoldierClassTemplate().IconImage,
 						strHackAbilityLabel,

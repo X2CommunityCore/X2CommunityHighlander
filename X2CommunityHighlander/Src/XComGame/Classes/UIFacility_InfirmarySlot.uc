@@ -45,6 +45,7 @@ simulated function UpdateData()
 						Unit.GetName(eNameType_Last), 
 						Unit.GetName(eNameType_Nick),
 						//class'UIUtilities_Image'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName()),
+						// Issue #107
 						class'LWUtilities_Ranks'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit),
 						Unit.GetSoldierClassTemplate().IconImage);
 						

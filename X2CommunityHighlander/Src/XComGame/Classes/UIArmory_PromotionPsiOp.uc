@@ -72,6 +72,7 @@ simulated function PopulateData()
 
 	ClassRowItem.ClassName = ClassTemplate.DataName;
 	//ClassRowItem.SetRankData(class'UIUtilities_Image'.static.GetRankIcon(1, ClassTemplate.DataName), Caps(class'X2ExperienceConfig'.static.GetRankName(1, ClassTemplate.DataName)));
+	// Issue #107
 	ClassRowItem.SetRankData(class'LWUtilities_Ranks'.static.GetRankIcon(1, ClassTemplate.DataName, Unit), Caps(class'LWUtilities_Ranks'.static.GetRankName(1, ClassTemplate.DataName, Unit)));
 		
 	AbilityTree = ClassTemplate.GetAbilityTree(0);
@@ -112,6 +113,7 @@ simulated function PopulateData()
 		Item.Rank = i - 1;
 		Item.ClassName = ClassTemplate.DataName;
 		//Item.SetRankData(class'UIUtilities_Image'.static.GetRankIcon(i, ClassTemplate.DataName), Caps(class'X2ExperienceConfig'.static.GetRankName(i, ClassTemplate.DataName)));
+		// Issue #107
 		Item.SetRankData(class'LWUtilities_Ranks'.static.GetRankIcon(i, ClassTemplate.DataName, Unit), Caps(class'LWUtilities_Ranks'.static.GetRankName(i, ClassTemplate.DataName, Unit)));
 
 		AbilityTree = ClassTemplate.GetAbilityTree(Item.Rank);

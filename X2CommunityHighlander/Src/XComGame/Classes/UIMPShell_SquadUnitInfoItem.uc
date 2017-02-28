@@ -130,6 +130,7 @@ simulated function UpdateData(optional int Index = -1, optional bool bDisableEdi
 					class'UIUtilities_Text'.static.GetColoredText(Caps(m_kEditUnit.GetMPCharacterTemplate().DisplayName), eUIState_Header, 26),
 					m_kEditUnit.GetMPCharacterTemplate().IconImage, 
 					//m_kEditUnit.GetSoldierRank() > 0 ? class'UIUtilities_Image'.static.GetRankIcon(m_kEditUnit.GetSoldierRank(), m_kEditUnit.GetSoldierClassTemplateName()) : "", "", "");
+					// Issue #107
 					m_kEditUnit.GetSoldierRank() > 0 ? class'LWUtilities_Ranks'.static.GetRankIcon(m_kEditUnit.GetSoldierRank(), m_kEditUnit.GetSoldierClassTemplateName(), m_kEditUnit) : "", "", "");
 		}
 		else

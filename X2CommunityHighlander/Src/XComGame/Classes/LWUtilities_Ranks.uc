@@ -1,3 +1,4 @@
+// Start Issue #107
 //---------------------------------------------------------------------------------------
 //  FILE:    LWUtilities_Ranks.uc
 //  AUTHOR:  Amineri / Pavonis Interactive
@@ -74,3 +75,4 @@ static function string GetRankIcon(int iRank, name ClassName, XComGameState_Unit
 
 	return class'UIUtilities_Image'.static.GetRankIcon(iRank, ClassName);
 }
+// End Issue #107
