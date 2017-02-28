@@ -8410,7 +8410,10 @@ function XComGameState_Item GetBestUtilityItem(XComGameState NewGameState)
 		return none;
 	}
 
-	ItemState = UtilityItemTemplates[`SYNC_RAND(UtilityItemTemplates.Length)].CreateInstanceFromTemplate(NewGameState);  // LWS : Removed cast to X2WeaponTemplate so that infinite equipment items can be equipped
+	// Issue #116
+	// LWS : Removed cast to X2WeaponTemplate so that infinite equipment items can be equipped
+	ItemState = UtilityItemTemplates[`SYNC_RAND(UtilityItemTemplates.Length)].CreateInstanceFromTemplate(NewGameState);
+
 	NewGameState.AddStateObject(ItemState);
 	
 	return ItemState;
