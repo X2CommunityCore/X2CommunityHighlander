@@ -4379,6 +4379,8 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	local XComGameState_Effect EffectState;
 	local XComGameStateHistory History;
 	local X2Effect_Persistent PersistentEffect;
+
+	// Variable for Issue #110
 	local XComLWTuple OverrideTuple; // LWS  added
 
 	//  Cosmetic units should not take damage
@@ -4491,6 +4493,7 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	OverkillDamage = (GetCurrentStat( eStat_HP )) - DmgResult.DamageAmount;
 	if (OverkillDamage <= 0)
 	{
+		// Start Issue #110
 		//LWS set up a Tuple -- 
 		OverrideTuple = new class'XComLWTuple';
 		OverrideTuple.Id = 'OverrideKilledbyExplosion';
@@ -4504,6 +4507,7 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 		`XEVENTMGR.TriggerEvent('KilledbyExplosion', OverrideTuple, self, NewGameState);
 
 		bKilledByExplosion = OverrideTuple.Data[0].b;
+		// End Issue #110
 
 		KilledByDamageTypes = DamageTypes;
 		History = `XCOMHISTORY;
