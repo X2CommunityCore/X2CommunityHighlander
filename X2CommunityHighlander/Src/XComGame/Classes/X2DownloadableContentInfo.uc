@@ -195,6 +195,7 @@ static function bool CanRemoveWeaponUpgrade(XComGameState_Item Weapon, X2WeaponU
 	return false;
 }
 
+/// Start Issue #124
 /// <summary>
 /// Called from XComGameState_Unit:CanAddItemToInventory 
 //  Return true to override the default with the out parameter
@@ -203,6 +204,7 @@ static function bool CanAddItemToInventory(out int bCanAddItem, const EInventory
 {
 	return false;
 }
+/// End Issue #124
 
 /// Start Issue #118
 /// <summary>
