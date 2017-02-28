@@ -9310,7 +9310,7 @@ function int GetXPValue()
 function bool CanRankUpSoldier()
 {
 	local int NumKills;
-	local XComLWTuple Tuple; // LWS  added
+	local XComLWTuple Tuple; // Variable for Issue #119
 
 	if (m_SoldierRank + 1 < `GET_MAX_RANK && !bRankedUp)
 	{
@@ -9325,6 +9325,7 @@ function bool CanRankUpSoldier()
 		// Add required kills of StartingRank
 		NumKills += class'X2ExperienceConfig'.static.GetRequiredKills(StartingRank);
 
+		// Start Issue #119
 		//LWS set up a Tuple -- false means roll AWC ability as usual, true means skip it
 		Tuple = new class'XComLWTuple';
 		Tuple.Id = 'GetNumKillsForRankUpSoldier';
@@ -9335,7 +9336,10 @@ function bool CanRankUpSoldier()
 		//LWS add hook for modifying the number of effective kills for leveling up purposes, accessible by DLC/mod
 		`XEVENTMGR.TriggerEvent('GetNumKillsForRankUpSoldier', Tuple, self);
 		if (Tuple.Data[0].kind == XComLWTVInt)
+		{
 			NumKills += Tuple.Data[0].i;
+		}
+		// End Issue #119
 
 		//  Check required xp if that system is enabled
 		if (class'X2ExperienceConfig'.default.bUseFullXpSystem)
