@@ -4722,11 +4722,14 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 			else if( PendingLoot.LootToBeCreated.Length > 0 )
 			{
 				NewGameState.GetContext().PostBuildVisualizationFn.AddItem(VisualizeLootDestroyedByExplosives);
+
+				// Start Issue #112
 				// LWS Add: Empty out the pending loot for units killed by explosives. Otherwise if the get raised as a
 				// zombie and then killed again the loot magically becomes un-exploded.
 				NewUnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', ObjectID));
 				NewGameState.AddStateObject(NewUnitState);
 				NewUnitState.PendingLoot.LootToBeCreated.Length = 0;
+				// End Issue #112
 			}
 			RollForAutoLoot(NewGameState);
 		}
