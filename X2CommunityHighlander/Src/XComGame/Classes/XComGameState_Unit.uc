@@ -4467,7 +4467,9 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	}
 
 	SetUnitFloatValue( 'LastEffectDamage', DmgResult.DamageAmount, eCleanup_BeginTactical );
-	if ((DamageAmount + MitigationAmount) > 0) // LWS Only trigger this if the unit actually took damage -- otherwise, misses will cancel suppression
+	// Conditional for Issue #109
+	// LWS Only trigger this if the unit actually took damage -- otherwise, misses will cancel suppression
+	if ((DamageAmount + MitigationAmount) > 0)
 	{
 		ThisObj = self;
 		EventManager = `XEVENTMGR;
