@@ -9509,6 +9509,7 @@ function RankUpSoldier(XComGameState NewGameState, optional name SoldierClass, o
 // Show the promotion icon (in strategy)
 function bool ShowPromoteIcon()
 {
+	// Start Issue #120
 	//LWS add hook to allow DLC/Mods to show promote icon
 	local XComLWTuple OverrideTuple; // LWS  added
 
@@ -9523,6 +9524,7 @@ function bool ShowPromoteIcon()
 	`XEVENTMGR.TriggerEvent('ShouldShowPromoteIcon', OverrideTuple, self);
 
 	return OverrideTuple.Data[0].b;
+	// End Issue #120
 }
 
 function String GenerateNickname()
