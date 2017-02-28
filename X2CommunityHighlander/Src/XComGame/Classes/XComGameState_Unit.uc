@@ -6760,6 +6760,7 @@ static function CreateConcealmentBreakerTracks(XComGameState VisualizeGameState,
 	OutVisualizationTracks.AddItem(ConcealmentBreakerBuildTrack);
 }
 
+// Start Issue #126
 // LWS: Added helper to query DLC/mods to allow modifications to sound range based on unit/weapon/ability states.
 function int DLCModifySoundRange(XComGameState_Unit UnitState, XComGameState_Item WeaponState, XComGameState_Ability AbilityState, XComGameState GameState)
 {
@@ -6774,6 +6775,7 @@ function int DLCModifySoundRange(XComGameState_Unit UnitState, XComGameState_Ite
 	}
 	return Total;
 }
+// End Issue #126
 
 // unit makes an attack - alert to enemies with vision of the attacker
 function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
@@ -6820,25 +6822,28 @@ function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSo
 		{
 			SourceUnitState = XComGameState_Unit(History.GetGameStateForObjectID(ActivatedAbilityStateContext.InputContext.SourceObject.ObjectID));
 			WeaponState = XComGameState_Item(GameState.GetGameStateForObjectID(ActivatedAbilityStateContext.InputContext.ItemObject.ObjectID));
-            
-            // LWS Mods: If this weapon originates sound at the target and there is source ammo involved, use that sound range. This is needed
-            // for grenade launchers, which have a weapon range of 0, but the ammo is what we want to use for the sound range. Thrown grenades
-            // have no source ammo (the grenade is the weapon, there is no launcher) so we will use the weapon state in the else.
-            if (!WeaponState.SoundOriginatesFromOwnerLocation() && ActivatedAbilityState.GetSourceAmmo() != none)
-            {
-                SoundRange = ActivatedAbilityState.GetSourceAmmo().GetItemSoundRange();
-            }
-            else
-            {
-                SoundRange = WeaponState.GetItemSoundRange();
-            }
+							
+			// Start Issue #126
+			// LWS Mods: If this weapon originates sound at the target and there is source ammo involved, use that sound range. This is needed
+			// for grenade launchers, which have a weapon range of 0, but the ammo is what we want to use for the sound range. Thrown grenades
+			// have no source ammo (the grenade is the weapon, there is no launcher) so we will use the weapon state in the else.
+			if (!WeaponState.SoundOriginatesFromOwnerLocation() && ActivatedAbilityState.GetSourceAmmo() != none)
+			{
+					SoundRange = ActivatedAbilityState.GetSourceAmmo().GetItemSoundRange();
+			}
+			else
+			{
+					SoundRange = WeaponState.GetItemSoundRange();
+			}
 
-            // LWS Mods: let DLC/mods change the sound range.
-            SoundRange += DLCModifySoundRange(SourceUnitState, WeaponState, ActivatedAbilityState, GameState);
+			// LWS Mods: let DLC/mods change the sound range.
+			SoundRange += DLCModifySoundRange(SourceUnitState, WeaponState, ActivatedAbilityState, GameState);
+			// End Issue #126
 
 			if( SoundRange > 0 )
 			{
-                // LWS Mods: Use the target location if the sound *does not* originate at the owner and there is a target. Otherwise use the source.
+				// Conditional for Issue #126
+				// LWS Mods: Use the target location if the sound *does not* originate at the owner and there is a target. Otherwise use the source.
 				if( !WeaponState.SoundOriginatesFromOwnerLocation() && ActivatedAbilityStateContext.InputContext.TargetLocations.Length > 0 )
 				{
 					SoundLocation = ActivatedAbilityStateContext.InputContext.TargetLocations[0];

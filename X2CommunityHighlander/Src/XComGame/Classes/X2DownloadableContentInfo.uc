@@ -351,6 +351,7 @@ static function bool DLCDisableTutorial(UIShellDifficulty Screen)
     return false;
 }
 
+/// Start Issue #126
 /// <summary>
 /// Called from XComGameState_Unit::OnAbilityActivated
 /// Allows DLC/Mods to modify the sound range of abilities. Only called for abilities that make sound.
@@ -359,6 +360,7 @@ static function int ModifySoundRange(XComGameState_Unit SourceUnit, XComGameStat
 {
     return 0;
 }
+/// End Issue #126
 
 /// <summary>
 /// Called from XComTacticalController::Visualizer_SelectNextUnit and XComTacticalController::Visualizer_SelectPrevUnit.
