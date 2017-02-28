@@ -8135,7 +8135,7 @@ function ValidateLoadout(XComGameState NewGameState)
 	local XComGameState_Item EquippedHeavyWeapon, EquippedGrenade, EquippedAmmo, UtilityItem; // Special slots
 	local array<XComGameState_Item> EquippedUtilityItems; // Utility Slots
 	local int idx, NumSlots; // Variable for Issue #114
-	local int RequiredFilledUtilitySlots; // LWS Added
+	local int RequiredFilledUtilitySlots; // Variable for Issue #115
 
 	// Grab HQ Object
 	History = `XCOMHISTORY;
@@ -8270,11 +8270,14 @@ function ValidateLoadout(XComGameState NewGameState)
 		idx--;
 	}
 
+	// Start Issue #115
 	//LWS Add hook to set minimum number of required utility items
 	RequiredFilledUtilitySlots = 1;
 	DLCMinimumRequiredUtilityItems(RequiredFilledUtilitySlots, NewGameState);
+	// End Issue #115
 
 	// Equip Default Utility Item in first slot if needed
+	// Conditional for Issue #115
 	while(EquippedUtilityItems.Length < RequiredFilledUtilitySlots && GetCurrentStat(eStat_UtilityItems) > 0)
 	{
 		UtilityItem = GetBestUtilityItem(NewGameState);
@@ -8283,6 +8286,7 @@ function ValidateLoadout(XComGameState NewGameState)
 	}
 }
 
+// Start Issue #115
 // LWS: Added helper to query DLC/mods to determine minimum required utility items
 function DLCMinimumRequiredUtilityItems(out int Value, XComGameState NewGameState)
 {
@@ -8295,6 +8299,7 @@ function DLCMinimumRequiredUtilityItems(out int Value, XComGameState NewGameStat
 		DLCInfos[i].GetMinimumRequiredUtilityItems(Value, self, NewGameState);
 	}
 }
+// End Issue #115
 
 
 //------------------------------------------------------

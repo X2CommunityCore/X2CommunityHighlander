@@ -225,12 +225,14 @@ static function bool GetNumUtilitySlotsOverride(out int NumSlots, XComGameState_
 }
 /// End Issue #114
 
+/// Start Issue #115
 /// <summary>
 /// Called from XComGameState_Unit:ValidateLoadout
 //  Allows DLC/Mods to override the minimum number of utility slots to be set during validate loadout
 // modify the out parameter Value to make change
 /// </summary> 
 static function GetMinimumRequiredUtilityItems(out int Value, XComGameState_Unit UnitState, XComGameState NewGameState);
+/// End Issue #115
 
 /// Start Issue #60
 /// <summary>
