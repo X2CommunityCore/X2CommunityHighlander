@@ -19,6 +19,7 @@ struct ProjectileSoundMapping
 // The list of mission types to enable the radius manager to display rescue rings.
 var config const array<string> RadiusManagerMissionTypes;       
 
+// Issue #125
 // If true, enable the yellow alert movement system.
 var config const bool EnableYellowAlert;
 
@@ -137,10 +138,12 @@ static function bool ShouldUseRadiusManagerForMission(String MissionName)
 }
 // End Issue #26
 
+// Start Issue #125
 static function bool YellowAlertEnabled()
 {
     return default.EnableYellowAlert;
 }
+// End Issue #125
 
 // Start Issue #52
 // Disable the line of play based on local config

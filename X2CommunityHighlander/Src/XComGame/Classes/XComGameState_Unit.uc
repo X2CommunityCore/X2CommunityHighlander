@@ -7061,11 +7061,13 @@ static function UnitASeesUnitB(XComGameState_Unit UnitA, XComGameState_Unit Unit
 				AlertCause = eAC_SeesSpottedUnit;
 			}
 		}
-        // LWS MODS: "SeesAlertedAllies" does not fire when yellow alert is enabled. This spams the alert system for
-        // pods when they see their own pod mates in yellow. Even reducing it to only fire on allies in red does not
-        // work well as it'll frequently create a fresher suspicious alert at a worse location than the one that put
-        // them in yellow.
+		// Start Issue #125
+		// LWS MODS: "SeesAlertedAllies" does not fire when yellow alert is enabled. This spams the alert system for
+		// pods when they see their own pod mates in yellow. Even reducing it to only fire on allies in red does not
+		// work well as it'll frequently create a fresher suspicious alert at a worse location than the one that put
+		// them in yellow.
 		else if(!class'Helpers_LW'.static.YellowAlertEnabled() && UnitB.GetCurrentStat(eStat_AlertLevel) > 0)
+		// End Issue #125
 		{
 			// Prevent alerting the group if this is a fallback unit. (Fallback is not meant to aggro the other group)
 			UnitBGroup = UnitB.GetGroupMembership();
