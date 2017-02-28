@@ -10696,8 +10696,11 @@ function int GetSuppressors(optional out array<StateObjectReference> Suppressors
 		if( EffectState != None )
 		{
 			Effect = EffectState.GetX2Effect();  
+
+			// Conditional for Issue #121
+			// LWS- changed so that child classes of X2Effect_Suppression count
 			//if( Effect.IsA('X2Effect_Suppression') )
-			if (X2Effect_Suppression(Effect) != none) // LWS- changed so that child classes of X2Effect_Suppression count
+			if (X2Effect_Suppression(Effect) != none)
 			{
 				Suppressors.AddItem(EffectState.ApplyEffectParameters.SourceStateObjectRef);
 			}
