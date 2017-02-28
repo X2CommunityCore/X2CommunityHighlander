@@ -5480,6 +5480,8 @@ simulated function bool CanAddItemToInventory(const X2ItemTemplate ItemTemplate,
 	local X2WeaponTemplate WeaponTemplate;
 	local X2GrenadeTemplate GrenadeTemplate;
 	local X2ArmorTemplate ArmorTemplate;
+
+	// Start Issue #124
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS: Added for hook
 	local int bCanAddItem; // LWS: hackery to avoid bool not being allowed to be out parameter
 
@@ -5491,6 +5493,7 @@ simulated function bool CanAddItemToInventory(const X2ItemTemplate ItemTemplate,
 			return bCanAddItem > 0; 
 		}
 	}
+	// End Issue #124
 
 	if( bIgnoreItemEquipRestrictions )
 		return true;
