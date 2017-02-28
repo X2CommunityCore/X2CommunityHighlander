@@ -4238,7 +4238,7 @@ protected function bool ApplyBleedingOut(XComGameState NewGameState)
 		ApplyData.EffectRef.LookupType = TELT_BleedOutEffect;
 		if (BleedOutEffect.ApplyEffect(ApplyData, self, NewGameState) == 'AA_Success')
 		{
-			LowestHP = 1; // makes wound times correct if unit is bleeding out
+			LowestHP = 1; // Issue #108 - makes wound times correct if unit is bleeding out
 			LogMsg = class'XLocalizedData'.default.BleedingOutLogMsg;
 			LogMsg = repl(LogMsg, "#Unit", GetName(eNameType_RankFull));
 			`COMBATLOG(LogMsg);
