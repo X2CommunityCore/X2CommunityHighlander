@@ -5257,11 +5257,13 @@ simulated function XComUnitPawn CreatePawn( Actor PawnOwner, vector UseLocation,
 
     bIsInCreate = false;
 
+	// Start Issue #113
 	//Trigger to allow mods access to the newly created pawn
 	if(SaveGameActive())
 	{
 		`XEVENTMGR.TriggerEvent('OnCreateCinematicPawn', SpawnedPawn, self);
 	}
+	// End Issue #113
 	return SpawnedPawn;
 }
 
@@ -5794,6 +5796,7 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 	return false;
 }
 
+// Start Issue #113
 //LW helper function -- determines if we are in the shell or not
 simulated function bool SaveGameActive()
 {
@@ -5814,6 +5817,7 @@ simulated function bool SaveGameActive()
 
 	return true;
 }
+// End Issue #113
 
 //LW helper function - returns -1 if no override
 simulated function int GetNumUtilitySlots(optional XComGameState_Item Item, optional XComGameState CheckGameState)
