@@ -7121,6 +7121,8 @@ static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameSta
 					AIGroupState.InitiateReflexMoveActivate(UnitB, AlertCause);
 				}
 				// otherwise, reveal iff XCom has visibility of the current unit location
+				
+				// Conditional for Issue #123
 				// LWS -- removed this exploit, which can cause units to enter Red Alert but not scamper
 				else if(class'X2TacticalVisibilityHelpers'.static.GetNumEnemyViewersOfTarget(UnitA.ObjectID) >= 0)
 				{
