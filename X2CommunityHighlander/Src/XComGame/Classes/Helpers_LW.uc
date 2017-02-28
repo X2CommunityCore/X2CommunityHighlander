@@ -41,6 +41,7 @@ var config int NoiseAlertSoundRange;
 // Enable/disable the use of the 'Yell' ability before every civilian BT evaluation. Enabled by default.
 var config bool EnableCivilianYellOnPreMove;
 
+// Start Issue #122
 // If this flag is set, units in yellow alert will not peek around cover to determine LoS - similar to green units.
 // This is useful when yellow alert is enabled because you can be in a situation where a soldier is only a single tile
 // out of LoS from a green unit, and that neighboring tile that they would have LoS from is the tile they will use to
@@ -49,6 +50,7 @@ var config bool EnableCivilianYellOnPreMove;
 // shoot at another pod you can see from concealment, or a nearby pod activating despite no aliens being in LoS when you 
 // break concealment by hacking an objective (which alerts all pods).
 var config bool NoPeekInYellowAlert;
+// End Issue #122
 
 
 // this int controls how low the deployable soldier count has to get in order to trigger the low manpower warning

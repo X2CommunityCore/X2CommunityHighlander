@@ -549,6 +549,7 @@ event UpdateGameplayVisibility(out GameRulesCache_VisibilityInfo InOutVisibility
 				InOutVisibilityInfo.bVisibleGameplay = false;
 				InOutVisibilityInfo.GameplayVisibleTags.AddItem('PeekNotAvailable_Source');
 			}
+			// Start Issue #122
 			else if (!InOutVisibilityInfo.bVisibleFromDefault && ControllingPlayerIsAI() && 
 				GetCurrentStat(eStat_AlertLevel) < (class'Helpers_LW'.default.NoPeekInYellowAlert ? 2 : 1))
 			{
@@ -559,6 +560,7 @@ event UpdateGameplayVisibility(out GameRulesCache_VisibilityInfo InOutVisibility
 				InOutVisibilityInfo.bVisibleGameplay = false;
 				InOutVisibilityInfo.GameplayVisibleTags.AddItem('PeekNotAvailable_Source');
 			}
+			// End Issue #122
 		
 			History.GetCurrentAndPreviousGameStatesForObjectID(InOutVisibilityInfo.TargetID, TargetPreviousState, TargetCurrentState);
 			kTargetCurrent = XComGameState_Unit(TargetCurrentState);
@@ -572,14 +574,17 @@ event UpdateGameplayVisibility(out GameRulesCache_VisibilityInfo InOutVisibility
 				}
 
 				//Support for targeting non cover taking units with their peeks. Looks pretty bad though so it is gated by a config option...
-				// LWS Note: Setting that config also makes LoS asymmetrical because the above check for this unit
-				// being able to see the target with a peek doesn't have the same additional condition.
+				
 				if(kTargetCurrent.ControllingPlayerIsAI())
 				{
+					// Start Issue #122
+					// LWS Note: Setting that config also makes LoS asymmetrical because the above check for this unit
+					// being able to see the target with a peek doesn't have the same additional condition.
 					// LWS Mods: Allow a configurable hook to determine if the unit is "unalerted" and
 					// therefore shouldn't have cover or use peeks.
 					//bUnalerted = kTargetCurrent.GetCurrentStat(eStat_AlertLevel) == 0;
 					bUnalerted = kTargetCurrent.GetCurrentStat(eStat_AlertLevel) < (class'Helpers_LW'.default.NoPeekInYellowAlert ? 2 : 1);
+					// End Issue #122
 					bUnitCanUseCover = kTargetCurrent.GetMyTemplate().bCanTakeCover || class'X2Ability_DefaultAbilitySet'.default.bAllowPeeksForNonCoverUnits;
 
 					//Handle the case where the target's peeks should be unavailable. Either because they are moving or for some other game mechanics reason.
