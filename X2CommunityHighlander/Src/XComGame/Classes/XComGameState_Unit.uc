@@ -4605,7 +4605,7 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 	local XComGameState_HeadquartersXCom XComHQ;
 	local Name CharacterGroupName, CharacterDeathEvent;
 	//local XComGameState_BaseObject SourceOfDeath;
-	local X2Effect DeathEffect; // LWS Added
+	local X2Effect DeathEffect; // For Issue #111
 
 	LogMsg = class'XLocalizedData'.default.UnitDiedLogMsg;
 	LogMsg = repl(LogMsg, "#Unit", GetName(eNameType_RankFull));
@@ -4745,7 +4745,8 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 		}
 	}
 
-	//LWS : fixed issue where unit death from bleeding out would be marked as friendly fire from bled-out unit
+	// Start Issue #111
+	// fixed issue where unit death from bleeding out would be marked as friendly fire from bled-out unit
 	DeathEffect = class'X2Effect'.static.GetX2Effect( EffectData.EffectRef );
 	if (X2Effect_BleedingOut(DeathEffect) != none)
 	{
@@ -4755,6 +4756,7 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 	{
 		m_strCauseOfDeath = class'UIBarMemorial_Details'.static.FormatCauseOfDeath( self, Killer, NewGameState.GetContext() );
 	}
+	// End Issue #111
 
 	if (ApplyToOwnerAndComponents)
 	{
