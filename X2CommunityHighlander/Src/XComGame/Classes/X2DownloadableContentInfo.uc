@@ -313,6 +313,7 @@ static function int GetNumObjectivesToSpawn(XComGameState_BattleData BattleData)
 	return -1;
 }
 
+/// Start Issue #69
 /// <summary>
 /// Called from XComGameState_AIReinforcementSpawner::BuildVisualizationForSpawnerCreation.
 /// Allows DLC/Mods to disable the visualization of the reinforcement flare/psi-gate indicator.
@@ -322,6 +323,7 @@ static function bool DisableAIReinforcementFlare(XComGameState_AIReinforcementSp
 {
     return false;
 }
+/// End Issue #69
 
 /// Start Issue #54
 /// <summary>
