@@ -291,6 +291,7 @@ static function bool LoadingScreenOverrideTransitionMap(optional out string Over
 }
 /// End Issue #31
 
+/// Start Issue #134
 /// <summary>
 /// Called from XComParcelManager:ChooseSoldierSpawn
 //  Allows DLC/Mods to override the soldier spawn point selection logic
@@ -300,6 +301,7 @@ static function XComGroupSpawn OverrideSoldierSpawn(vector ObjectiveLocation, ar
 {
 	return none;
 }
+/// End Issue #134
 
 /// <summary>
 /// Called from XComTacticalMissionManager:SelectObjectiveSpawns
