@@ -3,7 +3,6 @@
 //  AUTHOR:  Dan Kaplan  --  10/30/2015
 //  PURPOSE: Provides the visualizer for loot drop objects
 //           
-//	LWS:	 Made the mesh non-protected so it can be accessed and instanced
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -13,6 +12,7 @@ class XComLootDropActor extends DynamicPointInSpace
 
 
 // Looting variables
+// For Issue #133 - Made the mesh non-protected so it can be accessed and instanced
 var StaticMeshComponent LootMarkerMesh;
 
 
