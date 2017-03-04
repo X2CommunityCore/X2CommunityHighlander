@@ -572,6 +572,8 @@ private function StrategyMap_FinishTransitionEnter()
 	}
 	else
 	{
+		// Conditional for Issue #129
+		// This selection should only occur when controller active
 		if (StrategyMap2D.HasLastSelectedMapItem() && `ISCONTROLLERACTIVE)
 		{
 			StrategyMap2D.SelectLastSelectedMapItem();
