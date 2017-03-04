@@ -6,13 +6,6 @@
 // Copyright 1998-2008 Epic Games, Inc. All Rights Reserved.
 //=============================================================================
 
-// LWS Modifications
-//
-// tracktwo - Add calls to a new DLCInfo hook from DrawDebugLabels to allow mods
-//            to draw debug info to the screen.
-//          - Add calls to a new DLCInfo hook from Next/Prev unit selection to
-//            allow mods to sort units in the tab order list.
-
 class XComTacticalController extends XComPlayerController
 	implements(X2VisualizationMgrObserverInterfaceNative)
 	dependson(XComPathData)
@@ -288,8 +281,10 @@ simulated function bool Visualizer_SelectNextUnit()
 	local XComGameState_Unit SelectNewUnit;	
 	local XComGameState_Unit CurrentUnit;	
 	local bool bAllowedToSwitch;
-    local int DLCIndex;
-    local array<X2DownloadableContentInfo> DLCInfos;
+
+	// Variables for Issue #137
+	local int DLCIndex;
+	local array<X2DownloadableContentInfo> DLCInfos;
 
 	if (`TUTORIAL != none)
 	{
@@ -314,16 +309,22 @@ simulated function bool Visualizer_SelectNextUnit()
 		bAllowedToSwitch = bAllowedToSwitch && CurrentUnit.ReflexActionState != eReflexActionState_SelectAction;
 	}
 
-    // LWS Mods: Allow DLC/Mods to sort the tab order list
-    DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
-    for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
-    {
-        DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, true);
-    }
+	// Start Issue #137
+	//
+	// Add calls to a new DLCInfo hook from Next/Prev unit selection to
+	// allow mods to sort units in the tab order list.
+	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
+	{
+		DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, true);
+	}
+	// End Issue #137
 
 	while (EligibleUnits.Length > 0 && bAllowedToSwitch)
 	{
 		CurrentSelectedIndex = 0;
+
+		// Conditional for Issue #137
 		// LWS Mods: If this is a turn start, ControllingUnit will be empty, so don't try to go through this loop
 		// to select the unit after the currently selected unit, as it will always return unit index 1. We want to
 		// start turns at index 0 since Mods/DLC may have sorted the unit list, so starting at 1 will mean the unit
@@ -361,8 +362,10 @@ simulated function bool Visualizer_SelectPreviousUnit()
 	local array<XComGameState_Unit> EligibleUnits;
 	local XComGameState_Unit SelectNewUnit;
 	local XComGameState_Unit CurrentUnit;
-    local int DLCIndex;
-    local array<X2DownloadableContentInfo> DLCInfos;
+
+	// Variables for Issue #137
+	local int DLCIndex;
+	local array<X2DownloadableContentInfo> DLCInfos;
 
 	if (`TUTORIAL != none)
 	{
@@ -382,12 +385,14 @@ simulated function bool Visualizer_SelectPreviousUnit()
 	//Not allowed to switch if the currently controlled unit is being forced to take an action next
 	CurrentUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ControllingUnit.ObjectID));
 
-    // LWS Mods: Allow DLC/Mods to sort the tab order list
-    DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
-    for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
-    {
-        DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, false);
-    }
+	// Start Issue #137
+	// LWS Mods: Allow DLC/Mods to sort the tab order list
+	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
+	{
+		DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, false);
+	}
+	// End Issue #137
 
 	while( EligibleUnits.Length > 0 && CurrentUnit.ReflexActionState != eReflexActionState_SelectAction )
 	{
@@ -832,6 +837,8 @@ function DrawDebugLabels(Canvas kCanvas)
 
 		// Start Issue #136
 		// LWS Modifications:
+		// tracktwo - Add calls to a new DLCInfo hook from DrawDebugLabels to allow mods
+		//            to draw debug info to the screen.
 		//
 		// Allow DLC/Mods to draw debug information to the screen.
 		DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);

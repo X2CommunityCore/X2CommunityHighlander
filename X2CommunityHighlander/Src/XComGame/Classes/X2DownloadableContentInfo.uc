@@ -366,6 +366,7 @@ static function int ModifySoundRange(XComGameState_Unit SourceUnit, XComGameStat
 }
 /// End Issue #126
 
+/// Start Issue #137
 /// <summary>
 /// Called from XComTacticalController::Visualizer_SelectNextUnit and XComTacticalController::Visualizer_SelectPrevUnit.
 /// Allows DLC/Mods to sort the array of units for tab order purposes.
@@ -374,6 +375,7 @@ static function int ModifySoundRange(XComGameState_Unit SourceUnit, XComGameStat
 static function SortTabOrder(out array<XComGameState_Unit> Units, XComGameState_Unit CurrentUnit, bool TabbingForward)
 {
 }
+/// End Issue #137
 
 /// Start Issue #132
 /// <summary>
