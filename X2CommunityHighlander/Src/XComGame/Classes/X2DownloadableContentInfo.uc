@@ -177,6 +177,7 @@ static function ModifyEarnedSoldierAbilities(out array<SoldierClassAbilityType> 
 }
 /// End Issue #106
 
+/// Start Issue #140
 /// <summary>
 /// Called from XComTacticalMissionManager:GetActiveMissionIntroDefinition before it returns the Default (but after any arrMission-specific override)
 //  Return true to use 
@@ -185,6 +186,7 @@ static function bool UseAlternateMissionIntroDefinition(MissionDefinition Active
 {
 	return false;
 }
+/// End Issue #140
 
 /// <summary>
 /// Called from UIArmory_WeaponUpgradeItem:UpdateDropItemButton 

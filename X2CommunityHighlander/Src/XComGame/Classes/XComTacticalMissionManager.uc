@@ -1,6 +1,3 @@
-// LWS:	Made CacheMissionManagerCards public so it could be invoked by mod code
-//			Added AlternateMissionIntroDefinitions that allow defining by category of missions
-
 class XComTacticalMissionManager extends Object
 	native(Core)
 	dependson(X2StrategyGameRulesetDataStructures, XComLWTuple)
@@ -222,6 +219,7 @@ function CacheMissionManagerCards()
 
 function MissionIntroDefinition GetActiveMissionIntroDefinition()
 {
+	// Variables for Issue #140
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local MissionIntroDefinition MissionIntro;
 	local int i;
@@ -232,6 +230,7 @@ function MissionIntroDefinition GetActiveMissionIntroDefinition()
 	}
 	else
 	{
+		// Start Issue #140
 		DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 		for(i = 0; i < DLCInfos.Length; ++i)
 		{
@@ -240,6 +239,8 @@ function MissionIntroDefinition GetActiveMissionIntroDefinition()
 				return MissionIntro;
 			}
 		}
+		// End Issue #140
+		
 		return DefaultMissionIntroDefinition;
 	}
 }
