@@ -305,6 +305,7 @@ static function XComGroupSpawn OverrideSoldierSpawn(vector ObjectiveLocation, ar
 }
 /// End Issue #134
 
+/// Start Issue #142
 /// <summary>
 /// Called from XComTacticalMissionManager:SelectObjectiveSpawns
 //  Allows DLC/Mods to override the the number of objective spawns in a mission
@@ -314,6 +315,7 @@ static function int GetNumObjectivesToSpawn(XComGameState_BattleData BattleData)
 {
 	return -1;
 }
+/// End Issue #142
 
 /// Start Issue #69
 /// <summary>

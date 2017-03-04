@@ -975,20 +975,23 @@ private function array<ObjectiveSpawnPossibility> SelectObjectiveSpawns(Objectiv
 	local ObjectiveSpawnPossibility Spawn;
 	local ObjectiveSpawnPossibility Check;
 	local float MinDistanceBetweenObjectives;
-    local XComGameState_BattleData BattleData;
 	local int NumToSelect;
 	local int AttemptCount;
+
+	// Variables for Issue #142
+	local XComGameState_BattleData BattleData;
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS Added
 	local int i; // LWS Added
 
-    BattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
-    NumToSelect = -1;
+	// Start Issue #142
+	BattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
+	NumToSelect = -1;
 
-    // If we have battle info with a mission ID, query for the right number of objectives to use by passing this BattleData.
+	// If we have battle info with a mission ID, query for the right number of objectives to use by passing this BattleData.
 	// Each mod can return a value, if it wants to override -- the first mod to do so has its override value used
-    if (BattleData != none && BattleData.m_iMissionID > 0)
-    {
- 		DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	if (BattleData != none && BattleData.m_iMissionID > 0)
+	{
+		DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 		for(i = 0; i < DLCInfos.Length; ++i)
 		{
 			NumToSelect = DLCInfos[i].GetNumObjectivesToSpawn(BattleData);
@@ -997,12 +1000,13 @@ private function array<ObjectiveSpawnPossibility> SelectObjectiveSpawns(Objectiv
 				break;
 			}
 		}
-   }
+	}
 
 	if (NumToSelect < 0) // Did not get an override: select the number of objectives by the mission type.
-    {
-        NumToSelect = SpawnInfo.iMinObjectives + `SYNC_RAND_TYPED(SpawnInfo.iMaxObjectives - SpawnInfo.iMinObjectives);
-    }
+	{
+			NumToSelect = SpawnInfo.iMinObjectives + `SYNC_RAND_TYPED(SpawnInfo.iMaxObjectives - SpawnInfo.iMinObjectives);
+	}
+	// End Issue #142
 
 	if(SpawnInfo.iMinTilesBetweenObjectives <= 0)
 	{
