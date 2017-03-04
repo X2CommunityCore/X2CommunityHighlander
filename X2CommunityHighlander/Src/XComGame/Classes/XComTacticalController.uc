@@ -751,8 +751,10 @@ function DrawDebugLabels(Canvas kCanvas)
 	local XComSpawnRestrictor Restrictor;
 	local X2CharacterTemplate CharacterTemplate;
 	local Name CharacterTemplateName;
-    local array<X2DownloadableContentInfo> DLCInfos;
-    local int DLCInfoIndex;
+
+	// Variables for Issue #136
+	local array<X2DownloadableContentInfo> DLCInfos;
+	local int DLCInfoIndex;
 
 //	local XGAbility_BullRush kAb;
 	//local Actor tempActor;
@@ -828,15 +830,17 @@ function DrawDebugLabels(Canvas kCanvas)
 			}
 		}
 
-        // LWS Modifications:
-        //
-        // Allow DLC/Mods to draw debug information to the screen.
-        DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
-        for (DLCInfoIndex = 0; DLCInfoIndex < DLCInfos.Length; ++DLCInfoIndex)
-        {
-            DLCInfos[DLCInfoIndex].DrawDebugLabel(kCanvas);
-        }
-        // END LWS MODS
+		// Start Issue #136
+		// LWS Modifications:
+		//
+		// Allow DLC/Mods to draw debug information to the screen.
+		DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+		for (DLCInfoIndex = 0; DLCInfoIndex < DLCInfos.Length; ++DLCInfoIndex)
+		{
+				DLCInfos[DLCInfoIndex].DrawDebugLabel(kCanvas);
+		}
+		// END LWS MODS
+		// End Issue #136
 	}
 }
 function DrawDebugData( HUD H )

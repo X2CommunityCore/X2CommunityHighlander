@@ -335,6 +335,7 @@ static function bool OverrideDestructibleInitialHealth(out int NewHealth, XComGa
 }
 /// End Issue #54
 
+/// Start Issue #136
 /// <summary>
 ///
 /// Called from XComTacticalController::DrawDebugLabels.
@@ -342,6 +343,7 @@ static function bool OverrideDestructibleInitialHealth(out int NewHealth, XComGa
 function DrawDebugLabel(Canvas kCanvas)
 {
 }
+/// End Issue #136
 
 /// <summary>
 /// Called from UIShellDifficulty::DLCDisableTutorial. (new helper)
