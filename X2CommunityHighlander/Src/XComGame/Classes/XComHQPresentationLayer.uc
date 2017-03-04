@@ -1981,10 +1981,12 @@ simulated function OnMissionSelected(XComGameState_MissionSite MissionSite, opti
 	{
 		GoldenPathCB(eUIAction_Accept, MissionSite.Source, None, bInstant );
 	}
+	// Start Issue #131
 	else 
 	{
 		`XEVENTMGR.TriggerEvent('OnMissionSelectedUI', MissionSite, MissionSite); // LW added
 	}
+	// End Issue #131
 }
 simulated function UIGOpsMission(optional bool bInstant = false)
 {
