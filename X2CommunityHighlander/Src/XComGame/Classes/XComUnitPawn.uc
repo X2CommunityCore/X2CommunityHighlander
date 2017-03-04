@@ -1481,10 +1481,11 @@ function CreateDefaultAttachments()
 	}
 	if (XComHumanPawn(self) == none) // defer XComHumanPawn adjustments until part customization
 	{
-		DLCAppendSockets(); // LWS added call to helper function
+		DLCAppendSockets(); // For Issue #132
 	}
 }
 
+// Start Issue #132
 // helper function added by LWS to allow DLC/Mods to append sockets to units
 function DLCAppendSockets()
 {
@@ -1512,6 +1513,7 @@ function DLCAppendSockets()
 		}
 	}
 }
+// End Issue #132
 
 function CreateBodyPartAttachment(XComBodyPartContent BodyPartContent)
 {

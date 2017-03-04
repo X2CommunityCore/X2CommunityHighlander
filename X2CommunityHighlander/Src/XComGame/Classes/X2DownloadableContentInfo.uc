@@ -371,6 +371,7 @@ static function SortTabOrder(out array<XComGameState_Unit> Units, XComGameState_
 {
 }
 
+/// Start Issue #132
 /// <summary>
 /// Called from XComUnitPawn::CreateDefaultAttachments
 /// Allows DLC/Mods to append sockets to an existing pawn type
@@ -379,6 +380,7 @@ static function string DLCAppendSockets(XComUnitPawn Pawn)
 {
 	return "";
 }
+/// End Issue #132
 
 /// Start Issue #83
 /// <summary>

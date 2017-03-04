@@ -1124,7 +1124,7 @@ simulated function OnHeadLoaded(PawnContentRequest ContentRequest)
  		m_kHeadMeshComponent.SetParentAnimComponent(Mesh);
 		AttachComponent(m_kHeadMeshComponent);
 		Mesh.AppendSockets(m_kHeadMeshComponent.Sockets, true);
-		DLCAppendSockets(); // LWS Added
+		DLCAppendSockets(); // For Issue #132
 		ResetMaterials(m_kHeadMeshComponent);
 		m_kHeadMeshComponent.SetHidden(false);
  	}
@@ -1327,7 +1327,7 @@ simulated function OnArmsLoaded(PawnContentRequest ContentRequest)
 	{
 		UseMeshComponent.SetParentAnimComponent(Mesh);		
 		Mesh.AppendSockets(UseMeshComponent.Sockets, true);
-		DLCAppendSockets(); // LWS Added
+		DLCAppendSockets(); // For Issue #132
 	}
 
 	UpdateMeshMaterials(UseMeshComponent);
@@ -1355,7 +1355,7 @@ simulated function OnLegsLoaded(PawnContentRequest ContentRequest)
 	m_kLegsMC.SetParentAnimComponent(Mesh);
 	
 	Mesh.AppendSockets(m_kLegsMC.Sockets, true);
-	DLCAppendSockets(); // LWS Added
+	DLCAppendSockets(); // For Issue #132
 	MarkAuxParametersAsDirty(m_bAuxParamNeedsPrimary, m_bAuxParamNeedsSecondary, m_bAuxParamUse3POutline);
 }
 
@@ -1673,7 +1673,7 @@ simulated function OnBodyPartLoaded(PawnContentRequest ContentRequest)
 				UseMeshComponent.SetParentAnimComponent(Mesh);
 				UseMeshComponent.bUpdateMorphWhenParentAnimComponentExists = true;
 				Mesh.AppendSockets(UseMeshComponent.Sockets, true);
-				DLCAppendSockets(); // LWS Added
+				DLCAppendSockets(); // For Issue #132
 			}
 
 			UpdateMeshMaterials(UseMeshComponent);
@@ -1725,7 +1725,7 @@ simulated function OnTorsoLoaded(PawnContentRequest ContentRequest)
 	m_kTorsoComponent.SetParentAnimComponent(Mesh);
 	
 	Mesh.AppendSockets(m_kTorsoComponent.Sockets, true);
-	DLCAppendSockets(); // LWS Added
+	DLCAppendSockets(); // For Issue #132
 
 	for( AttachmentIndex = 0; AttachmentIndex < TorsoContent.DefaultAttachments.Length; ++AttachmentIndex )
 	{
