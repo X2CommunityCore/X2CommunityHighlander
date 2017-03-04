@@ -289,6 +289,8 @@ simulated function ExitPostMissionSequence()
 	DisplayShakenSoldierPopups();
 
 	// If our force is understrength, warn the player
+	
+	// Start Issue #128
 	// LWS adding override to allow setting of this value to something else
 	if (class'Helpers_LW'.default.LowStrengthTriggerCount <= 0)
 	{
@@ -299,6 +301,7 @@ simulated function ExitPostMissionSequence()
 		LowSoldierWarningRequirement = class'Helpers_LW'.default.LowStrengthTriggerCount;
 	}
 	if (!XComHQ.AnyTutorialObjectivesInProgress() && XComHQ.GetNumberOfDeployableSoldiers() < LowSoldierWarningRequirement)
+	// End Issue #128
 	{ 
 		UIForceUnderstrength();
 	}

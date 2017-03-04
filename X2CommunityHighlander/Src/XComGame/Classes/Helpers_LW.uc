@@ -53,10 +53,11 @@ var config bool EnableCivilianYellOnPreMove;
 var config bool NoPeekInYellowAlert;
 // End Issue #122
 
-
+// Start Issue #128
 // this int controls how low the deployable soldier count has to get in order to trigger the low manpower warning
 // if it is not set (at 0), then the game will default to GetMaxSoldiersAllowedOnMission
 var config int LowStrengthTriggerCount;
+// End Issue #128
 
 // Start Issue #24
 // these variables control various world effects, to prevent additional voxel check that can cause mismatch between preview and effect
