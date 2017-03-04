@@ -106,7 +106,6 @@ var config float TacticalCursorTileAlignBlendFast;
 var config float TacticalCursorTileAlignBlendSlow;
 var config int TacticalCursorFramesBeforeAccel;
 
-
 cpptext
 {
 	/** called on the server when the client sends a message indicating it was unable to initialize an Actor channel,
@@ -574,7 +573,6 @@ function bool IsControllerPressed()
 {
 	return m_iNumFramesPressed > 0;
 }
-
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 simulated function ActiveUnitChanged()
@@ -1417,7 +1415,7 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 	}
 
-		//INS:
+	//INS:
 	event BeginState(Name PreviousStateName)
 	{
 		m_bStartedWalking = true;
@@ -1471,22 +1469,11 @@ ignores SeePlayer, HearNoise, Bump;
 			Y.Z = 0;
 			X = Normal(X);
 			Y = Normal(Y);
-
-
-
-
-
-
-
 		
 			// We were using aForward and aStrafe.  We now use raw input values for platform independence, but 
 			// correct for the amount the previous values were being scaled with 1.7573578512.
 			LSAxisX = PlayerInput.RawJoyUp * 1.7573578512;
 			LSAxisY = PlayerInput.RawJoyRight * 1.7573578512;
-
-
-
-
 
 			JustPressedDir = LSAxisX*X + LSAxisY*Y;
 			JustPressedDir.Z = 0;
@@ -1504,7 +1491,6 @@ ignores SeePlayer, HearNoise, Bump;
 			}
 			else
 			{
-
 				m_iNumFramesPressed = 0;
 				m_iNumFramesReleased++;
 			}
@@ -1548,12 +1534,8 @@ ignores SeePlayer, HearNoise, Bump;
 						NewAccel.Z = 0;
 						Pawn.AccelRate = 0;
 
-
 						Pawn.Velocity.X = 0;
 						Pawn.Velocity.Y = 0;
-
-
-
 						Pawn.Velocity.Z = 0;
 					}
 					else
@@ -1576,9 +1558,7 @@ ignores SeePlayer, HearNoise, Bump;
 					Pawn.AccelRate = 0;
 
 					Pawn.Velocity.X = 0;
-
 					Pawn.Velocity.Y = 0;
-
 					Pawn.Velocity.Z = 0;
 				}
 			}
@@ -1591,7 +1571,6 @@ ignores SeePlayer, HearNoise, Bump;
 					JustPressedDir = JustPressedDir	* ((fMagAnalogInput - TacticalCursorDeadzone) / (1.0 - TacticalCursorDeadzone));
 					fMagAnalogInput = VSize(JustPressedDir);
 
-
 					Pawn.AccelRate = TacticalCursorAccel;
 
 					StickPowerScale = (abs(fMagAnalogInput) ** (TacticalCursorStickAccelPower - 1.0));
@@ -1599,7 +1578,6 @@ ignores SeePlayer, HearNoise, Bump;
 					NewAccel = JustPressedDir * StickPowerScale;
 					NewAccel.Z = 0.0;
 					NewAccel = Pawn.AccelRate * NewAccel;
-
 				}
 				else // Slow when L-analog is released.
 				{
@@ -1620,7 +1598,6 @@ ignores SeePlayer, HearNoise, Bump;
 				}
 			}
 			m_fLastMagAnalogInput = fMagAnalogInput;
-
 
 
 			if( Role < ROLE_Authority ) // then save this move and replicate it
@@ -1644,7 +1621,6 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 	}
 }
-
 
 //--------------------------------- FIRING MODE ------------------------------
 
@@ -1988,7 +1964,6 @@ simulated function HideInputButtonRelatedHUDElements(bool bHide)
 {
 	GetPres().GetTacticalHUD().HideInputButtonRelatedHUDElements(bHide);
 }
-
 /**
  * Looks at the current game state and uses that to set the
  * rich presence strings
