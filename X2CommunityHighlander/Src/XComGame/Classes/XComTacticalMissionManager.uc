@@ -1,5 +1,4 @@
-// LWS:		Removed const tag on most config variables to allow run-time manipulation
-//			Made CacheMissionManagerCards public so it could be invoked by mod code
+// LWS:	Made CacheMissionManagerCards public so it could be invoked by mod code
 //			Added AlternateMissionIntroDefinitions that allow defining by category of missions
 
 class XComTacticalMissionManager extends Object
@@ -79,6 +78,7 @@ struct native AdditionalMissionIntroPackageMapping
 	var string AdditionalIntroMatineePackage; // additional matinee package to load when OriginalIntroMatineePackage is loaded
 };
 
+// Start Issue #139
 // config information -- LWS making these non-const so that code can modify the results
 var config private array<ProxyRewardUnitTemplateMapping> ProxyRewardUnitMappings;
 var config array<string> arrTMissionTypes;
@@ -93,6 +93,7 @@ var config array<PlotLootDefinition> arrPlotLootDefinitions;
 var config array<string> VIPMissionFamilies;
 var config MissionIntroDefinition DefaultMissionIntroDefinition;
 var config array<AdditionalMissionIntroPackageMapping> AdditionalMissionIntroPackages; // for modding, allows packages with intros for new character types to be loaded
+// End Issue #139
 
 //Used to allow mods to alias themselves to an existing mission type ( baked into shipping maps )
 struct native MissionTypeAliasEntry
@@ -100,6 +101,8 @@ struct native MissionTypeAliasEntry
 	var string KeyMissionType; //New mission type that should alias to a base game type
 	var array<string> AltMissionTypes; //List of base game types that are supported
 };
+
+// For Issue #139 - remove const
 var config array<MissionTypeAliasEntry> arrMissionTypeAliases;
 
 // runtime data
@@ -125,7 +128,7 @@ function ResetCachedCards()
 	HasCachedCards = false;
 }
 
-//LWS making this non-private so other functions can cache
+// For Issue #139 - LWS making this non-private so other functions can cache
 function CacheMissionManagerCards()
 {
 	local X2CardManager CardManager;
