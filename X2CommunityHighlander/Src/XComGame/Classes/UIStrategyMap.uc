@@ -513,7 +513,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 	local XComGameState_GeoscapeEntity EntityState;
 	local array<int> PendingStatesNeedingLocations;  // LWS Added
 	local Vector NewLocation;  // LWS Added
-	local class<UIStrategyMapItem> NewClass; //LWS Added
+	local class<UIStrategyMapItem> NewClass; // Variable for Issue #130
 
 	WidgetName = name(Entity.GetUIWidgetName());
 
@@ -524,9 +524,11 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 	}
 	else
 	{
+		// Start Issue #130
 		// LWS Mods : allow recursive overriding of strategy map item classes
 		NewClass = class<UIStrategyMapItem>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(Entity.GetUIClass()));
 		MapItem = Spawn(NewClass, ItemContainer).InitMapItem(Entity);
+		// End Issue #130
 		CachedWidgetNames.AddItem(WidgetName);
 		CachedMapItems.AddItem(MapItem);
 

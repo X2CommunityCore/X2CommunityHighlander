@@ -1168,7 +1168,7 @@ simulated function bool IsShowingReconnectControllerDialog()
 simulated function UICloseControllerUnplugDialog()
 {
 	local UIMovie_2D InterfaceMgr;
-	local class<UIOptionsPCScreen> ScreenClass; // LWS Mods added
+	local class<UIOptionsPCScreen> ScreenClass; // Variable for Issue #130
 
 	if( m_kControllerUnplugDialog != none )
 	{
@@ -1177,11 +1177,14 @@ simulated function UICloseControllerUnplugDialog()
 		ScreenStack.Pop( m_kControllerUnplugDialog );
 		m_kControllerUnplugDialog = none;
 	}
+
+	// Start Issue #130
 	ScreenClass = class<UIOptionsPCScreen>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UIOptionsPCScreen'));
 	if (ScreenStack.IsInStack(ScreenClass))
 	{
 		UIOptionsPCScreen(ScreenStack.GetScreen(ScreenClass)).RefreshConnectedControllers();
 	}
+	// End Issue #130
 }
 
 simulated function UIInputDialog(TInputDialogData kData) 
@@ -1468,20 +1471,24 @@ simulated function UpdateShortcutText()
 simulated function UIPCOptions( optional bool bIn3D = false ) 
 {
 	local UIMovie TargetMovie;
-	local class<UIOptionsPCScreen> ScreenClass; // LWS Mods added
+	local class<UIOptionsPCScreen> ScreenClass; // Variable for Issue #130
 
 	TargetMovie = XComShellPresentationLayer(self) == none ? Get2DMovie() : Get3DMovie();
 
+	// Start Issue #130
 	ScreenClass = class<UIOptionsPCScreen>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UIOptionsPCScreen'));
 	ScreenStack.Push( Spawn( ScreenClass, self ), TargetMovie );
+	// End Issue #130
 }
 
 simulated function bool IsPCOptionsRaised() 
 { 
-	local class<UIOptionsPCScreen> ScreenClass; // LWS Mods added
+	local class<UIOptionsPCScreen> ScreenClass; // Variable for Issue #130
 
+	// Start Issue #130
 	ScreenClass = class<UIOptionsPCScreen>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UIOptionsPCScreen'));
 	return (ScreenStack.GetScreen(ScreenClass) != none); 
+	// End Issue #130
 }
 
 

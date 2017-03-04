@@ -1666,6 +1666,8 @@ simulated function HotlinkToViewDarkEvents(optional bool bShowActiveDarkEvents =
 function UISquadSelect(optional bool bNoCancel=false)
 {
 	local UISquadSelect SquadSelectScreen;
+
+	// Start Issue #130
 	local class<UISquadSelect> ClassToBuild;
 
 	ClassToBuild = class<UISquadSelect>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UISquadSelect'));
@@ -1673,6 +1675,7 @@ function UISquadSelect(optional bool bNoCancel=false)
 	if(ScreenStack.IsNotInStack(ClassToBuild))
 	{
 		SquadSelectScreen = Spawn( ClassToBuild, self);
+		// End Issue #130
 		SquadSelectScreen.bNoCancel = bNoCancel;
 		ScreenStack.Push(SquadSelectScreen);
 	}
@@ -1694,15 +1697,16 @@ function UIAfterAction(optional bool bIsSimCombat)
 {
 	local class<UIAfterAction> ClassToBuild;
 
+	// Start Issue #130
 	ClassToBuild = class<UIAfterAction>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UIAfterAction'));
 
 	if(ScreenStack.IsNotInStack(ClassToBuild))
 	{
 		ScreenStack.Push( Spawn( ClassToBuild, self ) );
-		
 		// TODO @rmcfall: Remove this once intro sequence is fixed for SimCombat
 		if(bIsSimCombat)
 			UIAfterAction(ScreenStack.GetScreen(ClassToBuild)).Show();
+		// End Issue #130
 
 		`XSTRATEGYSOUNDMGR.PlayAfterActionMusic();
 	}

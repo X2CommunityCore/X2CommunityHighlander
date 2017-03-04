@@ -94,13 +94,14 @@ var config bool EnableRestartMissionButtonInIronman;
 var config array<ProjectileSoundMapping> ProjectileSounds;
 // End Issue #49
 
-//allow certain classes to be overridden recursively, so the override can be overridden
-var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
-
 //Configuration array to control how much damage fire does when it finishes burning
 // This is indexed by the number of turns it has been burning, which is typically 1 to 3,
 // but can be longer if the environment actor was configured with Toughness.AvailableFireFuelTurns
 var config array<int> FireEnvironmentDamageAfterNumTurns;
+
+// Start Issue #130
+//allow certain classes to be overridden recursively, so the override can be overridden
+var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
 
 simulated static function class<object> LWCheckForRecursiveOverride(class<object> ClassToCheck)
 {
@@ -131,6 +132,7 @@ simulated static function class<object> LWCheckForRecursiveOverride(class<object
 	`LOG("LWCheckForRecursiveOverride : Overrode " $ string(ClassToCheck) $ " to " $ CurrentBestClass);
 	return CurrentBestClass;
 }
+// End Issue #130
 
 // Start Issue #26 - allow radius manager to be usable on more than just 'Terror' missions
 static function bool ShouldUseRadiusManagerForMission(String MissionName)
