@@ -39,8 +39,10 @@ var config float AvengerCameraSpeedControlModifier;
 // The radius (in meters) for which a civilian noise alert can be heard.
 var config int NoiseAlertSoundRange;
 
+// Start Issue #147
 // Enable/disable the use of the 'Yell' ability before every civilian BT evaluation. Enabled by default.
 var config bool EnableCivilianYellOnPreMove;
+// End Issue #147
 
 // Start Issue #122
 // If this flag is set, units in yellow alert will not peek around cover to determine LoS - similar to green units.
