@@ -7,10 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Mods
-//  tracktwo - SkipTurn: Don't skip the entire group's turn if one unit skips its turn and the unit was unrevealed. This breaks
-//             the bonus reflex actions we award.
-
 class XGAIBehavior extends Actor
 	dependson(XComGameState_AIUnitData)
 	native(AI)
@@ -7553,6 +7549,9 @@ simulated function SkipTurn( optional string DebugLogText="" )
 	{
 		// If unrevealed, the entire group skips its turn.  Fixes assert with group movement, after group leader skips its move.
 
+		// Conditional for Issue #146
+		//  tracktwo - SkipTurn: Don't skip the entire group's turn if one unit skips its turn and the unit was unrevealed. This breaks
+		//             the bonus reflex actions we award.
 		// LWS Mods: This breaks reflex actions: A unit that is killed during scamper will skip its turn (no actions to take!)
 		// which will force the entire pod to skip any bonus reflex action (in addition to scamper, which is handled separately).
 		// I haven't seen this group movement assert, although making this change makes me pretty nervous. Hopefully this would
