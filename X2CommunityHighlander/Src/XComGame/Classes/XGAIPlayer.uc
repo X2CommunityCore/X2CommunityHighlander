@@ -931,7 +931,7 @@ simulated function GatherUnitsToMove()
 			}
 			// TODO: Sort units to move here.
 			UnitsToMove = arrOthers;
-			UnitsToMove.Sort(SortUnitsByAIJob); // LWS : Added unit sort
+			UnitsToMove.Sort(SortUnitsByAIJob); // For Issue #153 : Added unit sort
 		}
 	}
 	`logAI(self$"::GatherUnitsToMove found "@UnitsToMove.Length@" units to move.");
@@ -942,6 +942,7 @@ simulated function GatherUnitsToMove()
 
 }
 
+// Start Issue #153
 //LWS Added sort function to sort units based on AIJobs
 protected function int SortUnitsByAIJob(GameRulesCache_Unit CacheUnitA, GameRulesCache_Unit CacheUnitB)
 {
@@ -974,6 +975,7 @@ protected function int GetJobPriorityForUnitRef(StateObjectReference UnitRef, X2
 	}
 	return Priority;
 }
+// End Issue #153
 
 //=======================================================================================
 function OnTimedOut()
