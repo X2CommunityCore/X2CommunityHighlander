@@ -4147,12 +4147,14 @@ function string BT_GetLastAbilityName()
 
 function int BT_GetSuppressorCount()
 {
+	// Start Issue #121
 	// LWS - Modified to always GetSuppressors. Slower, but works correctly for child effects of Suppression
 	//if( UnitState.IsUnitAffectedByEffectName(class'X2Effect_Suppression'.default.EffectName) )
 	//{
 		return UnitState.GetSuppressors();
 	//}
 	//return 0;
+	// End Issue #121
 }
 function bool BT_SetSuppressorStack()
 {
