@@ -2,12 +2,6 @@ class XGAIPlayer extends XGPlayer
 	native(AI)
 	config(AI);
 
-// LWS Mods:
-//
-// tracktwo - GatherUnitsToMove: Don't skip units that have action points but have already moved this turn. Needed to allow bonus
-//            reaction actions on pod leaders - they may move, reveal, scamper, and then be granted bonus actions. By default they
-//            would not be considered for actions because they had already taken an action this turn (the original move).
-
 struct native reinforcements_info
 {
 	var bool bUnavailable;
@@ -814,12 +808,12 @@ simulated function GatherUnitsToMove()
 	local array<GameRulesCache_Unit> ScamperSetup;
 	local array<GameRulesCache_Unit> Scampering;
 	local XComTacticalCheatManager kCheatMgr;
-	//local XGAIBehavior kBehavior; // LWS Removed - see below
-	// local XComGameState_AIPlayerData kAIPlayerData; // LWS Removed - see below
+	//local XGAIBehavior kBehavior; // Removed for Issue #152
+	// local XComGameState_AIPlayerData kAIPlayerData; // Removed for Issue #152
 	local bool bDead;
 	local X2AIBTBehaviorTree BTMgr;
 
-	// LWS Removed
+	// Removed for Issue #152
 	// kAIPlayerData = XComGameState_AIPlayerData(`XCOMHISTORY.GetGameStateForObjectID(GetAIDataID()));
 
 	kCheatMgr = `CHEATMGR;
@@ -842,8 +836,15 @@ simulated function GatherUnitsToMove()
 				kCheatMgr.AIStringsAddUnit(UnitState.ObjectID, bDead);
 			}
 
+			// Start Issue #152
 			// LWS: Removed. Unused - see below.
 			// kBehavior = (XGUnit(UnitState.GetVisualizer())).m_kBehavior;
+
+			// LWS Mods:
+			//
+			// tracktwo - GatherUnitsToMove: Don't skip units that have action points but have already moved this turn. Needed to allow bonus
+			//            reaction actions on pod leaders - they may move, reveal, scamper, and then be granted bonus actions. By default they
+			//            would not be considered for actions because they had already taken an action this turn (the original move).
 
 			// Check if this unit has already moved this turn.  (Compare init history index to last turn start) 
 			// Also skip units that have currently no action points available.   They shouldn't be added to any lists.
@@ -851,6 +852,7 @@ simulated function GatherUnitsToMove()
 			// LWS Mods: Remove the condition that the unit has not already moved this turn. Ordinarily this is unnecessary because
 			// the unit will have no action points anyway, but removing this test is necessary for bonus reflex moves.
 			if(bDead || UnitState.bRemovedFromPlay || UnitState.NumAllActionPoints() == 0)
+			// End Issue #152
 			{
 				continue;
 			}
