@@ -8,8 +8,6 @@
 //---------------------------------------------------------------------------------------
 
 // LWS Mods
-//  tracktwo - GetTileWithinOneActionPointMove: Bugfix for flying units to allow them to find valid stopping
-//             points along the path that are within movement range.
 //  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
 //             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
 //             return "failure" and abort the node. Practically, this means that aliens wouldn't overwatch if you hunker
@@ -7199,19 +7197,24 @@ function bool GetTileWithinOneActionPointMove( TTile kTileIn, out TTile kTileOut
 	local array<TTile> arrPath;
 	local int iPathIdx;
 	local TTile kCurrTile;
-    local XComWorldData World;
 
-    World = `XWORLD;
+	// Variables for Issue #5
+	local XComWorldData World;
+	World = `XWORLD;
+
 	if (m_kUnit.m_kReachableTilesCache.BuildPathToTile(kTileIn, arrPath) && arrPath.Length > 0)
 	{
 		for (iPathIdx = arrPath.Length-1; iPathIdx >= 0; --iPathIdx)
 		{
 			kCurrTile = arrPath[iPathIdx];
-            // LWS Mods: Bugfix for flying units - the path will often have above-ground tiles on
-            // each point along the path except the start and end, so we need to reset each potential
-            // stopping point to the floor level before testing if it's in movement range, otherwise
-            // it will always return "-1" for an invalid end point tile that's above ground.
-            kCurrTile.Z = World.GetFloorTileZ(kCurrTile, true);
+
+			// Start Issue #5
+			// LWS Mods: Bugfix for flying units - the path will often have above-ground tiles on
+			// each point along the path except the start and end, so we need to reset each potential
+			// stopping point to the floor level before testing if it's in movement range, otherwise
+			// it will always return "-1" for an invalid end point tile that's above ground.
+			kCurrTile.Z = World.GetFloorTileZ(kCurrTile, true);
+			// End Issue #5
 			if( IsWithinMovementRange(kCurrTile, bAllowDashMovement) )
 			{
 				kTileOut = kCurrTile;
