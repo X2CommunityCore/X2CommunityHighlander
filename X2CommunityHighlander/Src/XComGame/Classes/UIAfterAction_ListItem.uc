@@ -111,6 +111,7 @@ simulated function UpdateData(optional StateObjectReference UnitRef)
 				Unit.GetSoldierClassTemplate().IconImage, class'LWUtilities_Ranks'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit),
 				(bCanPromote) ? class'UISquadSelect_ListItem'.default.m_strPromote : "",
 				statusLabel, statusText, daysLabel, daysText, m_strMissionsLabel, string(Unit.GetNumMissions()),
+				// Issue #157 - unit.IsPsiOperative() changed from false
 				m_strKillsLabel, string(Unit.GetNumKills()), Unit.IsPsiOperative(), ClassStr);
 
 	AS_SetUnitHealth(class'UIUtilities_Strategy'.static.GetUnitCurrentHealth(Unit, true), class'UIUtilities_Strategy'.static.GetUnitMaxHealth(Unit));
