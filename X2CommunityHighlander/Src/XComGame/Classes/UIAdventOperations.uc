@@ -1,5 +1,3 @@
-// LWS: Modified to add hook to SignalOnReceiveFocus when switching state from pending to active Dark Events
-
 class UIAdventOperations extends UIX2SimpleScreen;
 
 var public localized String m_strTitle;
@@ -354,6 +352,8 @@ simulated function FlipScreenMode()
 {
 	bShowActiveEvents = !bShowActiveEvents;
 	BuildScreen();
+
+	// Issue #156: Modified to add hook to SignalOnReceiveFocus when switching state from pending to active Dark Events
 	SignalOnReceiveFocus();
 }
 
