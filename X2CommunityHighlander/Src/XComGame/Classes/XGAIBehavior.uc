@@ -3830,19 +3830,21 @@ function bool BT_AlertDataWasSoundMade()
 	local AlertData Data;
 	if( GetAlertData(Data) )
 	{
-        // LWS Mods: AlertRadius for sound was not implemented (SoundRange info isn't put into alert data). Use alert cause instead.
-        if (class'Helpers_LW'.static.YellowAlertEnabled())
-        {
-            switch(Data.AlertCause)
-            {
-            case eAC_DetectedSound:
-                return true;
-            }
+		// Start Issue #125
+		// LWS Mods: AlertRadius for sound was not implemented (SoundRange info isn't put into alert data). Use alert cause instead.
+		if (class'Helpers_LW'.static.YellowAlertEnabled())
+		{
+			switch(Data.AlertCause)
+			{
+			case eAC_DetectedSound:
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        return (Data.AlertRadius > 0);
+		return (Data.AlertRadius > 0);
+		// End Issue #125
 	}
 	return false;
 }
