@@ -7,10 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS MODS:
-//  tracktwo - allow green patrol movement to use other alert sources if pod is in yellow alert
-//             (it's simpler to extend green patrol movement to accept new alert locations than
-//              to teach higher alert movement how to patrol).
 class XGAIPatrolGroup extends XGAIGroup
 	native(AI);
 
@@ -141,9 +137,17 @@ function bool CheckForOverrideDestination(out vector CurrDestination, int Object
 			if( AlertData.AlertCause == eAC_ThrottlingBeacon ||
 				AlertData.AlertCause == eAC_MapwideAlert_Hostile ||
 				AlertData.AlertCause == eAC_MapwideAlert_Peaceful ||
-                // LWS: If yellow alert is enabled we'll patrol to any valid alert, whichever is highest priority.
+
+				// Start Issue #148
+				// LWS MODS:
+				//  tracktwo - allow green patrol movement to use other alert sources if pod is in yellow alert
+				//             (it's simpler to extend green patrol movement to accept new alert locations than
+				//              to teach higher alert movement how to patrol).
+				// LWS: If yellow alert is enabled we'll patrol to any valid alert, whichever is highest priority.
 				// This is necessary for patrol movement to function: they need *some* destination.
-                (class'Helpers_LW'.static.YellowAlertEnabled() && Unit.GetCurrentStat(eStat_AlertLevel) > 0))
+				(class'Helpers_LW'.static.YellowAlertEnabled() && Unit.GetCurrentStat(eStat_AlertLevel) > 0)
+				// End Issue #148
+			)
 			{
 				CurrDestination = `XWORLD.GetPositionFromTileCoordinates(AlertData.AlertLocation);
 				return true;
