@@ -10,7 +10,6 @@
 // LWS Mods
 //  tracktwo - GetTileWithinOneActionPointMove: Bugfix for flying units to allow them to find valid stopping
 //             points along the path that are within movement range.
-//  tracktwo - ScoreDestinationTile: Do not score tiles based on cover value if this unit doesn't use cover.
 //  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
 //             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
 //             return "failure" and abort the node. Practically, this means that aliens wouldn't overwatch if you hunker
@@ -1065,9 +1064,13 @@ function ai_tile_score ScoreDestinationTile( TTile kTile, vector vLoc, XComCover
 	RawTileData_out = FillTileScoreData(kTile, vLoc, kCover,,fDistFromEnemy);
 	// Scoring data
 	// Cover value increases as our new cover improves over the old cover.  Also increases if we were flanked.
-    // LWS Mods: Only units that can use cover should score tiles based on cover value.
-    if (CanUseCover())
-	    kDiffScore.fCoverValue = RawTileData_out.fCoverValue - m_kCurrTileData.fCoverValue; 
+	
+	// Start Issue #144
+	//  tracktwo - ScoreDestinationTile: Do not score tiles based on cover value if this unit doesn't use cover.
+	// LWS Mods: Only units that can use cover should score tiles based on cover value.
+	if (CanUseCover())
+		kDiffScore.fCoverValue = RawTileData_out.fCoverValue - m_kCurrTileData.fCoverValue; 
+	// End Issue #144
 
 	// UPDATE- Distance score difference is no longer calculated here since the weighting factors into both sides of the difference calculation.
 	kDiffScore.fDistanceScore = RawTileData_out.fDistanceScore;
