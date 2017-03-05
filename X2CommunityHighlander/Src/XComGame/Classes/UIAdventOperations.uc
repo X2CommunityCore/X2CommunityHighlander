@@ -81,6 +81,7 @@ simulated function RefreshNav()
 
 	if( !bResistanceReport )
 	{
+		// Conditional Removed for Issue #155
 		//if( ALIENHQ().ActiveDarkEvents.Length > 0 ) // LWS : Removed so that toggle is shown even if there aren't active pending events, since there may be active events
 		//{
 			if (bShowActiveEvents)
@@ -91,15 +92,18 @@ simulated function RefreshNav()
 			{
 				NavHelp.AddCenterHelp(m_strShowActiveButton, class'UIUtilities_Input'.static.GetGamepadIconPrefix() $ class'UIUtilities_Input'.const.ICON_Y_TRIANGLE, FlipScreenMode);
 			}
+		// Conditional Removed for Issue #155
 		//}
 	}
 
+	// Start Issue #155 - moved block from above !bResistanceReport
 	// Carry On
 	NavHelp.AddBackButton(OnContinueClicked);
 	if ( `ISCONTROLLERACTIVE &&  bResistanceReport)
 	{
 		NavHelp.AddContinueButton();
 	}
+	// End Issue #155
 }
 
 simulated function BuildTitlePanel()
