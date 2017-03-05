@@ -450,8 +450,11 @@ function UpdateHeadStaffLocations()
 function RefreshCrewPhotographs()
 {
 	local StateObjectReference CrewRef;
-    local XComLWTuple Tuple; // LWS Added
-    local int i; // LWS Added
+
+	// Variables for Issue #149
+	local XComLWTuple Tuple; // LWS Added
+	local int i; // LWS Added
+
 	foreach XComHQ.Crew(CrewRef)
 	{
 		TakeCrewPhotobgraph(CrewRef);
@@ -462,18 +465,20 @@ function RefreshCrewPhotographs()
 		TakeCrewPhotobgraph(CrewRef);
 	}
 
-    // LWS: Allow mods to queue additional photographs
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = 'RefreshCrewPhotographs';
-    `XEVENTMGR.TriggerEvent('RefreshCrewPhotographs', Tuple, Tuple, none);
-    for (i = 0; i < Tuple.Data.Length; ++i)
-    {
-        if (Tuple.Data[i].Kind == XComLWTVInt)
-        {
-            CrewRef.ObjectID = Tuple.Data[i].i;
-            TakeCrewPhotobgraph(CrewRef);
-        }
-    }
+	// Start Issue #149
+	// LWS: Allow mods to queue additional photographs
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'RefreshCrewPhotographs';
+	`XEVENTMGR.TriggerEvent('RefreshCrewPhotographs', Tuple, Tuple, none);
+	for (i = 0; i < Tuple.Data.Length; ++i)
+	{
+		if (Tuple.Data[i].Kind == XComLWTVInt)
+		{
+			CrewRef.ObjectID = Tuple.Data[i].i;
+			TakeCrewPhotobgraph(CrewRef);
+		}
+	}
+	// End Issue #149
 }
 
 //Specify bForce if the photograph should be taken even if it is already cached ( for example, after a character has been customized )
