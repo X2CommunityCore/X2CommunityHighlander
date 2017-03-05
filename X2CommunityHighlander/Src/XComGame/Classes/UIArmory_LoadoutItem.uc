@@ -55,7 +55,7 @@ simulated function UIArmory_LoadoutItem InitLoadoutItem(XComGameState_Item Item,
 			else
 			{
 				//SetCount(class'UIUtilities_Strategy'.static.GetXComHQ().GetNumItemInInventory(ItemTemplate.DataName));
-				SetCount(Item.Quantity); // LWS fixes bug in how primary weapon count gets displayed
+				SetCount(Item.Quantity); // Issue #162 - LWS fixes bug in how primary weapon count gets displayed
 			}
 		}
 	}
