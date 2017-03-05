@@ -6,7 +6,6 @@
 //           It creates and manages the Soldier Pawn, and various UI controls
 //			 that get reused on several UIArmory_ screens.
 //
-//	LWS:	 Added code to prevent cycling of soldiers with eStatus_OnMission
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -208,7 +207,9 @@ simulated function NextSoldier()
 
 simulated static function bool CanCycleTo(XComGameState_Unit Unit)
 {
-	return Unit.IsSoldier() && !Unit.IsDead() && Unit.GetStatus() != eStatus_OnMission; // LWS: Added check against eStatus_OnMission
+	// For Issue #160
+	// Added code to prevent cycling of soldiers with eStatus_OnMission
+	return Unit.IsSoldier() && !Unit.IsDead() && Unit.GetStatus() != eStatus_OnMission; 
 }
 
 simulated static function CycleToSoldier(StateObjectReference NewRef)
