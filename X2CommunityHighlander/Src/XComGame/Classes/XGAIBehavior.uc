@@ -8,13 +8,6 @@
 //---------------------------------------------------------------------------------------
 
 // LWS Mods
-//  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
-//             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
-//             return "failure" and abort the node. Practically, this means that aliens wouldn't overwatch if you hunker
-//             everyone, because they'll all have a negative hit chance so the overwatch node will think there are no targets,
-//             not that it has only poor shots and thus overwatching is a decent idea. Clamping it to 0 means it'll return 0
-//             if there are targets with no chance to hit, and overwatch will be considered since the unit has only terrible
-//             shots.
 //  tracktwo - SkipTurn: Don't skip the entire group's turn if one unit skips its turn and the unit was unrevealed. This breaks
 //             the bonus reflex actions we award.
 
@@ -2560,10 +2553,20 @@ function int BT_GetHighestHitChanceAgainstXCom()
 		}
 		Ability.GetShotBreakdown(Target, Breakdown);
 		HitChance = Breakdown.FinalHitChance;
+
+		// Start Issue #145
+		//  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
+		//             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
+		//             return "failure" and abort the node. Practically, this means that aliens wouldn't overwatch if you hunker
+		//             everyone, because they'll all have a negative hit chance so the overwatch node will think there are no targets,
+		//             not that it has only poor shots and thus overwatching is a decent idea. Clamping it to 0 means it'll return 0
+		//             if there are targets with no chance to hit, and overwatch will be considered since the unit has only terrible
+		//             shots.
 		// LWS Mods: Clamp hit chance to a minimum of 0: negative values are special and will fail
 		// the calling node, meaning if the unit asks "are all my hit chances below 50%?" the answer
 		// would be "fail!" and not "yes" if there are visible enemies but every tohit chance is negative.
 		HitChance = Max(0, HitChance);
+		// End Issue #145
 		if( HitChance > TopHitChance )
 		{
 			TopHitChance = HitChance;
