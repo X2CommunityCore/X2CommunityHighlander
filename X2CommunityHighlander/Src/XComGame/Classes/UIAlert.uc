@@ -3852,6 +3852,8 @@ simulated function OnRemoved()
 	if (bRestoreCameraPosition && !bAlertTransitionsToMission)
 	{
 		XComHQPresentationLayer(Movie.Pres).CAMRestoreSavedLocation();
+
+		// Conditional for Issue #129
 		if (`ISCONTROLLERACTIVE) 
 		{
 			`HQPRES.StrategyMap2D.ShowCursor();
