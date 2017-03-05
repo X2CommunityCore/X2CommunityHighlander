@@ -1,5 +1,4 @@
-
-class UIAlert extends UIX2SimpleScreen config (UI);
+class UIAlert extends UIX2SimpleScreen config (UI); // for issue #158
 
 enum EAlertType
 {
@@ -520,7 +519,7 @@ var public localized array<String> m_strPowerCoilShieldedList;
 var public localized String m_strLaunchMissionWarningHeader;
 var public localized String m_strLaunchMissionWarningTitle;
 
-// LWS Mods: Config vars for some alerts
+// Issue #158: Config vars for some alerts
 var config bool HideIncomeOnBuildOutpost;
 
 var EAlertType eAlert;
@@ -1726,17 +1725,20 @@ simulated function BuildContactMadeAlert()
 	LibraryPanel.MC.QueueString(m_strContactMadeTitle);
 	LibraryPanel.MC.QueueString(class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(GetRegion().GetMyTemplate().DisplayName));
 	LibraryPanel.MC.QueueString(strContact);
-    // LWS mods: configurable ability to show income
-    if (HideIncomeOnBuildOutpost)
-    {
-        LibraryPanel.MC.QueueString("");
-        LibraryPanel.MC.QueueString("");
-    }
-    else
-    {
-        LibraryPanel.MC.QueueString(m_strContactMadeIncome);
-        LibraryPanel.MC.QueueString(GetContactIncomeString());
-    }
+
+	// Start Issue #158
+	// LWS mods: configurable ability to show income
+	if (HideIncomeOnBuildOutpost)
+	{
+			LibraryPanel.MC.QueueString("");
+			LibraryPanel.MC.QueueString("");
+	}
+	else
+	{
+			LibraryPanel.MC.QueueString(m_strContactMadeIncome);
+			LibraryPanel.MC.QueueString(GetContactIncomeString());
+	}
+	// End Issue #158
 	LibraryPanel.MC.QueueString(m_strOK);
 	LibraryPanel.MC.QueueString(""); //reward label
 	LibraryPanel.MC.QueueString(""); //reward value
@@ -1777,18 +1779,21 @@ simulated function BuildOutpostBuiltAlert()
 	LibraryPanel.MC.QueueString(m_strOutpostBuiltTitle);
 	LibraryPanel.MC.QueueString(class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(GetRegion().GetMyTemplate().DisplayName));
 	LibraryPanel.MC.QueueString(strBody);
-    // LWS Mods: configurable ability to show income.
-    if (HideIncomeOnBuildOutpost)
-    {
-        LibraryPanel.MC.QueueString("");
-        LibraryPanel.MC.QueueString("");
-    }
-    else
-    {
-	    LibraryPanel.MC.QueueString(m_strOutpostBuiltIncome);
-	    LibraryPanel.MC.QueueString(GetContactIncomeString());
-    }
-    LibraryPanel.MC.QueueString(m_strOK);
+
+	// Start Issue #158
+	// LWS Mods: configurable ability to show income.
+	if (HideIncomeOnBuildOutpost)
+	{
+			LibraryPanel.MC.QueueString("");
+			LibraryPanel.MC.QueueString("");
+	}
+	else
+	{
+		LibraryPanel.MC.QueueString(m_strOutpostBuiltIncome);
+		LibraryPanel.MC.QueueString(GetContactIncomeString());
+	}
+	LibraryPanel.MC.QueueString(m_strOK);
+	// End Issue #158
 	LibraryPanel.MC.EndOp();
 
 	//This panel has only one button, for confirm.
