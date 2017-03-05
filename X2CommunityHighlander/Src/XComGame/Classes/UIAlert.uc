@@ -2844,6 +2844,8 @@ simulated function BuildItemAvailableAlert()
 	kInfo.strName = ItemTemplate.GetItemFriendlyName(, false);
 	kInfo.strBody = ItemTemplate.GetItemBriefSummary();
 	kInfo.strConfirm = m_strAccept;
+
+	// Start Issue #159
 	if(ItemTemplate.strInventoryImage != "") // LWS : Added conditional to allow displaying of nicer images for weapons
 	{
 		kInfo.strImage = ItemTemplate.strInventoryImage;
@@ -2852,6 +2854,7 @@ simulated function BuildItemAvailableAlert()
 	{
 		kInfo.strImage = ItemTemplate.strImage;	
 	}
+	// End Issue #159
 	kInfo.eColor = eUIState_Good;
 	kInfo.clrAlert = MakeLinearColor(0.0, 0.75, 0.0, 1);
 
