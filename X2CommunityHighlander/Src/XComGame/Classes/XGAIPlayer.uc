@@ -693,11 +693,11 @@ static function bool IsMindControlled(XComGameState_Unit UnitState)
 }
 
 // Update - green alert units and units that have not yet revealed should do their patrol movement.
-// Override by LWS: goal is to remove isunrevealedAI flag, as units seen by concealed xcoms are stopping for no logical reason
 
 function bool ShouldUnitPatrol( XComGameState_Unit UnitState )
 {
-	local XComLWTuple OverrideTuple;  // LWS  added
+	// Variables for Issue #151
+	local XComLWTuple OverrideTuple;
 	local bool PassOrSkipUnRevealedAI;
  
 	if( IsMindControlled(UnitState) )
@@ -705,6 +705,8 @@ function bool ShouldUnitPatrol( XComGameState_Unit UnitState )
 		return false;
 	}
 
+	// Start Issue #151
+	// Override by LWS: goal is to remove isunrevealedAI flag, as units seen by concealed xcoms are stopping for no logical reason
 	OverrideTuple = new class'XComLWTuple';
 	OverrideTuple.Id = 'ShouldUnitPatrolUnderway';
 	OverrideTuple.Data.Add(2);
@@ -719,6 +721,7 @@ function bool ShouldUnitPatrol( XComGameState_Unit UnitState )
 	PassOrSkipUnRevealedAI = OverrideTuple.Data[0].b || UnitState.IsUnrevealedAI();
 
 	if( (PassOrSkipUnRevealedAI && !IsScampering(UnitState.ObjectID)) )
+	// End Issue #151
 	{
 		// For now only allow group leaders to direct movement when unrevealed.
 		if( UnitState.GetGroupMembership().m_arrMembers[0].ObjectID == UnitState.ObjectID )
