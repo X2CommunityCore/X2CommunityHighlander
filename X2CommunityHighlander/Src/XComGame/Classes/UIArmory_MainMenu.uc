@@ -442,13 +442,15 @@ simulated function OnDismissUnit()
 simulated public function OnDismissUnitCallback(eUIAction eAction)
 {
 	local XComGameState_HeadquartersXCom XComHQ;
-	local XComGameState_Unit Unit;
+	local XComGameState_Unit Unit; // Variable for Issue #165
 
 	if( eAction == eUIAction_Accept )
 	{
+		// Start Issue #165
 		// LWS: trigger now to allow triggers when dismissing a unit (e.g. cleaning up component gamestates)
 		Unit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(UnitReference.ObjectID));
 		`XEVENTMGR.TriggerEvent('OnDismissSoldier', Unit, self);
+		// End Issue #165
 
 		XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
 		XComHQ.FireStaff(UnitReference);
