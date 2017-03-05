@@ -2117,7 +2117,7 @@ function UpdateValidAndLastResortTargetList()
 	local array<XComGameState_Unit> AllPlayableUnits, OriginalUnits;
 	local XComGameState_Unit UnitState;
 	local LastResortEffect LREffect;
-	//local bool bIsLastResortUnit; // LWS: Removed
+	//local bool bIsLastResortUnit; // Removed for Issue #150
 
 	kEnemyPlayer = `BATTLE.GetEnemyPlayer(self);
 	kEnemyPlayer.GetPlayableUnits(AllPlayableUnits);
@@ -2141,25 +2141,27 @@ function UpdateValidAndLastResortTargetList()
 	foreach AllPlayableUnits(UnitState)
 	{
 		// Unit ID gets added to either the last resort list or the valid targets list.
-		//bIsLastResortUnit = false; LWS: Removed. See comment below
+		//bIsLastResortUnit = false; Removed for Issue #150
 		foreach LastResortTargetEffects(LREffect)
 		{
 			if( IsAffectedByLastResortEffect(UnitState, LREffect))
 			{
 				LastResortTargetList.AddItem(UnitState.ObjectID);
-				//bIsLastResortUnit = true; // LWS Removed
+				//bIsLastResortUnit = true; // Removed for Issue #150
 				break;
 			}
 		}
 
-        // LWS Removed: Track the "last resort" units, but keep them in the target list and score them
-        // differently from non-last-resort units. Avoids situations where AI will double-move to go 
-        // try to find a non-last-resort unit that is really far away instead of targeting a last-resort
-        // unit that's nearby.
+		// Start Issue #150
+		// LWS Removed: Track the "last resort" units, but keep them in the target list and score them
+		// differently from non-last-resort units. Avoids situations where AI will double-move to go 
+		// try to find a non-last-resort unit that is really far away instead of targeting a last-resort
+		// unit that's nearby.
 		//if( bIsLastResortUnit )
 		//{
 		//	continue;
 		//}
+		// End Issue #150
 		ValidTargetsBasedOnLastResortEffects.AddItem(UnitState.ObjectID);
 	}
 
