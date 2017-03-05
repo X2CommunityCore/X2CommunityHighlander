@@ -7126,9 +7126,10 @@ state AlertDataMovement extends MoveState
 		return m_vBTDestination;
 	}
 
-    // LWS Mods: Alert move should move in a group if unactivated (implies EnableYellowAlert is
-    // true since otherwise all unactivated AI uses Green movement).
-    function bool IsGroupMove()
+	// Start Issue #125
+	// LWS Mods: Alert move should move in a group if unactivated (implies EnableYellowAlert is
+	// true since otherwise all unactivated AI uses Green movement).
+	function bool IsGroupMove()
 	{
 		if (UnitState.IsUnrevealedAI() && m_kPatrolGroup != None && !m_kPatrolGroup.bDisableGroupMove)
 		{
@@ -7136,6 +7137,7 @@ state AlertDataMovement extends MoveState
 		}
 		return super.IsGroupMove();
 	}
+	// End Issue #125
 }
 //------------------------------------------------------------------------------------------------
 state XComMovement extends MoveState // Only accessed via specialized behavior tree, i.e. panic/scamper/etc.
