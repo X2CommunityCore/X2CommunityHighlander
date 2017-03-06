@@ -160,7 +160,7 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 	local UISoldierHeader SoldierHeader;
 	local array<XComGameState_Item> EquippedImplants;
 	local XComGameState_Item ImplantToAdd, ImplantToRemove;
-	local string Will, Aim, Health, Mobility, Tech, Psi, Dodge; // LWS : added dodge
+	local string Will, Aim, Health, Mobility, Tech, Psi, Dodge; // Issue #172 : added dodge
 
 	super.SelectedItemChanged(ContainerList, ItemIndex);
 
@@ -177,13 +177,13 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 	Aim = string( int(Unit.GetCurrentStat( eStat_Offense )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Offense);
 	Health = string( int(Unit.GetCurrentStat( eStat_HP )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_HP);
 	Mobility = string( int(Unit.GetCurrentStat( eStat_Mobility )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Mobility);
-	Dodge = string( int(Unit.GetCurrentStat( eStat_Dodge )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Dodge); // LWS : Added dodge
+	Dodge = string( int(Unit.GetCurrentStat( eStat_Dodge )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Dodge); // Isssue #172 : Added dodge
 	Tech = string( int(Unit.GetCurrentStat( eStat_Hacking )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Hacking);
 
 	if(Unit.IsPsiOperative())
 		Psi = string( int(Unit.GetCurrentStat( eStat_PsiOffense )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_PsiOffense);
 
-	SoldierHeader.SetSoldierStats(Health, Mobility, Aim, Will,, Dodge, Tech, Psi); // LWS : Added dodge
+	SoldierHeader.SetSoldierStats(Health, Mobility, Aim, Will,, Dodge, Tech, Psi); // Issue #172 : Added dodge
 }
 
 simulated function string GetStatBoostString(XComGameState_Item ImplantToAdd, XComGameState_Item ImplantToRemove, ECharStatType StatType)
