@@ -9,6 +9,7 @@
 //--------------------------------------------------------------------------------------- 
 
 // LWS Changes
+// Issue #82
 //
 // tracktwo - Add optional arguments to GetSuppliesReward calls to fetch the actual supply totals
 //            and not just the expected totals.
@@ -86,7 +87,9 @@ simulated function UpdateCouncilReportCardRewards()
 {
 	local XComGameState_HeadquartersResistance ResistanceHQ;
 	local bool bIsPositiveMonthly; 
-    local XComLWTuple Tuple;
+
+	// Variable for Issue #82
+	local XComLWTuple Tuple;
 
 	ResistanceHQ = RESHQ();
 	bIsPositiveMonthly = (ResistanceHQ.GetSuppliesReward(true) > 0);
@@ -108,6 +111,7 @@ simulated function UpdateCouncilReportCardRewards()
 		MC.QueueString("");
 	}
 
+	// Start Issue #82
 	// LW Mods: Allow mods to replace (or extend) the baseline DE supply value drop
 	Tuple = new class'XComLWTuple';
 	Tuple.Id = 'GetSupplyDropDecreaseStrings';
@@ -132,6 +136,7 @@ simulated function UpdateCouncilReportCardRewards()
 			MC.QueueString("");
 		}
 	}
+	// End Issue #82
 
 	MC.EndOp();
 }
@@ -258,8 +263,8 @@ simulated function CloseScreen()
 	NewGameState.AddStateObject(ResistanceHQ);
 	ResistanceHQ.ResetActivities();
 
-    // Allow mods to do end-of-month processing
-    `XEVENTMGR.TriggerEvent('OnClosedMonthlyReportAlert', , , NewGameState);
+	// Allow mods to do end-of-month processing
+	`XEVENTMGR.TriggerEvent('OnClosedMonthlyReportAlert', , , NewGameState);
 
 	`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 
