@@ -353,6 +353,7 @@ function DrawDebugLabel(Canvas kCanvas)
 }
 /// End Issue #136
 
+/// Start Issue #180
 /// <summary>
 /// Called from UIShellDifficulty::DLCDisableTutorial. (new helper)
 /// Allows DLC/Mods to disable the tutorial (similar to how difficulty does in base game)
@@ -362,6 +363,7 @@ static function bool DLCDisableTutorial(UIShellDifficulty Screen)
 {
     return false;
 }
+/// End Issue #180
 
 /// Start Issue #126
 /// <summary>
