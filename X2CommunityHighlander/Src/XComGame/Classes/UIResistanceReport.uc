@@ -263,7 +263,7 @@ simulated function CloseScreen()
 	NewGameState.AddStateObject(ResistanceHQ);
 	ResistanceHQ.ResetActivities();
 
-	// Allow mods to do end-of-month processing
+	// Issue #179 - Allow mods to do end-of-month processing
 	`XEVENTMGR.TriggerEvent('OnClosedMonthlyReportAlert', , , NewGameState);
 
 	`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
