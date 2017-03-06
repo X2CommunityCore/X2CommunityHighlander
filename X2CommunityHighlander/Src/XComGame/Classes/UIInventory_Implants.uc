@@ -108,11 +108,15 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 	local XComGameState_Unit Unit;
 	local XComGameState_Item Implant, ImplantToRemove;
 	local array<XComGameState_Item> EquippedImplants;
+
+	// Variables for Issue #171
 	local bool bCanEquipImplantResult;
-    local XComLWTuple Tuple;
-	
-	bCanEquipImplantResult = true;
+	local XComLWTuple Tuple;
+
 	Implant = XComGameState_Item(History.GetGameStateForObjectID(ImplantRef.ObjectID));
+
+	// Start Issue #171
+	bCanEquipImplantResult = true;
 	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	if (Unit == none)
 	{
@@ -122,6 +126,7 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 	{
 		bCanEquipImplantResult = false; // LWS : added error checking code -- this should be captured by Armory_MainMenu
 	}
+	// End Issue #171
 	EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
 	ImplantToRemove = XComGameState_Item(`XCOMHISTORY.GetGameStateForObjectID(EquippedImplants[0].ObjectID));
 	
@@ -129,21 +134,23 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 		class'UIUtilities_Strategy'.static.GetStatBoost(ImplantToRemove).StatType  && 
 		class'UIUtilities_Strategy'.static.GetStatBoost(Implant).Boost <= 
 		class'UIUtilities_Strategy'.static.GetStatBoost(ImplantToRemove).Boost)
+	// Start Issue #171
 	{
 		bCanEquipImplantResult = false;
 	}
 
 	bCanEquipImplantResult = class'UIUtilities_Strategy'.static.GetStatBoost(Implant).StatType != eStat_PsiOffense || Unit.IsPsiOperative();
 
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = 'OverrideCanEquipImplant';
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'OverrideCanEquipImplant';
 	Tuple.Data.Add(1);
-    Tuple.Data[0].Kind = XComLWTVBool;
-    Tuple.Data[0].b = bCanEquipImplantResult; // the default result
+	Tuple.Data[0].Kind = XComLWTVBool;
+	Tuple.Data[0].b = bCanEquipImplantResult; // the default result
 
-    `XEVENTMGR.TriggerEvent('OverrideCanEquipImplant', Tuple, self);
+	`XEVENTMGR.TriggerEvent('OverrideCanEquipImplant', Tuple, self);
 
 	return Tuple.Data[0].b;
+	// End Issue #171
 }
 
 simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
