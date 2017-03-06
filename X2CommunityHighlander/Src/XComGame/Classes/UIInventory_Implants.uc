@@ -1,7 +1,7 @@
 //LWS : Override to allow support for ability-based and other new PCSes.
 
 
-class UIInventory_Implants extends UIInventory config(GameData);
+class UIInventory_Implants extends UIInventory config(GameData); // Config for Issue #170
 
 var localized string m_strNoImplants;
 
@@ -12,6 +12,7 @@ var localized string m_strReplaceImplantText;
 
 var array<XComGameState_Item> Implants;
 
+// Variable for Issue #170
 var config name PCSRemovalContinentBonusOverride;
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
@@ -245,6 +246,7 @@ simulated function OnItemSelected(UIList ContainerList, int ItemIndex)
 
 		EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
 		
+		// Conditional for Issue #170
 		if (IsContinentBonusActive ())
 		{
 			// Skip the popups if the continent bonus for reusing upgrades is active
@@ -340,6 +342,7 @@ simulated function RemoveImplant()
 	{
 		UpdatedState.AddStateObject(UpdatedUnit);
 
+		// Conditional for Issue #170
 		if (IsContinentBonusActive ()) // Continent Bonus is letting us reuse upgrades, so put it back into the inventory
 		{
 			XComHQ = XComGameState_HeadquartersXCom(UpdatedState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
@@ -415,6 +418,7 @@ simulated function CloseScreen()
 	Movie.Pres.PlayUISound(eSUISound_MenuClose);
 }
 
+// Start Issue #170
 //LWS : new helper function
 function bool IsContinentBonusActive ()
 {
@@ -436,6 +440,7 @@ function bool IsContinentBonusActive ()
 	}
 	return false;
 }
+// End Issue #170
 
 defaultproperties
 {
