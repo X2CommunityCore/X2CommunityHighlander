@@ -7,12 +7,13 @@
 //  Copyright (c) 2009-2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
 
+// Start Issue #175
 // Modified for LWS:
 //  tracktwo -  Add config(UI) & make a configurable list of mission families to show the "civilians saved" result instead
 //              of hardcoded to 'Terror'.
 
-
 class UIMissionSummary extends UIScreen config(UI);
+// End Issue #175
 
 const MISSION_SUCCESS = 0;
 const MISSION_FAILURE = 1;
@@ -55,6 +56,7 @@ var localized string m_strGoodRating;
 var localized string m_strFairRating;
 var localized string m_strPoorRating;
 
+// Variable for Issue #175
 var config array<String> m_CivilianRescueMissionFamilies;
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
@@ -210,7 +212,8 @@ simulated function string GetObjectiveLabel()
 	local GeneratedMissionData GeneratedMission;
 	
 	GeneratedMission = class'UIUtilities_Strategy'.static.GetXComHQ().GetGeneratedMissionData(BattleData.m_iMissionID);
-    if (m_CivilianRescueMissionFamilies.Find(GeneratedMission.Mission.MissionFamily) >= 0)
+	// Conditional for Issue #175
+	if (m_CivilianRescueMissionFamilies.Find(GeneratedMission.Mission.MissionFamily) >= 0)
 	{
 		return m_strCiviliansRescuedLabel;
 	}
@@ -221,11 +224,14 @@ simulated function string GetObjectiveLabel()
 simulated function string GetObjectiveValue()
 {
 	local GeneratedMissionData GeneratedMission;
-    local int CiviliansRescuedIndex;
+	// Variable for Issue #175
+	local int CiviliansRescuedIndex;
 
 	GeneratedMission = class'UIUtilities_Strategy'.static.GetXComHQ().GetGeneratedMissionData(BattleData.m_iMissionID);
-    CiviliansRescuedIndex = m_CivilianRescueMissionFamilies.Find(GeneratedMission.Mission.MissionFamily);
-    if (CiviliansRescuedIndex >= 0)
+
+	// Statement and Conditional for Issue #175
+	CiviliansRescuedIndex = m_CivilianRescueMissionFamilies.Find(GeneratedMission.Mission.MissionFamily);
+	if (CiviliansRescuedIndex >= 0)
 	{
 		return GetCiviliansSaved();
 	}
