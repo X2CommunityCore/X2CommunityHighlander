@@ -195,14 +195,14 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 		////If you don't have a current button, fall down and hit the Navigation system. 
 		
 		//OnLaunchClicked(none);
-		Button1.Click(); // LWS - mapping KB/Controller commands through mouse handler so that mods that change handler work with KB/Controller
+		Button1.Click(); // Issue #181 - mapping KB/Controller commands through mouse handler so that mods that change handler work with KB/Controller
 		
 		break;
 	case class'UIUtilities_Input'.const.FXS_BUTTON_B:
 	case class'UIUtilities_Input'.const.FXS_KEY_ESCAPE:
 	case class'UIUtilities_Input'.const.FXS_R_MOUSE_DOWN:
 		//OnCancelClicked(none);
-		Button2.Click(); // LWS - mapping KB/Controller commands through mouse handler so that mods that change handler work with KB/Controller
+		Button2.Click(); // Issue #181 - mapping KB/Controller commands through mouse handler so that mods that change handler work with KB/Controller
 		break;
 	default:
 		bHandled = false;
