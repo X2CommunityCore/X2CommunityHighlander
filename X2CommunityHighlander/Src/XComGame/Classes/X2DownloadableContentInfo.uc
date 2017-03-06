@@ -188,6 +188,7 @@ static function bool UseAlternateMissionIntroDefinition(MissionDefinition Active
 }
 /// End Issue #140
 
+/// Start Issue #88
 /// <summary>
 /// Called from UIArmory_WeaponUpgradeItem:UpdateDropItemButton 
 //  Return true to allow removal of the weapon upgrade without replacement 
@@ -196,6 +197,7 @@ static function bool CanRemoveWeaponUpgrade(XComGameState_Item Weapon, X2WeaponU
 {
 	return false;
 }
+/// End Issue #88
 
 /// Start Issue #124
 /// <summary>
