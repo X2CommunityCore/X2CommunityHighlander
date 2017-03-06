@@ -2,9 +2,6 @@
 class UIPersonnel extends UIScreen
 	implements(IUISortableScreen);
 
-// LWS Mods:
-// tracktwo - Wrap SpawnNavHelpIcons() in check for using controller.
-
 enum EUIPersonnelType
 {
 	eUIPersonnel_Soldiers,
@@ -165,7 +162,8 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	CreateSortHeaders();
 	UpdateNavHelp();
 	RefreshTitle();
-	// LWS: Avoid controler help buttons unless controller is active.
+	// Issue #129: Avoid controler help buttons unless controller is active.
+	// tracktwo - Wrap SpawnNavHelpIcons() in check for using controller.
 	if (`ISCONTROLLERACTIVE)
 		SpawnNavHelpIcons();
 	
