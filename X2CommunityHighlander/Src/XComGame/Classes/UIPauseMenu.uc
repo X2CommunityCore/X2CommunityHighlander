@@ -8,8 +8,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
 
-//LW2: added ini-managed control for bronzeman mode-type use of restart level button
-
 class UIPauseMenu extends UIScreen;
 
 var int       m_iCurrentSelection;
@@ -688,7 +686,8 @@ simulated function BuildMenu()
 	}
 	else
 	{
-		//LW2 stuff
+		// Start Issue #176
+		//LW2: added ini-managed control for bronzeman mode-type use of restart level button
 		if( kMPGRI == none &&
 		XComPresentationLayer(Movie.Pres) != none &&
 		XGBattle_SP(`BATTLE).m_kDesc != None &&
@@ -703,6 +702,7 @@ simulated function BuildMenu()
 		{
 			m_optRestart = -1;  //set options to -1 so they don't interfere with the switch statement on selection
 		}
+		// End Issue #176
 	}
 
 	// Only allow changing difficulty if in an active single player game and only at times where saving is permitted

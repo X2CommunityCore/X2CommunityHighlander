@@ -78,8 +78,10 @@ var config array<name> GrenadeRequiresWorldEffectToAffectUnit;
 // that controls rescue rings on civvies). This is done through a config var that lists the 
 // desired mission types for extensibility.
 
+// Start Issue #176
 var config bool EnableRestartMissionButtonInNonIronman;
 var config bool EnableRestartMissionButtonInIronman;
+// End Issue #176
 
 // Start Issue #49
 // A list of replacement projectile sound effects mapping a projectile element to a sound cue name.
