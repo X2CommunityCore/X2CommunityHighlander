@@ -1,6 +1,4 @@
 //LWS : Override to allow support for ability-based and other new PCSes.
-//		Also fix query to UIArmory_MainMenu for retrieving unit to allow mod overrides to be found.
-//		This is done by changing GetScreen to GetFirstInstanceOf, which allow retrieving derived class type.
 
 
 class UIInventory_Implants extends UIInventory config(GameData);
@@ -114,7 +112,7 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 	
 	bCanEquipImplantResult = true;
 	Implant = XComGameState_Item(History.GetGameStateForObjectID(ImplantRef.ObjectID));
-	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // LWS : Changed GetScreen to GetFirstInstanceOf
+	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	if (Unit == none)
 	{
 		return false; // LWS : Added error-checking code
@@ -158,8 +156,8 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 
 	super.SelectedItemChanged(ContainerList, ItemIndex);
 
-	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // LWS : Changed GetScreen to GetFirstInstanceOf
-	SoldierHeader = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).Header; // LWS : Changed GetScreen to GetFirstInstanceOf
+	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
+	SoldierHeader = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).Header; // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	SlotIndex = 0;
 	EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
 
@@ -242,7 +240,7 @@ simulated function OnItemSelected(UIList ContainerList, int ItemIndex)
 	
 	if (CanEquipImplant(ImplantRef))
 	{
-		Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // LWS : Changed GetScreen to GetFirstInstanceOf
+		Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 		SlotIndex = 0;
 
 		EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
@@ -332,7 +330,7 @@ simulated function RemoveImplant()
 
 	UpdatedState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Remove Personal Combat Sim");
 
-	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // LWS : Changed GetScreen to GetFirstInstanceOf
+	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	UpdatedUnit = XComGameState_Unit(UpdatedState.CreateStateObject(class'XComGameState_Unit', UnitRef.ObjectID));
 	EquippedImplants = UpdatedUnit.GetAllItemsInSlot(eInvSlot_CombatSim);
 
@@ -369,7 +367,7 @@ simulated function InstallImplant()
 
 	UpdatedState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Install Personal Combat Sim");
 
-	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // LWS : Changed GetScreen to GetFirstInstanceOf
+	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	UpdatedHQ = XComGameState_HeadquartersXCom(UpdatedState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
 	UpdatedUnit = XComGameState_Unit(UpdatedState.CreateStateObject(class'XComGameState_Unit', UnitRef.ObjectID));
 	UpdatedState.AddStateObject(UpdatedHQ);
