@@ -10,7 +10,7 @@
 //  Copyright (c) 2009-2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
 
-// LWS Mods:
+// Issue #186
 // tracktwo - Fix log spam from accessing "CharInfoButton" that is not initialized when using the mouse.
 class UITacticalHUD extends UIScreen dependson(X2GameRuleset);
 
@@ -92,6 +92,7 @@ simulated function HideInputButtonRelatedHUDElements(bool bHide)
 
 		m_kAbilityHUD.Hide();
 		m_kEnemyTargets.Hide();
+		// Conditional for Issue #186
 		if (CharInfoButton != none)
 			CharInfoButton.Hide();
 	}
@@ -104,6 +105,7 @@ simulated function HideInputButtonRelatedHUDElements(bool bHide)
 			m_kEnemyTargets.Show();
 		}
 
+		// Conditional for Issue #186
 		if (CharInfoButton != none)
 			CharInfoButton.Show();
 
@@ -143,6 +145,7 @@ simulated function OnToggleHUDElements(SeqAct_ToggleHUDElements Action)
 					{
 						SkyrangerButton.Hide();
 					}
+					// Conditional for Issue #186
 					if (CharInfoButton != none)
 						CharInfoButton.Hide();
 					break;
@@ -180,6 +183,7 @@ simulated function OnToggleHUDElements(SeqAct_ToggleHUDElements Action)
 					{
 						SkyrangerButton.Show();
 					}
+					// Conditional for Issue #186
 					if (CharInfoButton != none)
 						CharInfoButton.Show();
 					break;
@@ -518,6 +522,7 @@ simulated function RaiseTargetSystem()
 
 	m_kObjectivesControl.Hide();
 	m_kShotInfoWings.Show();
+	// Conditional for Issue #186
 	if (CharInfoButton != none)
 		CharInfoButton.Show();
 
@@ -662,6 +667,7 @@ simulated function UpdateNavHelp()
 	//If the label was set, show the help icon
 	if(LabelForInfoHelp != "")
 	{
+		// Conditional for Issue #186
 		if (CharInfoButton != none)
 			CharInfoButton.SetText(LabelForInfoHelp);
 	}	
@@ -1062,6 +1068,7 @@ simulated function Show()
 
 	Pres = XComPresentationLayer(Movie.Pres);
 
+	// Conditional for Issue #186
 	if (CharInfoButton != none)
 		CharInfoButton.Show();
 	if( !Pres.m_kTurnOverlay.IsShowingAlienTurn() 
