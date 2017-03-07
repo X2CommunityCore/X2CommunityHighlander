@@ -511,9 +511,11 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 	local int MapItemIndex;
 	local XComGameState_WorldRegion Region;
 	local XComGameState_GeoscapeEntity EntityState;
-	local array<int> PendingStatesNeedingLocations;  // LWS Added
-	local Vector NewLocation;  // LWS Added
 	local class<UIStrategyMapItem> NewClass; // Variable for Issue #130
+
+	// Variables for Issue #183
+	local array<int> PendingStatesNeedingLocations;
+	local Vector NewLocation;
 
 	WidgetName = name(Entity.GetUIWidgetName());
 
@@ -540,6 +542,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 			Region = Entity.GetWorldRegion();
 		}
 
+		// Start Issue #183
 		// LWS Mods: GetMapItem() and GetRandomLocationInRegion() are mutually recursive. When we get here and try to
 		// update all the map items that need locations, we'll call GetRandomLocationInRegion for each one asking for a new
 		// spot to put the new item. This in turn will call back into this function to get the MapItem for the Region itself,
@@ -550,6 +553,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 		// again, looking for entities in our cached list and for each one of those first request the new random location and then
 		// create a new game state for this entity with the updated locations. This ensures we only call GetRandomLocationInRegion
 		// after we have cleared the bNeedsLocationUpdate flag for each entity in the region.
+		// End Issue #183
 		if (Region != none)
 		{
 			History = `XCOMHISTORY;
@@ -562,7 +566,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 					EntityState = XComGameState_GeoscapeEntity(NewGameState.CreateStateObject(EntityState.Class, EntityState.ObjectID));
 					NewGameState.AddStateObject(EntityState);
 					EntityState.bNeedsLocationUpdate = false;
-					PendingStatesNeedingLocations.AddItem(EntityState.ObjectID); // LWS Added
+					PendingStatesNeedingLocations.AddItem(EntityState.ObjectID); // Issue #183
 				}
 			}
 
@@ -575,6 +579,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 				History.CleanupPendingGameState(NewGameState);
 			}
 
+			// Start Issue #183
 			// LWS Added: handle setting new location for the entities that need it.
 			if (PendingStatesNeedingLocations.Length > 0)
 			{
@@ -592,6 +597,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 					}
 				}
 			}
+			// End Issue #183
 		}
 	}
 	
