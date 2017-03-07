@@ -103,8 +103,10 @@ var config array<ProjectileSoundMapping> ProjectileSounds;
 // but can be longer if the environment actor was configured with Toughness.AvailableFireFuelTurns
 var config array<int> FireEnvironmentDamageAfterNumTurns;
 
+// Start Issue #197
 //This is referenced in XCGS_Unit and must be true to run some code that ensures a powerful psi ability can be trained
 var config bool EnablePsiTreeOrganization;
+// End Issue #197
 
 // Start Issue #130
 //allow certain classes to be overridden recursively, so the override can be overridden

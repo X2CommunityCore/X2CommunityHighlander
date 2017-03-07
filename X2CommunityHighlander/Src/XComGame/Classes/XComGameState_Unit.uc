@@ -2712,6 +2712,7 @@ function RollForPsiAbilities()
 		}
 	}
 
+	// Start Issue #197
 	//LW2: Force a capstone ability early to ensure it's achievable
 	if (class'Helpers_LW'.default.EnablePsiTreeOrganization)
 	{
@@ -2720,6 +2721,7 @@ function RollForPsiAbilities()
 		PsiAbilities.AddItem (PsiAbility);
 		PsiAbilityDeck.RemoveItem(PsiAbility);	
 	}
+	// End Issue #197
 
 	while (PsiAbilityDeck.Length > 0)
 	{
