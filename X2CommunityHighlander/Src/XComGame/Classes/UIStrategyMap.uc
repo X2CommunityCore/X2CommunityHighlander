@@ -6,7 +6,6 @@
 //
 //           UIStrategyMap_HUD
 //
-//	LWS:	 Adding hook to override what gets displayed for the resistance HQ icon
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -1043,6 +1042,8 @@ simulated function UpdateMissions()
 			if(i < MAX_NUM_STRATEGYICONS)
 			{
 				i++;
+				// Start Issue #182
+				//	LWS:	 Adding hook to override what gets displayed for the resistance HQ icon
 				if (i == 1)  // LWS : added this block
 				{
 					Tuple = new class'XComLWTuple';
@@ -1054,6 +1055,7 @@ simulated function UpdateMissions()
 					if (Tuple.Data[0].b)
 						i++;
 				}
+				// End Issue #182
 				if(ScanSite.IsA('XComGameState_Haven'))
 				{
 					MissionItemUI.MissionIcons[0].SetScanSite(ScanSite);
