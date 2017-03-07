@@ -1,7 +1,7 @@
 class X2Effect_MindControl extends X2Effect_Persistent
 	native(Core);           //  This is only native to expose it for IsMindControlled on the unit state
 
-//PI: Modified to fix bug where ticking effects on mind-controlled units when reverted would tick on wrong playerstate
+// Issue #194 : Modified to fix bug where ticking effects on mind-controlled units when reverted would tick on wrong playerstate
 
 var int iNumTurnsForAI;
 
@@ -81,7 +81,7 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 	local XComGameState_Effect OriginalEffectState;
 	local XComGameState_Unit UnitState;
 	local StateObjectReference OriginalControllingPlayer;
-	local StateObjectReference MindControllingPlayer; // PI : Added for ticking effect listener updates
+	local StateObjectReference MindControllingPlayer; // Issue #194 : Added for ticking effect listener updates
 	local int i;
 
 	super.OnEffectRemoved(ApplyEffectParameters, NewGameState, bCleansed, RemovedEffectState);
@@ -95,7 +95,7 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 
 	// now put them back on that team
 	UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', ApplyEffectParameters.TargetStateObjectRef.ObjectID));
-	MindControllingPlayer = UnitState.ControllingPlayer; // PI : save off the mind controlling player for ticking effect updates
+	MindControllingPlayer = UnitState.ControllingPlayer; // Issue #194 : save off the mind controlling player for ticking effect updates
 	UnitState.SetControllingPlayer(OriginalControllingPlayer);
 	
 	// and update other stuff that needs to be reset when they stop being mind controlled
@@ -121,9 +121,11 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 	NewGameState.AddStateObject(UnitState);
 	UpdateAIData(NewGameState, UnitState);
 
+	// For Issue #194
 	UpdateTickingEffectListeners(UnitState, MindControllingPlayer, OriginalControllingPlayer);
 }
 
+// Start Issue #194
 //PI : New helper function to re-register listeners for ticking effects
 simulated function UpdateTickingEffectListeners(XComGameState_Unit UnitState, StateObjectReference StartPlayerRef, StateObjectReference EndPlayerRef )
 {
@@ -180,6 +182,7 @@ simulated function UpdateTickingEffectListeners(XComGameState_Unit UnitState, St
 		}
 	}
 }
+// End Issue #194
 
 simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack, name EffectApplyResult)
 {
