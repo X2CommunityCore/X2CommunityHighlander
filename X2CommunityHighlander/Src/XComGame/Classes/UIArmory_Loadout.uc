@@ -141,7 +141,7 @@ simulated function UpdateNavHelp()
 		{
 			NavHelp.AddRightHelp(class'UISquadSelect'.default.m_strStripGear, class'UIUtilities_Input'.static.GetGamepadIconPrefix() $class'UIUtilities_Input'.const.ICON_RT_R2, OnStripGear, false, m_strTooltipStripGear, class'UIUtilities'.const.ANCHOR_BOTTOM_CENTER);
 		}
-	
+		`XEVENTMGR.TriggerEvent('ArmoryLoadout_PostUpdateNavHelp', NavHelp, self);
 	}
 }
 

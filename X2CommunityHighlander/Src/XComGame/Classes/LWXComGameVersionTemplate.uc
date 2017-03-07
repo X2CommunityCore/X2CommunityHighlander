@@ -54,10 +54,9 @@ function int GetVersionNumber(optional out int Major, optional out int Minor, op
     return (default.MajorVersion * 100000000) + (default.MinorVersion * 1000000) + 0; // Build number not implemented
 }
 
-
 defaultproperties
 {
-	MajorVersion=1
-	MinorVersion=1
+    MajorVersion = 1;
+    MinorVersion = 2;
 }
 

@@ -11,6 +11,9 @@
 // LWS Mods: 
 // tracktwo - Clear the loot list when a unit is killed by explosives so the loot doesn't come back
 //            if they get resurrected and killed again.
+// tracktwo - Refactor UnitAGainsKnowledgeOfUnitB into a separate UnitAGainsKnowledgeOfUnitB_LW that the
+//            original calls, which also takes an additional tile parameter to use for the alert location.
+
 class XComGameState_Unit extends XComGameState_BaseObject 
 	implements(X2GameRulesetVisibilityInterface, X2VisualizedInterface, Lootable, UIQueryInterfaceUnit, Damageable, Hackable) 
 	dependson(XComCoverInterface)
@@ -2707,6 +2710,15 @@ function RollForPsiAbilities()
 			PsiAbility.iBranch = iBranch;
 			PsiAbilityDeck.AddItem(PsiAbility);
 		}
+	}
+
+	//LW2: Force a capstone ability early to ensure it's achievable
+	if (class'Helpers_LW'.default.EnablePsiTreeOrganization)
+	{
+		PsiAbility.iRank = NumRanks - 2 + `SYNC_RAND (2);
+		PsiAbility.iBranch = `SYNC_RAND (2);
+		PsiAbilities.AddItem (PsiAbility);
+		PsiAbilityDeck.RemoveItem(PsiAbility);	
 	}
 
 	while (PsiAbilityDeck.Length > 0)
@@ -6869,7 +6881,7 @@ function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSo
 					// this unit just overheard the sound
 					else
 					{
-						UnitAGainsKnowledgeOfUnitB(EnemyInSoundRangeUnitState, SourceUnitState, GameState, eAC_DetectedSound, false);
+						UnitAGainsKnowledgeOfUnitB_LW(EnemyInSoundRangeUnitState, SourceUnitState, GameState, eAC_DetectedSound, false, SoundTileLocation);
 					}
 				}
 			}
@@ -7086,7 +7098,18 @@ static function UnitASeesUnitB(XComGameState_Unit UnitA, XComGameState_Unit Unit
 	}
 }
 
+// PI Mods: Extracted the contents of UnitAGainsKnowledgeOfUnitB into another function with an additional parameter allowing
+// callers to specify the tile location to use for the alert. This is to avoid changing the public interface to
+// UnitAGainsKnoweldgeOfUnitB that other mods may be relying on.
 static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameState_Unit UnitB, XComGameState AlertInstigatingGameState, EAlertCause AlertCause, bool bUnitAIsMidMove)
+{
+	local TTile AlertLocation;
+	// The original version of this function uses the location of UnitB as the alert location.
+	UnitB.GetKeystoneVisibilityLocation(AlertLocation);
+	UnitAGainsKnowledgeOfUnitB_LW(UnitA, UnitB, AlertInstigatingGameState, AlertCause, bUnitAIsMidMove, AlertLocation);
+}
+
+static function UnitAGainsKnowledgeOfUnitB_LW(XComGameState_Unit UnitA, XComGameState_Unit UnitB, XComGameState AlertInstigatingGameState, EAlertCause AlertCause, bool bUnitAIsMidMove, out TTile AlertLocation)
 {
 	local XComGameStateHistory History;
 	local AlertAbilityInfo AlertInfo;	
@@ -7100,7 +7123,7 @@ static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameSta
 	if( AlertCause != eAC_None )
 	{
 		History = `XCOMHISTORY;
-		UnitB.GetKeystoneVisibilityLocation(AlertInfo.AlertTileLocation);
+		AlertInfo.AlertTileLocation = AlertLocation;
 		AlertInfo.AlertUnitSourceID = UnitB.ObjectID;
 		AlertInfo.AnalyzingHistoryIndex = History.GetCurrentHistoryIndex();
 		

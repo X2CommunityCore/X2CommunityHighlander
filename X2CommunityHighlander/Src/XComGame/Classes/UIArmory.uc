@@ -149,7 +149,7 @@ simulated function UpdateNavHelp()
 
 			// Don't allow jumping to the geoscape from the armory in the tutorial or when coming from squad select
 			if (class'XComGameState_HeadquartersXCom'.static.GetObjectiveStatus('T0_M7_WelcomeToGeoscape') != eObjectiveState_InProgress &&
-				RemoveMenuEvent == '' && NavigationBackEvent == '' && !`ScreenStack.IsInStack(class'UISquadSelect'))
+				RemoveMenuEvent == '' && NavigationBackEvent == '' && `SCREENSTACK.GetFirstInstanceOf(class'UISquadSelect') == none)
 			{
 				NavHelp.AddGeoscapeButton();
 			}
