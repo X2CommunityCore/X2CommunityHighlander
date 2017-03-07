@@ -7,8 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //----------------------------------------------------------------------------
 
-// LWS: Added an event/tuple to change ability icon colors on the fly
-
 class UITacticalHUD_Ability extends UIPanel;
 
 var localized string m_strCooldownPrefix; 
@@ -63,6 +61,8 @@ simulated function UpdateData(int NewIndex, const out AvailableAction AvailableA
 	local XComGameState_Ability AbilityState;   //Holds INSTANCE data for the ability referenced by AvailableActionInfo. Ie. cooldown for the ability on a specific unit
 	local bool OverwatchHelpVisible;
 	local bool ReloadHelpVisible;
+
+	// Variables for Issue #187
 	local XComLWTuple OverrideTuple, OverrideTuple2; // LWS adds some Tuples
 	
 	Index = NewIndex; 
@@ -127,6 +127,8 @@ simulated function UpdateData(int NewIndex, const out AvailableAction AvailableA
 		BattleDataState = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 		if(BattleDataState.IsAbilityObjectiveHighlighted(AbilityTemplate.DataName))
 		{
+			// Start Issue #187
+			// LWS: Added an event/tuple to change ability icon colors on the fly
 			OverrideTuple2 = new class'XComLWTuple';
 			OverrideTuple2.Id = 'OverrideObjectiveAbilityIconColor';
 			OverrideTuple2.Data.Add(2);
@@ -143,9 +145,11 @@ simulated function UpdateData(int NewIndex, const out AvailableAction AvailableA
 			{
 				Icon.EnableMouseAutomaticColor(class'UIUtilities_Colors'.const.OBJECTIVEICON_HTML_COLOR, class'UIUtilities_Colors'.const.BLACK_HTML_COLOR);
 			}
+			// End Issue #187
 		}
 		else if(AbilityTemplate.AbilityIconColor != "")
 		{
+			// Start Issue #187
 			if (AbilityTemplate.AbilityIconColor == "Variable")
 			{
 				OverrideTuple = new class'XComLWTuple';
@@ -160,6 +164,7 @@ simulated function UpdateData(int NewIndex, const out AvailableAction AvailableA
 			{
 				Icon.EnableMouseAutomaticColor(AbilityTemplate.AbilityIconColor, class'UIUtilities_Colors'.const.BLACK_HTML_COLOR);
 			}
+			// End Issue #187
 		}
 		else
 		{
@@ -322,11 +327,13 @@ simulated function HideShine()
 
 simulated function SetAvailable(bool Available)
 {
+	// Start Issue #187
 	if(IsAvailable != Available)
 	{
 		IsAvailable = Available;
 		MC.FunctionBool("SetAvailable", IsAvailable);
 	}
+	// End Issue #187
 }
 
 simulated function Show()
