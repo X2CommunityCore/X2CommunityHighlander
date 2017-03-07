@@ -86,6 +86,9 @@ var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
 // but can be longer if the environment actor was configured with Toughness.AvailableFireFuelTurns
 var config array<int> FireEnvironmentDamageAfterNumTurns;
 
+//This is referenced in XCGS_Unit and must be true to run some code that ensures a powerful psi ability can be trained
+var config bool EnablePsiTreeOrganization;
+
 simulated static function class<object> LWCheckForRecursiveOverride(class<object> ClassToCheck)
 {
 	local int idx;

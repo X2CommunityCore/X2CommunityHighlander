@@ -263,7 +263,7 @@ simulated public function OnChildClicked(UIList ContainerList, int ItemIndex)
 			break;
 
 		case m_optRestart: // Restart Mission (only valid in tactical)
-			if (`BATTLE != none && WorldInfo.NetMode == NM_Standalone && !m_bIsIronman)
+			if (`BATTLE != none && WorldInfo.NetMode == NM_Standalone && (!m_bIsIronman || class'Helpers_LW'.default.EnableRestartMissionButtonInIronman))
 				RestartMissionDialogue();				
 			break;
 

@@ -2,6 +2,7 @@
 // LWS modifications:
 //
 // tracktwo - Allow mod overrides via tuple for choosing spawn locations.
+// tracktwo - Remove 'const' from plot and parcel config list.
 
 class XComParcelManager extends Object
 	native(Core)
@@ -237,9 +238,9 @@ private:
 #endif
 
 }
-
-var config const array<PlotDefinition> arrPlots;
-var config const array<ParcelDefinition> arrAllParcelDefinitions;
+// PI Mods: Removed const from the plot and parcel definition arrays
+var config array<PlotDefinition> arrPlots;
+var config array<ParcelDefinition> arrAllParcelDefinitions;
 var config const array<EntranceDefinition> arrAllEntranceDefinitions;
 var config const array<PlotTypeDefinition> arrPlotTypes;
 var config const array<BiomeDefinition> arrBiomes;
