@@ -474,6 +474,7 @@ simulated function HideCursor()
 
 simulated function ShowCursor()
 {
+	// Conditional for Issue #129
 	if (`ISCONTROLLERACTIVE && !bCursorAlwaysVisible)
 	{
 		if (m_eUIState != eSMS_Flight)
@@ -968,6 +969,7 @@ simulated function HideMissionButtons()
 	StrategyMapHUD.mc.BeginFunctionOp("AnimateMissionTrayOut");
 	StrategyMapHUD.mc.EndOp();
 	
+	// Conditional for Issue #129
 	if (`ISCONTROLLERACTIVE)
 	{
 		LeftBumperIcon.Hide();
@@ -1369,6 +1371,7 @@ simulated function UpdateSelection(float DeltaTime)
 			}
 		}
 
+		// Conditional for Issue #129
 		if (`ISCONTROLLERACTIVE && bSelectNearest)
 		{
 			SelectMapItemNearestLocation(ViewLocation);
@@ -1766,6 +1769,7 @@ simulated function OnReceiveFocus()
 		bMoveViewLocation = false;
 		bSelectNearest = false;
 	}
+	// Conditional for Issue #129
 	if (`ISCONTROLLERACTIVE)
 	{
 		SelectLastSelectedMapItem(); //bsg-jneal (8.17.16): reselect last map item since we cleared its focus when the map lost focus before.
