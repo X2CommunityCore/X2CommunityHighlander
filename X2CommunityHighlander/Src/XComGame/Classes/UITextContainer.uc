@@ -3,7 +3,7 @@
 //  FILE:    UIText.uc
 //  AUTHOR:  Samuel Batista
 //  PURPOSE: UIText to populate and manipulate a text field.
-//  LWS : Added bugfixes for vertical autoscrolling text
+//  Issue #190 : Added bugfixes for vertical autoscrolling text
 //----------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //----------------------------------------------------------------------------
@@ -55,6 +55,7 @@ simulated function UITextContainer InitTextContainer(optional name InitName, opt
 
 simulated function UITextContainer SetText(string txt)
 {
+	// Start Issue #190
 	local int textPosOffset;
 
 	//LWS : added code to clear scroll and rest position when setting text in an existing scrolled panel
@@ -64,6 +65,7 @@ simulated function UITextContainer SetText(string txt)
 		textPosOffset = bgPadding * 0.5;
 		text.SetPosition(textPosOffset , textPosOffset );
 	}
+	// End Issue #190
 
 	text.SetText(txt);
 	return self;
@@ -71,6 +73,7 @@ simulated function UITextContainer SetText(string txt)
 
 simulated function UITextContainer SetHTMLText(string txt)
 {
+	// Start Issue #190
 	local int textPosOffset;
 
 	//LWS : added code to clear scroll and rest position when setting text in an existing scrolled panel
@@ -80,6 +83,7 @@ simulated function UITextContainer SetHTMLText(string txt)
 		textPosOffset = bgPadding * 0.5;
 		text.SetPosition(textPosOffset , textPosOffset );
 	}
+	// End Issue #190
 
 	text.SetHTMLText(txt);
 	return self;
@@ -106,10 +110,12 @@ simulated function SetHeight(float newHeight)
 	{
 		height = newHeight;
 
+		// Start Issue #190
 		if (!bAutoScroll) // LWS : don't set height when autoscrolling, so that text isn't clipped
 		{
 			text.SetHeight(newHeight);
 		}
+		// End Issue #190
 
 		if(mask != none && scrollbar != none)
 		{
@@ -149,7 +155,7 @@ simulated function RealizeTextSize()
 
 		if( bAutoScroll )
 		{
-			text.AnimateScroll( text.Height + bgpadding, height); // LWS : add bgPadding to avoid clipping of last line
+			text.AnimateScroll( text.Height + bgpadding, height); // Issue #190 : add bgPadding to avoid clipping of last line
 		}
 		else
 		{
