@@ -52,7 +52,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   subclasses too (#169)
 
 ### Configuration
-- allow havens to be hidden on the geoscape (#75) - BREAKS VANILLA
+- allow havens to be hidden on the geoscape (#75)
 - Allow modification of AvengerCameraSpeed (#53)
 - Allow config of CrosssContinentStartRegionLinks, will prevent removal of non
   continent links if used (#85)
@@ -212,7 +212,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Improve SoldierInfoTooltip, show defense + hide psi if not psiop (#189)
 - Empty out pending loot for units killed by explosives (#112)
 - Allow usage of HeavyWeapon inventory slot for soldier class (#42) - BREAKS
-  VANILLA
+  VANILLA, COMMENTED OUT UNTIL LW1.3
 
 ### Fixes
 - Remove exploit causing enemy units to enter RedAlert without scamper (#123)
