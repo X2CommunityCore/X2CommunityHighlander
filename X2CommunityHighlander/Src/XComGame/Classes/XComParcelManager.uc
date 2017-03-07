@@ -232,9 +232,12 @@ private:
 #endif
 
 }
+
+// Start Issue #199
 // PI Mods: Removed const from the plot and parcel definition arrays
 var config array<PlotDefinition> arrPlots;
 var config array<ParcelDefinition> arrAllParcelDefinitions;
+// End Issue #199
 var config const array<EntranceDefinition> arrAllEntranceDefinitions;
 var config const array<PlotTypeDefinition> arrPlotTypes;
 var config const array<BiomeDefinition> arrBiomes;
