@@ -4,8 +4,6 @@
 //  AUTHOR:  Sam Batista
 //  PURPOSE: This is a prototype control that displays 2D information in the Strategy Map.
 //
-//	LWS:	 Adding code to adjust the doom meter to allow for configured alternative max doom amounts
-//			 Adding optimization of how doom meter is updated to avoid complex inner loops for alternative doom sources
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -124,7 +122,7 @@ simulated function UpdateMissingPersons()
 
 simulated function UpdateData()
 {
-	local int i, MaxDoom, CurrentDoom;  // LWS : Added Max and Current Doom for better optimization
+	local int i, MaxDoom, CurrentDoom;  // Issue #184 : Added Max and Current Doom for better optimization
 	local XComGameState_HeadquartersAlien AlienHQ;
 	local XComGameState NewGameState;
 	local bool bPlayedSound;
@@ -189,6 +187,9 @@ simulated function UpdateData()
 			`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 		}
 
+		// Start Issue #184
+		//	LWS:	 Adding code to adjust the doom meter to allow for configured alternative max doom amounts
+		//			 Adding optimization of how doom meter is updated to avoid complex inner loops for alternative doom sources
 		//LWS : Added code to adjust meter and doomBG based on the max configured doom
 		UpdateDoomMeterPosition(AlienHQ);
 
@@ -200,6 +201,7 @@ simulated function UpdateData()
 		{
 			if( i < CurrentDoom )  // LWS: Updated to use cached local copy of current doom to avoid spamming the CurrentDoom method
 			{
+				// End Issue #184
 				if(i >= CachedDoom)
 				{
 					if(!bPlayedSound)
@@ -254,6 +256,7 @@ simulated function UpdateData()
 	}
 }
 
+// Start Issue #184
 // LWS Helper function to update doom meter size/position for varying configured max doom amounts
 function UpdateDoomMeterPosition(XComGameState_HeadquartersAlien AlienHQ)
 {
@@ -276,6 +279,7 @@ function UpdateDoomMeterPosition(XComGameState_HeadquartersAlien AlienHQ)
 	MC.ChildSetNum("doomMeter.doomBG", "_width", BGWidth);
 	MC.ChildSetNum("doomMeter.doomShine", "_width", BGWidth);
 }
+// End Issue #184
 
 simulated function UpdateLoseTimer()
 {
