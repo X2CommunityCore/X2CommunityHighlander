@@ -11,8 +11,6 @@
 // LWS Mods: 
 // tracktwo - Clear the loot list when a unit is killed by explosives so the loot doesn't come back
 //            if they get resurrected and killed again.
-// tracktwo - Refactor UnitAGainsKnowledgeOfUnitB into a separate UnitAGainsKnowledgeOfUnitB_LW that the
-//            original calls, which also takes an additional tile parameter to use for the alert location.
 
 class XComGameState_Unit extends XComGameState_BaseObject 
 	implements(X2GameRulesetVisibilityInterface, X2VisualizedInterface, Lootable, UIQueryInterfaceUnit, Damageable, Hackable) 
@@ -7100,6 +7098,9 @@ static function UnitASeesUnitB(XComGameState_Unit UnitA, XComGameState_Unit Unit
 	}
 }
 
+// Start Issue #198
+// tracktwo - Refactor UnitAGainsKnowledgeOfUnitB into a separate UnitAGainsKnowledgeOfUnitB_LW that the
+//            original calls, which also takes an additional tile parameter to use for the alert location.
 // PI Mods: Extracted the contents of UnitAGainsKnowledgeOfUnitB into another function with an additional parameter allowing
 // callers to specify the tile location to use for the alert. This is to avoid changing the public interface to
 // UnitAGainsKnoweldgeOfUnitB that other mods may be relying on.
@@ -7113,6 +7114,7 @@ static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameSta
 
 static function UnitAGainsKnowledgeOfUnitB_LW(XComGameState_Unit UnitA, XComGameState_Unit UnitB, XComGameState AlertInstigatingGameState, EAlertCause AlertCause, bool bUnitAIsMidMove, out TTile AlertLocation)
 {
+	// End Issue #198 - below is vanilla behaviour mostly
 	local XComGameStateHistory History;
 	local AlertAbilityInfo AlertInfo;	
 	local X2TacticalGameRuleset Ruleset;
@@ -7125,7 +7127,7 @@ static function UnitAGainsKnowledgeOfUnitB_LW(XComGameState_Unit UnitA, XComGame
 	if( AlertCause != eAC_None )
 	{
 		History = `XCOMHISTORY;
-		AlertInfo.AlertTileLocation = AlertLocation;
+		AlertInfo.AlertTileLocation = AlertLocation; // Issue #198 - use AlertLocation
 		AlertInfo.AlertUnitSourceID = UnitB.ObjectID;
 		AlertInfo.AnalyzingHistoryIndex = History.GetCurrentHistoryIndex();
 		
