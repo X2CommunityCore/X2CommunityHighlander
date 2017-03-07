@@ -201,6 +201,7 @@ simulated function UpdateNavHelp()
 			NavHelp.AddLeftHelp(m_strToggleSort, class'UIUtilities_Input'.static.GetGamepadIconPrefix() $ class'UIUtilities_Input'.const.ICON_X_SQUARE);	
 		}
 		
+		// Conditional for Issue #196 - GetFirstInstanceOf UISquadSelect
 		// Don't allow jumping to the geoscape from the armory in the tutorial or when coming from squad select
 		if (class'XComGameState_HeadquartersXCom'.static.GetObjectiveStatus('T0_M7_WelcomeToGeoscape') != eObjectiveState_InProgress
 			&& `SCREENSTACK.GetFirstInstanceOf(class'UISquadSelect') == none)
