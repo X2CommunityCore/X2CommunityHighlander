@@ -207,6 +207,24 @@ Once you've done all that, the mod should now run in vanilla XCOM. Note that all
 logging statements will be stripped from the Cooked version, so don't expect to
 see any of your script logs.
 
+Sound like a lot to do manually every time you build? Sure is, so we've put
+together a little batch file that will do it all for you. Copy
+CookCommunityHighlander.bat to the SteamLibrary folder (the folder that
+contains steamapps), and provided both XCOM 2 and the SDK are in that library
+you're good to go. You will need to close the extra window that shows for the
+two build tasks though.
 
 
+# Building Against the Highlander
 
+Making new mods against the Highlander needs a small amount of work done to
+ensure you can use any new classes or methods implemented. The SDK uses the
+contents of `XCOM 2 SDK\Development\SrcOrig` to compile against files not in the
+mod itself. 
+
+Backup that folder as it contains the vanilla source files, and then copy the
+highlander's Src folder into it. Be aware that if you make a mod that uses any
+new functions or variables, it will crash Vanilla XCOM 2, guaranteed.
+
+If your mod uses the methods or functions provided by Long War 2's Highlander,
+things should still work fine.
