@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Guid>d5ef227c-cb99-40a3-a1d3-e6cbc0b0406e</Guid>
+    <Guid>39077a69-6294-42e3-8509-c2881ca79091</Guid>
     <Name>X2CommunityHighlander</Name>
     <Description>A base highlander all mods should be able to build upon.</Description>
     <SteamPublishID>0</SteamPublishID>
