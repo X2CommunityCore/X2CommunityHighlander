@@ -1,8 +1,3 @@
-
-// LWS modifications:
-//
-// tracktwo - Allow mod overrides via tuple for choosing spawn locations.
-
 class XComParcelManager extends Object
 	native(Core)
 	dependson(XComTacticalMissionManager)
@@ -238,8 +233,11 @@ private:
 
 }
 
-var config const array<PlotDefinition> arrPlots;
-var config const array<ParcelDefinition> arrAllParcelDefinitions;
+// Start Issue #199
+// PI Mods: Removed const from the plot and parcel definition arrays
+var config array<PlotDefinition> arrPlots;
+var config array<ParcelDefinition> arrAllParcelDefinitions;
+// End Issue #199
 var config const array<EntranceDefinition> arrAllEntranceDefinitions;
 var config const array<PlotTypeDefinition> arrPlotTypes;
 var config const array<BiomeDefinition> arrBiomes;
@@ -1197,6 +1195,8 @@ function ChooseSoldierSpawn()
 	local int SpawnIndex;
 	local float SpawnDistanceSq;
 	local float FurthestSpawnDistanceSq;
+
+	// Variables for Issue #134
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS Added
 	local int i; // LWS Added
 
@@ -1205,7 +1205,8 @@ function ChooseSoldierSpawn()
 	
 	GetValidSpawns(arrSpawns);
 
-    // LWS Modifications below: Allow a mod override of spawn point choice.
+	// Start Issue #134
+	// LWS Modifications below: Allow a mod override of spawn point choice.
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	for(i = 0; i < DLCInfos.Length; ++i)
 	{
@@ -1217,7 +1218,8 @@ function ChooseSoldierSpawn()
 		}
 	}
 
-    // LWS: Original spawn scoring below.
+	// LWS: Original spawn scoring below.
+	// End Issue #134
 
 	// since these are sorted by suitability (but still random within a given suitability),
 	// keep taking the spawns off the top until we find a spawn that has valid spawn locations

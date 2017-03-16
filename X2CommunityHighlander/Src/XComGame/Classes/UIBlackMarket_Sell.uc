@@ -3,7 +3,6 @@
 //  FILE:    UIBlackMarket_Sell.uc
 //  AUTHOR:  Samuel Batista
 //  PURPOSE: Screen where players can exchange items for supplies.
-//  LWS : updated to display strInventoryImage when non-empty (for selling primary weapons)
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -264,7 +263,8 @@ simulated function PopulateItemCard(X2ItemTemplate ItemTemplate, StateObjectRefe
 {
 	local string strImage, strTitle, strInterest;
 
-	// LWS : update to display strInventoryImage when available
+	// Start Issue #159
+	//  LWS : updated to display strInventoryImage when non-empty (for selling primary weapons)
 	if (ItemTemplate.strInventoryImage != "")
 	{
 		strImage = ItemTemplate.strInventoryImage;
@@ -277,6 +277,7 @@ simulated function PopulateItemCard(X2ItemTemplate ItemTemplate, StateObjectRefe
 	{
 		strImage = "img:///UILibrary_StrategyImages.GeneMods.GeneMods_MimeticSkin"; //Temp cool image
 	}
+	// End Issue #159
 
 	strTitle = class'UIUtilities_Text'.static.CapsCheckForGermanScharfesS(ItemTemplate.GetItemFriendlyName());
 	

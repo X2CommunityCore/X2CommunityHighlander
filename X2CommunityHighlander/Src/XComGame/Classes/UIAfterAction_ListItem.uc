@@ -102,13 +102,16 @@ simulated function UpdateData(optional StateObjectReference UnitRef)
 		ClassStr = "";
 
 	//AS_SetData( class'UIUtilities_Text'.static.GetColoredText(Caps(class'X2ExperienceConfig'.static.GetRankName(Unit.GetRank(), Unit.GetSoldierClassTemplateName())), eUIState_Faded, 18),
+	// Issue #107
 	AS_SetData( class'UIUtilities_Text'.static.GetColoredText(Caps(class'LWUtilities_Ranks'.static.GetRankName(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit)), eUIState_Faded, 18),
 				class'UIUtilities_Text'.static.GetColoredText(Caps(Unit.GetName(eNameType_Last)), eUIState_Normal, 22),
 				class'UIUtilities_Text'.static.GetColoredText(Caps(Unit.GetName(eNameType_Nick)), eUIState_Header, 28),
 				//Unit.GetSoldierClassTemplate().IconImage, class'UIUtilities_Image'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName()),
+				// Issue #107
 				Unit.GetSoldierClassTemplate().IconImage, class'LWUtilities_Ranks'.static.GetRankIcon(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit),
 				(bCanPromote) ? class'UISquadSelect_ListItem'.default.m_strPromote : "",
 				statusLabel, statusText, daysLabel, daysText, m_strMissionsLabel, string(Unit.GetNumMissions()),
+				// Issue #157 - unit.IsPsiOperative() changed from false
 				m_strKillsLabel, string(Unit.GetNumKills()), Unit.IsPsiOperative(), ClassStr);
 
 	AS_SetUnitHealth(class'UIUtilities_Strategy'.static.GetUnitCurrentHealth(Unit, true), class'UIUtilities_Strategy'.static.GetUnitMaxHealth(Unit));

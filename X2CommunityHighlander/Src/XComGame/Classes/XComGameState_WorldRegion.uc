@@ -9,9 +9,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Mods:
-//     tracktwo - HandleResistanceLevelChange: Don't display contact cinematics when resistance level drops to contacted,
-//                only when it's raised to contacted.
 class XComGameState_WorldRegion extends XComGameState_ScanningSite
 	native(Core) 
 	dependson(X2StrategyGameRulesetDataStructures)
@@ -569,8 +566,11 @@ function HandleResistanceLevelChange(XComGameState NewGameState, EResistanceLeve
 	{
 		if(!IsStartingRegion())
 		{
-            // LWS Mods: Don't trigger the contact made events again if we're dropping down *to* contacted
-            // from a higher level.
+			// Conditional for Issue #101
+			// tracktwo - HandleResistanceLevelChange: Don't display contact cinematics when resistance level drops to contacted,
+			//            only when it's raised to contacted.
+			// LWS Mods: Don't trigger the contact made events again if we're dropping down *to* contacted
+			// from a higher level.
 			if(NewResLevel == eResLevel_Contact && OldResLevel < eResLevel_Contact)
 			{
 				Biome = class'X2StrategyGameRulesetDataStructures'.static.GetBiome(Get2DLocation());

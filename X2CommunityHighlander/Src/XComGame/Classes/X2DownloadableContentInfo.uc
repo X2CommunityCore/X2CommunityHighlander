@@ -166,6 +166,7 @@ static function FinalizeUnitAbilitiesForInit(XComGameState_Unit UnitState, out a
 /////////////////////////////////
 
 
+/// Start Issue #106
 /// <summary>
 /// Called from XComGameState_Unit::ModifyEarnedSoldierAbilities
 /// Allows DLC/Mods to adjust add to the EarnedSoldierAbilities
@@ -174,7 +175,9 @@ static function ModifyEarnedSoldierAbilities(out array<SoldierClassAbilityType> 
 {
     
 }
+/// End Issue #106
 
+/// Start Issue #140
 /// <summary>
 /// Called from XComTacticalMissionManager:GetActiveMissionIntroDefinition before it returns the Default (but after any arrMission-specific override)
 //  Return true to use 
@@ -183,7 +186,9 @@ static function bool UseAlternateMissionIntroDefinition(MissionDefinition Active
 {
 	return false;
 }
+/// End Issue #140
 
+/// Start Issue #88
 /// <summary>
 /// Called from UIArmory_WeaponUpgradeItem:UpdateDropItemButton 
 //  Return true to allow removal of the weapon upgrade without replacement 
@@ -192,7 +197,9 @@ static function bool CanRemoveWeaponUpgrade(XComGameState_Item Weapon, X2WeaponU
 {
 	return false;
 }
+/// End Issue #88
 
+/// Start Issue #124
 /// <summary>
 /// Called from XComGameState_Unit:CanAddItemToInventory 
 //  Return true to override the default with the out parameter
@@ -201,7 +208,9 @@ static function bool CanAddItemToInventory(out int bCanAddItem, const EInventory
 {
 	return false;
 }
+/// End Issue #124
 
+/// Start Issue #118
 /// <summary>
 /// Called from XComGameState_Unit:DLCCanRemoveItemFromInventory 
 //  Return true to override the default with the out parameter
@@ -211,7 +220,9 @@ static function bool CanRemoveItemFromInventory(out int bCanRemoveItem,  XComGam
 {
 	return false;
 }
+/// End Issue #118
 
+/// Start Issue #114
 /// <summary>
 /// Called from XComGameState_Unit:GetNumUtilitySlots 
 //  Return true to immediately override the default with the out parameter (skipping any further DLCInfo checks)
@@ -220,14 +231,18 @@ static function bool GetNumUtilitySlotsOverride(out int NumSlots, XComGameState_
 {
 	return false;
 }
+/// End Issue #114
 
+/// Start Issue #115
 /// <summary>
 /// Called from XComGameState_Unit:ValidateLoadout
 //  Allows DLC/Mods to override the minimum number of utility slots to be set during validate loadout
 // modify the out parameter Value to make change
 /// </summary> 
 static function GetMinimumRequiredUtilityItems(out int Value, XComGameState_Unit UnitState, XComGameState NewGameState);
+/// End Issue #115
 
+/// Start Issue #60
 /// <summary>
 /// Called from XComGameState_Ability:GetUIReticleIndex 
 //  Return true to immediately override the default with the out parameter (skipping any further DLCInfo checks)
@@ -236,7 +251,9 @@ static function bool SelectTargetingReticle(out int ReturnReticleIndex, XComGame
 {
 	return false;
 }
+/// End Issue #60
 
+/// Start Issue #77
 /// <summary>
 /// Called from XComGameState_HeadquartersAlien:GetCurrentDoom 
 //  Return true to immediately override the default with the out parameter (skipping any further DLCInfo checks)
@@ -245,13 +262,17 @@ static function int AddDoomModifier(XComGameState_HeadquartersAlien AlienHQ, boo
 {
 	return 0;
 }
+/// End Issue #77
 
+/// Start Issue #68
 /// <summary>
 /// Called from XComGameState_MissionSite:CacheSelectedMissionData
 //  Encounter Data is modified immediately prior to being added to the SelectedMissionData
 /// </summary> 
 static function PostEncounterCreation(out name EncounterName, out PodSpawnInfo Encounter, int ForceLevel, int AlertLevel, optional XComGameState_BaseObject SourceObject);
+/// End Issue #68
 
+/// Start Issue #104
 /// <summary>
 /// Called from XComGroupSpawn:GetValidFloorLocations
 //  Allows DLC/Mods to override valid spawnable floor locations -- return true use FloorPoints and skip the defaults
@@ -260,6 +281,7 @@ static function bool GetValidFloorSpawnLocations(out array<Vector> FloorPoints, 
 {
 	return false;
 }
+/// End Issue #104
 
 /// Start Issue #31
 /// <summary>
@@ -273,6 +295,7 @@ static function bool LoadingScreenOverrideTransitionMap(optional out string Over
 }
 /// End Issue #31
 
+/// Start Issue #134
 /// <summary>
 /// Called from XComParcelManager:ChooseSoldierSpawn
 //  Allows DLC/Mods to override the soldier spawn point selection logic
@@ -282,7 +305,9 @@ static function XComGroupSpawn OverrideSoldierSpawn(vector ObjectiveLocation, ar
 {
 	return none;
 }
+/// End Issue #134
 
+/// Start Issue #142
 /// <summary>
 /// Called from XComTacticalMissionManager:SelectObjectiveSpawns
 //  Allows DLC/Mods to override the the number of objective spawns in a mission
@@ -292,7 +317,9 @@ static function int GetNumObjectivesToSpawn(XComGameState_BattleData BattleData)
 {
 	return -1;
 }
+/// End Issue #142
 
+/// Start Issue #69
 /// <summary>
 /// Called from XComGameState_AIReinforcementSpawner::BuildVisualizationForSpawnerCreation.
 /// Allows DLC/Mods to disable the visualization of the reinforcement flare/psi-gate indicator.
@@ -302,6 +329,7 @@ static function bool DisableAIReinforcementFlare(XComGameState_AIReinforcementSp
 {
     return false;
 }
+/// End Issue #69
 
 /// Start Issue #54
 /// <summary>
@@ -315,6 +343,7 @@ static function bool OverrideDestructibleInitialHealth(out int NewHealth, XComGa
 }
 /// End Issue #54
 
+/// Start Issue #136
 /// <summary>
 ///
 /// Called from XComTacticalController::DrawDebugLabels.
@@ -322,7 +351,9 @@ static function bool OverrideDestructibleInitialHealth(out int NewHealth, XComGa
 function DrawDebugLabel(Canvas kCanvas)
 {
 }
+/// End Issue #136
 
+/// Start Issue #180
 /// <summary>
 /// Called from UIShellDifficulty::DLCDisableTutorial. (new helper)
 /// Allows DLC/Mods to disable the tutorial (similar to how difficulty does in base game)
@@ -332,7 +363,9 @@ static function bool DLCDisableTutorial(UIShellDifficulty Screen)
 {
     return false;
 }
+/// End Issue #180
 
+/// Start Issue #126
 /// <summary>
 /// Called from XComGameState_Unit::OnAbilityActivated
 /// Allows DLC/Mods to modify the sound range of abilities. Only called for abilities that make sound.
@@ -341,7 +374,9 @@ static function int ModifySoundRange(XComGameState_Unit SourceUnit, XComGameStat
 {
     return 0;
 }
+/// End Issue #126
 
+/// Start Issue #137
 /// <summary>
 /// Called from XComTacticalController::Visualizer_SelectNextUnit and XComTacticalController::Visualizer_SelectPrevUnit.
 /// Allows DLC/Mods to sort the array of units for tab order purposes.
@@ -350,7 +385,9 @@ static function int ModifySoundRange(XComGameState_Unit SourceUnit, XComGameStat
 static function SortTabOrder(out array<XComGameState_Unit> Units, XComGameState_Unit CurrentUnit, bool TabbingForward)
 {
 }
+/// End Issue #137
 
+/// Start Issue #132
 /// <summary>
 /// Called from XComUnitPawn::CreateDefaultAttachments
 /// Allows DLC/Mods to append sockets to an existing pawn type
@@ -359,7 +396,9 @@ static function string DLCAppendSockets(XComUnitPawn Pawn)
 {
 	return "";
 }
+/// End Issue #132
 
+/// Start Issue #83
 /// <summary>
 /// Called from XComGameState_HeadquartersXCom::GetScienceScore
 /// Allows DLC/Mods to adjust the science score
@@ -369,7 +408,9 @@ static function int GetScienceScoreMod(bool bAddLabBonus)
 {
     return 0;
 }
+/// End Issue #83
 
+/// Start Issue #64
 /// <summary>
 /// Called from XComGameState_Ability::GetItemEnvironmentDamagePreview
 /// Allows DLC/Mods to dynamically adjust environment damage for an item
@@ -378,6 +419,7 @@ static function int OverrideItemEnvironmentDamagePreview(XComGameState_Ability A
 {
     return -1;
 }
+/// End Issue #64
 
 /// Start Issue #23
 /// <summary>

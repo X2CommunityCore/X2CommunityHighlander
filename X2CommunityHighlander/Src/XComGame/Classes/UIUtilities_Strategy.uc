@@ -617,10 +617,11 @@ static function string GetPersonnelLocation( XComGameState_Unit Unit, optional i
 		return class'UIUtilities_Text'.static.GetSizedText(default.m_strUnassignedPersonnelLocation, FontSize);
 }
 
-//LWS : Modified to add mod hooks for status (to handle sorting)
 static function string GetPersonnelStatus( XComGameState_Unit Unit, optional int FontSize = -1 )
 {
 	local string ShakenStr;
+
+	// Variables for Issue #192
 	local string ReturnString;
 	local XComLWTuple OverrideTuple;
 
@@ -632,22 +633,30 @@ static function string GetPersonnelStatus( XComGameState_Unit Unit, optional int
 	{
 		// soldiers get put into the hangar to indicate they are getting ready to go on a mission
 		if( `HQPRES.ScreenStack.IsInStack(class'UISquadSelect') && GetXComHQ().IsUnitInSquad(Unit.GetReference()) )
+			// Issue #192 - set to variable rather than return
 			ReturnString = class'UIUtilities_Text'.static.GetColoredText(default.m_strOnMissionStatus, eUIState_Highlight, FontSize);
 		else if (Unit.IsInjured() || Unit.IsDead())
+			// Issue #192 - set to variable rather than return
 			ReturnString = class'UIUtilities_Text'.static.GetColoredText(Unit.GetStatusString(), eUIState_Bad, FontSize);
 		else if (Unit.IsPsiTraining()  || Unit.IsPsiAbilityTraining())
+			// Issue #192 - set to variable rather than return
 			ReturnString = class'UIUtilities_Text'.static.GetColoredText(Unit.GetStatusString(), eUIState_Psyonic, FontSize);
 		else if (Unit.IsTraining())
+			// Issue #192 - set to variable rather than return
 			ReturnString = class'UIUtilities_Text'.static.GetColoredText(Unit.GetStatusString(), eUIState_Warning, FontSize);
 		else if (Unit.bIsShaken) 
 		{
 			ShakenStr = class'UIUtilities_Text'.static.GetColoredText(default.m_strShakenStatus, eUIState_Bad, FontSize);
+			// Issue #192 - set to variable rather than return
 			ReturnString = class'UIUtilities_Text'.static.GetColoredText(default.m_strAvailableStatus @ ShakenStr, eUIState_Good, FontSize);
 		}
 		else
+			// Issue #192 - set to variable rather than return
 			ReturnString = class'UIUtilities_Text'.static.GetColoredText(default.m_strAvailableStatus, eUIState_Good, FontSize);
 
+		// Start Issue #192
 		//LWS : adding hook for adding additional status types
+		//LWS : Modified to add mod hooks for status (to handle sorting)
 		OverrideTuple = new class'XComLWTuple';
 		OverrideTuple.Id = 'OverrideGetPersonnelStatusSeparate';
 		OverrideTuple.Data.Add(4);
@@ -665,6 +674,7 @@ static function string GetPersonnelStatus( XComGameState_Unit Unit, optional int
 		ReturnString = OverrideTuple.Data[0].s;
 		if (ReturnString != "")
 			return ReturnString;
+		// End Issue #192
 	}
 
 	return "MISSING DATA";
@@ -674,6 +684,8 @@ static function GetPersonnelStatusSeparate(XComGameState_Unit Unit, out string S
 {
 	local EUIState eState; 
 	local int TimeNum;
+
+	// Variable for Issue #192
 	local XComLWTuple OverrideTuple;
 
 	if(Unit.IsMPCharacter())
@@ -721,6 +733,7 @@ static function GetPersonnelStatusSeparate(XComGameState_Unit Unit, out string S
 		}
 	}
 
+	// Start Issue #192
 	//LWS : adding hook for adding additional status types
 	OverrideTuple = new class'XComLWTuple';
 	OverrideTuple.Id = 'OverrideGetPersonnelStatusSeparate';
@@ -740,6 +753,7 @@ static function GetPersonnelStatusSeparate(XComGameState_Unit Unit, out string S
 	TimeLabel = OverrideTuple.Data[1].s;
 	TimeNum = OverrideTuple.Data[2].i;
 	eState = EUIState(OverrideTuple.Data[3].i);
+	// End Issue #192
 
 	Status = class'UIUtilities_Text'.static.GetColoredText(Status, eState, FontSize);
 	TimeLabel = class'UIUtilities_Text'.static.GetColoredText(TimeLabel, eState, FontSize);

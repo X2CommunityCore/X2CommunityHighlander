@@ -826,6 +826,7 @@ simulated static function string GetPCSImage(XComGameState_Item Item)
 {
 	local ECharStatType StatType;
 
+	// Start Issue #191
 	local XComLWTuple OverridePCSImageTuple;
 
 	//set up a Tuple for return value - true means the to-hit calcs were overridden, so you should simply exit
@@ -841,6 +842,7 @@ simulated static function string GetPCSImage(XComGameState_Item Item)
 
 	if(OverridePCSImageTuple.Data[0].b)
 		return OverridePCSImageTuple.Data[1].s;
+	// End Issue #191
 
 	StatType = class'UIUtilities_Strategy'.static.GetStatBoost(Item).StatType;
 

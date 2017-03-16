@@ -247,16 +247,20 @@ simulated function bool HasItemsForSale()
 
 simulated function bool PlayerHasItemsToSell()
 {
-	local XComGameState NewGameState;
 	local BlackMarketItemPrice Item;
 	local XComGameState_Item InventoryItem;
 	local array<BlackMarketItemPrice> Items;
 	local XComGameStateHistory History;
+
+	// Variables for Issue #71
+	local XComGameState NewGameState;
 	local XComGameState_BlackMarket BlackMarketState, UpdatedBlackMarketState;
 
 	History = `XCOMHISTORY;
 	BlackMarketState = XComGameState_BlackMarket(History.GetSingleGameStateObjectForClass(class'XComGameState_BlackMarket'));
 
+	// Start Issue #71
+	// Ensure black market is updated
 	NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Update Black Market Price List");
 	BlackMarketState = XComGameState_BlackMarket(`XCOMHISTORY.GetGameStateForObjectID(BlackMarketState.ObjectID));
 
@@ -273,6 +277,7 @@ simulated function bool PlayerHasItemsToSell()
 		NewGameState.PurgeGameStateForObjectID(BlackMarketState.ObjectID);
 		`XCOMHISTORY.CleanupPendingGameState(NewGameState);
 	}
+	// End Issue #71
 
 	Items = BlackMarketState.BuyPrices;
 

@@ -5,7 +5,6 @@
 //           game of X-Com 2. For more information on the design spec for points of interest, refer to
 //           https://arcade/sites/2k/Studios/Firaxis/XCOM2/Shared%20Documents/World%20Map%20and%20Strategy%20AI.docx
 //           
-// LWS : Correct bug where POI weights could drop to zero, making POI (and possibly all POIs) unselectable
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -185,7 +184,11 @@ function ChooseInformation()
 	AvailablePOIs.Remove(RandIndex, 1); // Remove the POI number which was just picked
 
 	Weight -= Delta;
-	Weight = max(Weight, 1); // ensure non-negative weight // LWS : changed from 0 to 1
+
+	// For Issue #98 - Correct bug where POI weights could drop to zero,
+	//                 making POI (and possibly all POIs) unselectable,
+	//                 ensure non-negative weight // LWS : changed from 0 to 1
+	Weight = max(Weight, 1);
 	NumSpawns++;
 	
 	if (AvailablePOIs.Length == 0)
@@ -409,13 +412,16 @@ function bool Update(XComGameState NewGameState)
 //---------------------------------------------------------------------------------------
 function UpdateWeightAndDelta(X2PointOfInterestTemplate POITemplate)
 {
-	local int HoursToAdd, LowerBound;
+	local int HoursToAdd;
+
+	// Variable for Issue #98
+	local int LowerBound;
 
 	Weight = POITemplate.Weights[CurrentWeightIndex].Weight[`DIFFICULTYSETTING];
-	LowerBound = Min(Weight, 1);
+	LowerBound = Min(Weight, 1); // For Issue #98
 	Delta = Weight / POITemplate.DisplayNames.Length; // Delta is Weight divided by number of possible appearances
 	Weight -= Delta * NumSpawns;
-	Weight = max(Weight, LowerBound); // allow weight to go to zero when so configured
+	Weight = max(Weight, LowerBound); // For Issue #98 - allow weight to go to zero when so configured
 
 	if (POITemplate.Weights.Length > (CurrentWeightIndex + 1))
 	{

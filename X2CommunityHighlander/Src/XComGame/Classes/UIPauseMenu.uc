@@ -8,8 +8,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
 
-//LW2: added ini-managed control for bronzeman mode-type use of restart level button
-
 class UIPauseMenu extends UIScreen;
 
 var int       m_iCurrentSelection;
@@ -263,7 +261,8 @@ simulated public function OnChildClicked(UIList ContainerList, int ItemIndex)
 			break;
 
 		case m_optRestart: // Restart Mission (only valid in tactical)
-			if (`BATTLE != none && WorldInfo.NetMode == NM_Standalone && !m_bIsIronman)
+			// Conditional for Issue #176
+			if (`BATTLE != none && WorldInfo.NetMode == NM_Standalone && (!m_bIsIronman || class'Helpers_LW'.default.EnableRestartMissionButtonInIronman))
 				RestartMissionDialogue();				
 			break;
 
@@ -688,7 +687,8 @@ simulated function BuildMenu()
 	}
 	else
 	{
-		//LW2 stuff
+		// Start Issue #176
+		//LW2: added ini-managed control for bronzeman mode-type use of restart level button
 		if( kMPGRI == none &&
 		XComPresentationLayer(Movie.Pres) != none &&
 		XGBattle_SP(`BATTLE).m_kDesc != None &&
@@ -703,6 +703,7 @@ simulated function BuildMenu()
 		{
 			m_optRestart = -1;  //set options to -1 so they don't interfere with the switch statement on selection
 		}
+		// End Issue #176
 	}
 
 	// Only allow changing difficulty if in an active single player game and only at times where saving is permitted

@@ -125,16 +125,19 @@ simulated function array<UISummary_ItemStat> GetSoldierStats( XComGameState_Unit
 	Item.Value = string(Summary.Armor);
 	Stats.AddItem(Item);
 
-	//LWS : Added Defense
+	// Start Issue #189
+	// Added Defense
 	Item.Label = class'XLocalizedData'.default.DefenseLabel;
 	Item.Value = string(Summary.Defense);
 	Stats.AddItem(Item);
+	// End Issue #189
 
 	Item.Label = class'XLocalizedData'.default.DodgeLabel;
 	Item.Value = string(Summary.Dodge);
 	Stats.AddItem(Item);
 
-	if (kGameStateUnit.IsPsiOperative()) // LWS : Added conditional to show PsiOffense only for PsiOperative
+	// Conditional for Issue #189 : Show PsiOffense only for PsiOperative
+	if (kGameStateUnit.IsPsiOperative())
 	{
 		Item.Label = class'XLocalizedData'.default.PsiOffenseLabel; 
 		Item.Value = string(Summary.PsiOffense); 

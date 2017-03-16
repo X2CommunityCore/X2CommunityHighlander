@@ -28,6 +28,7 @@ simulated function OnPurchaseClicked(UIList kList, int itemIndex)
 	//Do nothing else, since this is just a view screen.
 }
 
+// Start Issue #193
 // LWS : Added to enable UIScreenListeners to detect change events
 simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 {
@@ -39,6 +40,7 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 	}
 	SignalOnReceiveFocus(); // notify so the DLC/Mods can take action when item changes
 }
+// End Issue #193
 
 //-------------- GAME DATA HOOKUP --------------------------------------------------------
 

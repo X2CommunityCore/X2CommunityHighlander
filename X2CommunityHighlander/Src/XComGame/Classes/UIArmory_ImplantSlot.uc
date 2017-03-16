@@ -78,6 +78,7 @@ simulated function SetLocked(XComGameState_Unit Unit)
 	UnlockRanks = Unit.GetPCSRanks();
 
 	LocTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
+	// Issue #107
 	LocTag.StrValue0 = class'LWUtilities_Ranks'.static.GetRankName(UnlockRanks[SlotIndex], Unit.GetSoldierClassTemplateName(), Unit);
 
 	Label.SetTitle(class'UIUtilities_Text'.static.GetColoredText(m_strLockedLabel, eUIState_Disabled));

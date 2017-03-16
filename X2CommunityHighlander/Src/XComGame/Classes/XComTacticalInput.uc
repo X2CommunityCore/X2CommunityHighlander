@@ -1,7 +1,3 @@
-// LWS : Added hooks to control camera rotation
-//-----------------------------------------------------------
-//
-//-----------------------------------------------------------
 class XComTacticalInput extends XComInputBase dependson(X2GameRuleset)
 	native(UI);     // TODO - move into separate native base class
 
@@ -630,6 +626,7 @@ state InReplayPlayback
 
 	function bool Key_Q( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, true, ActionMask))
@@ -637,6 +634,7 @@ state InReplayPlayback
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(90.0);
@@ -644,6 +642,7 @@ state InReplayPlayback
 	}
 	function bool Key_E( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, false, ActionMask))
@@ -651,6 +650,7 @@ state InReplayPlayback
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(-90.0);
@@ -1253,6 +1253,7 @@ state UsingTargetingMethod
 
 	function bool Key_E( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, false, ActionMask))
@@ -1260,6 +1261,7 @@ state UsingTargetingMethod
 			XComTacticalController(Outer).YawCamera(Angle);
 			return true;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_PRESS) != 0)
 		{
@@ -1270,6 +1272,7 @@ state UsingTargetingMethod
 
 	function bool Key_Q( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, true, ActionMask))
@@ -1277,6 +1280,7 @@ state UsingTargetingMethod
 			XComTacticalController(Outer).YawCamera(Angle);
 			return true;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_PRESS) != 0)
 		{
@@ -1502,6 +1506,7 @@ state Multiplayer_Inactive
 
 	function bool Key_E( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, false, ActionMask))
@@ -1509,6 +1514,7 @@ state Multiplayer_Inactive
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(-90.0);
@@ -1516,6 +1522,7 @@ state Multiplayer_Inactive
 	}
 	function bool Key_Q( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, true, ActionMask))
@@ -1523,6 +1530,7 @@ state Multiplayer_Inactive
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(90.0);
@@ -1531,6 +1539,7 @@ state Multiplayer_Inactive
 
 	function bool DPad_Right( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, false, ActionMask))
@@ -1538,6 +1547,7 @@ state Multiplayer_Inactive
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(-90.0);
@@ -1545,6 +1555,7 @@ state Multiplayer_Inactive
 	}
 	function bool DPad_Left( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, true, ActionMask))
@@ -1552,6 +1563,7 @@ state Multiplayer_Inactive
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(90.0);
@@ -2422,6 +2434,7 @@ state ActiveUnit_Moving
 
 	function bool Key_E( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, false, ActionMask))
@@ -2429,6 +2442,7 @@ state ActiveUnit_Moving
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(-90.0);
@@ -2436,6 +2450,7 @@ state ActiveUnit_Moving
 	}
 	function bool Key_Q( int ActionMask )
 	{
+		// Start Issue #138
 		//LWS: Adding hook for camera rotation
 		local float Angle;
 		if (GetCameraRotationAngle(Angle, true, ActionMask))
@@ -2443,6 +2458,7 @@ state ActiveUnit_Moving
 			XComTacticalController(Outer).YawCamera(Angle);
 			return false;
 		}
+		// End Issue #138
 
 		if (( ActionMask & class'UIUtilities_Input'.const.FXS_ACTION_RELEASE) != 0)
 			XComTacticalController(Outer).YawCamera(90.0);
@@ -3373,6 +3389,7 @@ simulated function OnPauseMenuCancel()
 // Overriden in 'Multiplayer_GameOver' state
 event Cleanup();
 
+// Start Issue #138
 //-----------------------------------------------------------
 //---------------- BEGIN LWS CHANGES ------------------------
 //-----------------------------------------------------------
@@ -3404,6 +3421,7 @@ function bool GetCameraRotationAngle(out float Angle, bool bPositive, int Action
 //-----------------------------------------------------------
 //----------------- END LWS CHANGES -------------------------
 //-----------------------------------------------------------
+// End Issue #138
 
 native function bool IsCurrentMatineeSkippable();
 //-----------------------------------------------------------

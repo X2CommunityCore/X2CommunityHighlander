@@ -3,7 +3,7 @@
 //  AUTHOR:  Joe Cortese 7/13/2015
 //  PURPOSE: UIPanel to load a dynamic image icon and set background coloring. 
 //
-//  LWS: Extending to allow modding of click functionality and tooltip info
+//  Issue #185: Extending to allow modding of click functionality and tooltip info
 //----------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //----------------------------------------------------------------------------
@@ -64,6 +64,7 @@ simulated function SetScanSite(XComGameState_ScanningSite Scanner)
 
 	AS_SetGoldenPath(false);
 
+	// For Issue #185
 	TriggerEvent('OverrideMissionIcon_SetScanSite');
 }
 
@@ -90,11 +91,13 @@ simulated function SetMissionSite(XComGameState_MissionSite Mission)
 
 	AS_SetGoldenPath(bIsGoldenPath);
 
+	// For Issue #185
 	TriggerEvent('OverrideMissionIcon_SetMissionSite');
 }
 
 simulated function OnMouseEvent(int cmd, array<string> args)
 {
+	// Variable for Issue #185
 	local XComLWTuple Tuple;
 
 	super.OnMouseEvent(cmd, args);
@@ -106,17 +109,23 @@ simulated function OnMouseEvent(int cmd, array<string> args)
 		{
 			XComHQPresentationLayer(Movie.Pres).CAMSaveCurrentLocation();
 		}
-		if(MapItem != none) // LWS: Added spam reduction
+		if(MapItem != none) // Issue #185: Added spam reduction
 			MapItem.OnMouseIn();
 		if(ScanSite != none)
 		{
 			ScanSite = XComGameState_ScanningSite(`XCOMHISTORY.GetGameStateForObjectID(ScanSite.ObjectID)); // Force an update of Scan Site game state
+			// Start Issue #185
 			//LWS: Adding override for MissionSite Tooltip
 			Tuple = TriggerEvent('OverrideMissionIcon_ScanSiteTooltip');
 			if (Tuple.Data.Length == 3 && Tuple.Data[0].Kind == XComLWTVBool && Tuple.Data[0].b)
+			{
 				SetMissionIconTooltip(Tuple.Data[1].s, Tuple.Data[2].s);
+			}
 			else
+			{
 				SetMissionIconTooltip(ScanSite.GetUIButtonTooltipTitle(), ScanSite.GetUIButtonTooltipBody());
+			}
+			// End Issue #185
 			if (bMoveCamera || `ISCONTROLLERACTIVE == false)
 			{
 				XComHQPresentationLayer(Movie.Pres).CAMLookAtEarth(ScanSite.Get2DLocation(), ZoomLevel);
@@ -124,12 +133,18 @@ simulated function OnMouseEvent(int cmd, array<string> args)
 		}
 		else if( MissionSite != none )
 		{
+			// Start Issue #185
 			//LWS: Adding override for MissionSite Tooltip
 			Tuple = TriggerEvent('OverrideMissionIcon_MissionTooltip');
 			if (Tuple.Data.Length == 3 && Tuple.Data[0].Kind == XComLWTVBool && Tuple.Data[0].b)
+			{
 				SetMissionIconTooltip(Tuple.Data[1].s, Tuple.Data[2].s);
+			}
 			else
+			{
 				SetMissionIconTooltip(MissionSite.GetUIButtonTooltipTitle(), MissionSite.GetUIButtonTooltipBody());
+			}
+			// End Issue #185
 			if (bMoveCamera || `ISCONTROLLERACTIVE == false)
 			{
 				XComHQPresentationLayer(Movie.Pres).CAMLookAtEarth(MissionSite.Get2DLocation(), ZoomLevel);
@@ -144,14 +159,14 @@ simulated function OnMouseEvent(int cmd, array<string> args)
 		}
 		break;
 	case class'UIUtilities_Input'.const.FXS_L_MOUSE_OUT:
-		if(MapItem != none) // LWS: Added spam reduction
+		if(MapItem != none) // Issue #185: Added spam reduction
 			MapItem.OnMouseOut();
 		if (bMoveCamera || `ISCONTROLLERACTIVE == false)
 		{
 			XComHQPresentationLayer(Movie.Pres).CAMRestoreSavedLocation();
 		}
 		break;
-	}
+	};
 }
 
 simulated function HideTooltip()
@@ -253,17 +268,19 @@ simulated function OnLoseFocus()
 	OnMouseEvent(class'UIUtilities_Input'.const.FXS_L_MOUSE_OUT, EmptyArray);
 }
 
+// Start Issue #185
 //LWS: Adding generic TriggerEvent for various modding hooks to MissionIcon
 simulated function XComLWTuple TriggerEvent(name ID)
 {
-    local XComLWTuple Tuple;
+	local XComLWTuple Tuple;
 
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = ID;
-    `XEVENTMGR.TriggerEvent('OverrideMissionIcon', Tuple, self);
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = ID;
+	`XEVENTMGR.TriggerEvent('OverrideMissionIcon', Tuple, self);
 
 	return Tuple;
 }
+// End Issue #185
 
 simulated function AS_SetLock(bool isLocked)
 {

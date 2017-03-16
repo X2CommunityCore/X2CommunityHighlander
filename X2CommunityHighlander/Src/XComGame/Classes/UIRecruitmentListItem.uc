@@ -1,5 +1,3 @@
-//LWS :		 Adding hooks to enable DLC/Mods to alter list item
-
 class UIRecruitmentListItem extends UIListItemString;
 
 var localized string RecruitConfirmLabel; 
@@ -26,11 +24,13 @@ simulated function InitRecruitItem(XComGameState_Unit Recruit)
 	// HAX: Undo the height override set by UIListItemString
 	MC.ChildSetNum("theButton", "_height", 40);
 
-	// LWS: trigger now to allow overriding disabled status, and to add background elements
+	//LWS :		 Adding hooks to enable DLC/Mods to alter list item
+	// Issue #178: trigger now to allow overriding disabled status, and to add background elements
 	`XEVENTMGR.TriggerEvent('OnRecruitmentListItemInit', Recruit, self);
 }		
 
-// LWS: Add triggers to allow updating on receiving/losing focus
+// Start Issue #178
+// Add triggers to allow updating on receiving/losing focus
 simulated function OnReceiveFocus()
 {
 	super.OnReceiveFocus();
@@ -42,6 +42,7 @@ simulated function OnLoseFocus()
 	super.OnLoseFocus();
 	`XEVENTMGR.TriggerEvent('OnRecruitmentListItemUpdateFocus', self, self);
 }
+// End Issue #178
 
 simulated function OnClickedConfirmButton(UIButton Button)
 {

@@ -2,12 +2,6 @@ class XGAIPlayer extends XGPlayer
 	native(AI)
 	config(AI);
 
-// LWS Mods:
-//
-// tracktwo - GatherUnitsToMove: Don't skip units that have action points but have already moved this turn. Needed to allow bonus
-//            reaction actions on pod leaders - they may move, reveal, scamper, and then be granted bonus actions. By default they
-//            would not be considered for actions because they had already taken an action this turn (the original move).
-
 struct native reinforcements_info
 {
 	var bool bUnavailable;
@@ -693,11 +687,11 @@ static function bool IsMindControlled(XComGameState_Unit UnitState)
 }
 
 // Update - green alert units and units that have not yet revealed should do their patrol movement.
-// Override by LWS: goal is to remove isunrevealedAI flag, as units seen by concealed xcoms are stopping for no logical reason
 
 function bool ShouldUnitPatrol( XComGameState_Unit UnitState )
 {
-	local XComLWTuple OverrideTuple;  // LWS  added
+	// Variables for Issue #151
+	local XComLWTuple OverrideTuple;
 	local bool PassOrSkipUnRevealedAI;
  
 	if( IsMindControlled(UnitState) )
@@ -705,6 +699,8 @@ function bool ShouldUnitPatrol( XComGameState_Unit UnitState )
 		return false;
 	}
 
+	// Start Issue #151
+	// Override by LWS: goal is to remove isunrevealedAI flag, as units seen by concealed xcoms are stopping for no logical reason
 	OverrideTuple = new class'XComLWTuple';
 	OverrideTuple.Id = 'ShouldUnitPatrolUnderway';
 	OverrideTuple.Data.Add(2);
@@ -719,6 +715,7 @@ function bool ShouldUnitPatrol( XComGameState_Unit UnitState )
 	PassOrSkipUnRevealedAI = OverrideTuple.Data[0].b || UnitState.IsUnrevealedAI();
 
 	if( (PassOrSkipUnRevealedAI && !IsScampering(UnitState.ObjectID)) )
+	// End Issue #151
 	{
 		// For now only allow group leaders to direct movement when unrevealed.
 		if( UnitState.GetGroupMembership().m_arrMembers[0].ObjectID == UnitState.ObjectID )
@@ -811,12 +808,12 @@ simulated function GatherUnitsToMove()
 	local array<GameRulesCache_Unit> ScamperSetup;
 	local array<GameRulesCache_Unit> Scampering;
 	local XComTacticalCheatManager kCheatMgr;
-	//local XGAIBehavior kBehavior; // LWS Removed - see below
-	// local XComGameState_AIPlayerData kAIPlayerData; // LWS Removed - see below
+	//local XGAIBehavior kBehavior; // Removed for Issue #152
+	// local XComGameState_AIPlayerData kAIPlayerData; // Removed for Issue #152
 	local bool bDead;
 	local X2AIBTBehaviorTree BTMgr;
 
-	// LWS Removed
+	// Removed for Issue #152
 	// kAIPlayerData = XComGameState_AIPlayerData(`XCOMHISTORY.GetGameStateForObjectID(GetAIDataID()));
 
 	kCheatMgr = `CHEATMGR;
@@ -839,8 +836,15 @@ simulated function GatherUnitsToMove()
 				kCheatMgr.AIStringsAddUnit(UnitState.ObjectID, bDead);
 			}
 
+			// Start Issue #152
 			// LWS: Removed. Unused - see below.
 			// kBehavior = (XGUnit(UnitState.GetVisualizer())).m_kBehavior;
+
+			// LWS Mods:
+			//
+			// tracktwo - GatherUnitsToMove: Don't skip units that have action points but have already moved this turn. Needed to allow bonus
+			//            reaction actions on pod leaders - they may move, reveal, scamper, and then be granted bonus actions. By default they
+			//            would not be considered for actions because they had already taken an action this turn (the original move).
 
 			// Check if this unit has already moved this turn.  (Compare init history index to last turn start) 
 			// Also skip units that have currently no action points available.   They shouldn't be added to any lists.
@@ -848,6 +852,7 @@ simulated function GatherUnitsToMove()
 			// LWS Mods: Remove the condition that the unit has not already moved this turn. Ordinarily this is unnecessary because
 			// the unit will have no action points anyway, but removing this test is necessary for bonus reflex moves.
 			if(bDead || UnitState.bRemovedFromPlay || UnitState.NumAllActionPoints() == 0)
+			// End Issue #152
 			{
 				continue;
 			}
@@ -926,7 +931,7 @@ simulated function GatherUnitsToMove()
 			}
 			// TODO: Sort units to move here.
 			UnitsToMove = arrOthers;
-			UnitsToMove.Sort(SortUnitsByAIJob); // LWS : Added unit sort
+			UnitsToMove.Sort(SortUnitsByAIJob); // For Issue #153 : Added unit sort
 		}
 	}
 	`logAI(self$"::GatherUnitsToMove found "@UnitsToMove.Length@" units to move.");
@@ -937,6 +942,7 @@ simulated function GatherUnitsToMove()
 
 }
 
+// Start Issue #153
 //LWS Added sort function to sort units based on AIJobs
 protected function int SortUnitsByAIJob(GameRulesCache_Unit CacheUnitA, GameRulesCache_Unit CacheUnitB)
 {
@@ -969,6 +975,7 @@ protected function int GetJobPriorityForUnitRef(StateObjectReference UnitRef, X2
 	}
 	return Priority;
 }
+// End Issue #153
 
 //=======================================================================================
 function OnTimedOut()
@@ -2117,7 +2124,7 @@ function UpdateValidAndLastResortTargetList()
 	local array<XComGameState_Unit> AllPlayableUnits, OriginalUnits;
 	local XComGameState_Unit UnitState;
 	local LastResortEffect LREffect;
-	//local bool bIsLastResortUnit; // LWS: Removed
+	//local bool bIsLastResortUnit; // Removed for Issue #150
 
 	kEnemyPlayer = `BATTLE.GetEnemyPlayer(self);
 	kEnemyPlayer.GetPlayableUnits(AllPlayableUnits);
@@ -2141,25 +2148,27 @@ function UpdateValidAndLastResortTargetList()
 	foreach AllPlayableUnits(UnitState)
 	{
 		// Unit ID gets added to either the last resort list or the valid targets list.
-		//bIsLastResortUnit = false; LWS: Removed. See comment below
+		//bIsLastResortUnit = false; Removed for Issue #150
 		foreach LastResortTargetEffects(LREffect)
 		{
 			if( IsAffectedByLastResortEffect(UnitState, LREffect))
 			{
 				LastResortTargetList.AddItem(UnitState.ObjectID);
-				//bIsLastResortUnit = true; // LWS Removed
+				//bIsLastResortUnit = true; // Removed for Issue #150
 				break;
 			}
 		}
 
-        // LWS Removed: Track the "last resort" units, but keep them in the target list and score them
-        // differently from non-last-resort units. Avoids situations where AI will double-move to go 
-        // try to find a non-last-resort unit that is really far away instead of targeting a last-resort
-        // unit that's nearby.
+		// Start Issue #150
+		// LWS Removed: Track the "last resort" units, but keep them in the target list and score them
+		// differently from non-last-resort units. Avoids situations where AI will double-move to go 
+		// try to find a non-last-resort unit that is really far away instead of targeting a last-resort
+		// unit that's nearby.
 		//if( bIsLastResortUnit )
 		//{
 		//	continue;
 		//}
+		// End Issue #150
 		ValidTargetsBasedOnLastResortEffects.AddItem(UnitState.ObjectID);
 	}
 

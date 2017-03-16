@@ -7,13 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Changes:
-//
-// tracktwo - Consider VIPs lost if they are not removed from play (i.e. they did not evac).
-//            Base game considered them all saved if not dead and the mission succeeded, which is
-//            insufficient for multi-VIP missions. This needs to be adjusted further if its desired
-//            to have multi-VIP missions that are not evac missions. 
-//
 class XComGameState_MissionSite extends XComGameState_GeoscapeEntity
 	native(Core);
 
@@ -112,6 +105,8 @@ function bool CacheSelectedMissionData(int ForceLevel, int AlertLevel)
 	local XComGameState_HeadquartersXCom XComHQ;
 	local XComGameStateHistory History;
 	local int LeaderForceLevelMod;
+
+	/// Variables for Issue #68
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS: Added for hook
 	local int i; // LWS: Added for hook
 
@@ -177,12 +172,14 @@ function bool CacheSelectedMissionData(int ForceLevel, int AlertLevel)
 
 				NewEncounter.EncounterSpawnInfo.SpawnLocationActorTag = EncounterInfo.SpawnLocationActorTag;
 
+				/// Start Issue #68
 				//LWS: Added hook to allow post-creation adjustment of instantiated encounter info
 				DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 				for(i = 0; i < DLCInfos.Length; ++i)
 				{
 					DLCInfos[i].PostEncounterCreation(NewEncounter.SelectedEncounterName, NewEncounter.EncounterSpawnInfo, ForceLevel, AlertLevel, self);
 				}
+				/// End Issue #68
 
 				SelectedMissionData.SelectedEncounters.AddItem(NewEncounter);
 			}
@@ -996,6 +993,7 @@ function bool AboutToExpire()
 
 function class<UIStrategyMapItem> GetUIClass()
 {
+	// Start Issue #94
 	local XComLWTuple OverrideTuple; // LW  added
 	local class<UIStrategyMapItem> MapItemClass;
 
@@ -1017,6 +1015,7 @@ function class<UIStrategyMapItem> GetUIClass()
 		if(MapItemClass != none)
 			return MapItemClass;
 	}
+	// End Issue #94
 	
 	if(MakesDoom())
 	{
@@ -1186,6 +1185,8 @@ function ConfirmMission()
 	local XComGameState_HeadquartersXCom XComHQ;
 	local XGStrategy StrategyGame;
 	local XComGameState NewGameState;
+
+	// Variable for Issue #93
 	local XComLWTuple OverrideTuple; // LW  added
 
 	NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Launch Mission Selected");
@@ -1212,6 +1213,7 @@ function ConfirmMission()
 	}
 	else
 	{
+		// Start Issue #93
 		//LWS : Added hook to allow circumventing the typical mission launch process 
 
 		//LW set up a Tuple -- false means launch tactical battle as normal, true means a listener is launching it
@@ -1225,9 +1227,10 @@ function ConfirmMission()
 
 		if (OverrideTuple.Data[0].b == false)
 		{
-			// Launch this Mission!
+			// Launch this Mission! - vanilla behaviour
 			StrategyGame.LaunchTacticalBattle(ObjectID);
 		}
+		// End Issue #93
 	}
 }
 
@@ -1593,23 +1596,26 @@ simulated function StateObjectReference GetRewardVIP()
 simulated function int GetRewardVIPStatus(XComGameState_Unit Unit)
 {
 	local XComGameState_BattleData BattleData;
-    local XComLWTuple Tuple;
-    local XComLWTValue Value;
 
-    // LWS: Allow mod overrides for VIP status. Triggers the 'GetRewardVIPStatus' event with
-    // a tuple with 1 object data object - the unit being rewarded. EventSource is the mission site.
-    // If the handler returns a tuple with an int in data[1], that value is used as the return value.
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = 'GetRewardVIPStatus';
-    Value.Kind = XComLWTVObject;
-    Value.o = Unit;
-    Tuple.Data.AddItem(Value);
-    `XEVENTMGR.TriggerEvent('GetRewardVIPStatus', Tuple, self, none);
+	// Start Issue #92
+	local XComLWTuple Tuple;
+	local XComLWTValue Value;
 
-    if (Tuple.Data.Length == 2 && Tuple.Data[1].Kind == XComLWTVInt)
-    {
-        return Tuple.Data[1].i;
-    }
+	// LWS: Allow mod overrides for VIP status. Triggers the 'GetRewardVIPStatus' event with
+	// a tuple with 1 object data object - the unit being rewarded. EventSource is the mission site.
+	// If the handler returns a tuple with an int in data[1], that value is used as the return value.
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'GetRewardVIPStatus';
+	Value.Kind = XComLWTVObject;
+	Value.o = Unit;
+	Tuple.Data.AddItem(Value);
+	`XEVENTMGR.TriggerEvent('GetRewardVIPStatus', Tuple, self, none);
+
+	if (Tuple.Data.Length == 2 && Tuple.Data[1].Kind == XComLWTVInt)
+	{
+			return Tuple.Data[1].i;
+	}
+	// End Issue #92
 
 	if(Unit == none)
 		return eVIPStatus_Unknown;

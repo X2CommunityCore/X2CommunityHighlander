@@ -170,14 +170,30 @@ function string GetDisplayName()
 
 function bool CanBeScanned()
 {
-	// LW Mods: Allow the havens to be hidden.
-	return !class'Helpers_LW'.default.HideHavens;
+	// Start Issue #75 - Allow the havens to be hidden.
+	if (class'Helpers_LW'.default.HideHavens)
+	{
+		return false;
+	}
+	else 
+	{
+		return (GetWorldRegion().IsStartingRegion());
+	}
+	// End Issue #75
 }
 
 function bool ShouldBeVisible()
 {
-	// LW Mods: Allow the havens to be hidden.
-	return !class'Helpers_LW'.default.HideHavens;
+	// Start Issue #75 - Allow the havens to be hidden.
+	if (class'Helpers_LW'.default.HideHavens)
+	{
+		return false;
+	}
+	else 
+	{
+		return (ResistanceActive() && GetWorldRegion().ResistanceLevel == eResLevel_Outpost);
+	}
+	// End Issue #75
 }
 
 function class<UIStrategyMapItem> GetUIClass()
@@ -220,8 +236,16 @@ function Rotator GetMeshRotator()
 
 protected function bool CanInteract()
 {
-	// LW Mods: Allow the havens to be hidden.
-	return !class'Helpers_LW'.default.HideHavens;
+	// Start Issue #75 - Allow the havens to be hidden.
+	if (class'Helpers_LW'.default.HideHavens)
+	{
+		return false;
+	}
+	else 
+	{
+		return (ResistanceActive() && GetWorldRegion().IsStartingRegion());
+	}
+	// End Issue #75
 }
 
 //---------------------------------------------------------------------------------------

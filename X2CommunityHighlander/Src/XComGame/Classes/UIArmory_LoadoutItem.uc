@@ -55,7 +55,7 @@ simulated function UIArmory_LoadoutItem InitLoadoutItem(XComGameState_Item Item,
 			else
 			{
 				//SetCount(class'UIUtilities_Strategy'.static.GetXComHQ().GetNumItemInInventory(ItemTemplate.DataName));
-				SetCount(Item.Quantity); // LWS fixes bug in how primary weapon count gets displayed
+				SetCount(Item.Quantity); // Issue #162 - LWS fixes bug in how primary weapon count gets displayed
 			}
 		}
 	}
@@ -294,10 +294,15 @@ simulated function UpdateDropItemButton(optional XComGameState_Item Item)
 		Item = XComGameState_Item(`XCOMHISTORY.GetGameStateForObjectID(ItemRef.ObjectID));
 
 	if(UIArmory_Loadout_MP(Screen) != none)
+	{
 		bShowClearButton = Item != none && !UIArmory_Loadout_MP(Screen).GetUnit().ItemIsInMPBaseLoadout(Item.GetMyTemplateName());
+	}
 	else
-		bShowClearButton = Item != none && Item.ItemCanBeUnequipped(); // LW- added to generalize unequippability of items
+	{
+		// Issue #89 - added to generalize unequippability of items
+		bShowClearButton = Item != none && Item.ItemCanBeUnequipped();
 		//bShowClearButton = Item != none && !ItemTemplate.bInfiniteItem || Item.HasBeenModified();
+	}
 	bCanBeCleared = bShowClearButton;
 	if(!Movie.IsMouseActive())
 		return; //should not show the PC button to clear item if in console mode
@@ -361,6 +366,7 @@ function OnDropItemClicked(UIButton kButton)
 		{
 			XComHQ.PutItemInInventory(NewGameState, ItemState); // Add the dropped item back to the HQ
 
+			// Start Issue #89 - allow override of an item being allowed to be unequipped
 			//set up a Tuple for return value -- LW Added
 			OverrideTuple = new class'XComLWTuple';
 			OverrideTuple.Id = 'OverrideItemCanBeUnequipped';
@@ -372,11 +378,14 @@ function OnDropItemClicked(UIButton kButton)
 	
 			if(!OverrideTuple.Data[0].b)
 			{
+				// vanilla behaviour start
 				// Give the owner the best infinite item in its place
 				BestGearTemplates = OwnerState.GetBestGearForSlot(EquipmentSlot);
 				bUpgradeSucceeded = OwnerState.UpgradeEquipment(NewGameState, none, BestGearTemplates, EquipmentSlot, ReplacementItemState);
 				OwnerState.ValidateLoadout(NewGameState);
+				// vanilla behaviour end
 			}
+			// End Issue #89
 			`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 			
 			if (bUpgradeSucceeded)

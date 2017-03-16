@@ -10,7 +10,7 @@ var public localized string m_strFacilitySummary;
 
 simulated function RealizeNavHelp()
 {
-    NavHelp.ClearButtonHelp();
+	NavHelp.ClearButtonHelp(); // For Issue #168 - purpose unsure
 	NavHelp.bIsVerticalHelp = `ISCONTROLLERACTIVE;
 	if(class'XComGameState_HeadquartersXCom'.static.IsObjectiveCompleted('T0_M1_WelcomeToLabs'))
 	{

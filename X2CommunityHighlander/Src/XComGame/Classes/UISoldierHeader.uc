@@ -94,6 +94,7 @@ public function PopulateData(optional XComGameState_Unit Unit, optional StateObj
 
 	flagIcon  = (Unit.IsSoldier() && !bHideFlag) ? Unit.GetCountryTemplate().FlagImage : "";
 	//rankIcon  = Unit.IsSoldier() ? class'UIUtilities_Image'.static.GetRankIcon(iRank, Unit.GetSoldierClassTemplateName()) : "";
+	// Issue #107
 	rankIcon  = Unit.IsSoldier() ? class'LWUtilities_Ranks'.static.GetRankIcon(iRank, Unit.GetSoldierClassTemplateName(), Unit) : "";
 	classIcon = Unit.IsSoldier() ? SoldierClass.IconImage : Unit.GetMPCharacterTemplate().IconImage;
 
@@ -119,6 +120,7 @@ public function PopulateData(optional XComGameState_Unit Unit, optional StateObj
 							  "", "",
 							  classIcon, Caps(SoldierClass != None ? SoldierClass.DisplayName : ""),
 							  //rankIcon, Caps(Unit.IsSoldier() ? `GET_RANK_STR(Unit.GetRank(), Unit.GetSoldierClassTemplateName()) : ""),
+								// Issue #107
 							  rankIcon, Caps(Unit.IsSoldier() ? class'LWUtilities_Ranks'.static.GetRankName(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit) : ""),
 							  flagIcon, (Unit.ShowPromoteIcon()), DaysValue);
 	}
@@ -130,6 +132,7 @@ public function PopulateData(optional XComGameState_Unit Unit, optional StateObj
 							  m_strKillsLabel, string(Unit.GetNumKills()),
 							  classIcon, Caps(SoldierClass != None ? SoldierClass.DisplayName : ""),
 							  //rankIcon, Caps(`GET_RANK_STR(Unit.GetRank(), Unit.GetSoldierClassTemplateName())),
+								// Issue #107
 							  rankIcon, Caps(class'LWUtilities_Ranks'.static.GetRankName(Unit.GetRank(), Unit.GetSoldierClassTemplateName(), Unit)),
 							  flagIcon, (Unit.ShowPromoteIcon()), DaysValue);
 	}

@@ -51,17 +51,20 @@ simulated function SetItemImages(optional X2ItemTemplate ItemTemplate, optional 
 		{
 			WeaponTemplate = X2WeaponTemplate(ItemTemplate); 
 
+			// Start Issue #159
 			//LW Added -- allows overriding of weapon-panel style images
 			if(ItemTemplate.strInventoryImage != "")
 				Images.AddItem(ItemTemplate.strInventoryImage);
 			else if (ItemTemplate.strImage != "")
+			// End Issue #159
 				Images.AddItem(ItemTemplate.strImage);
 			else if( X2WeaponTemplate(ItemTemplate).WeaponPanelImage != "" )
 				Images.AddItem(X2WeaponTemplate(ItemTemplate).WeaponPanelImage);
 
-			//LW Added
+			// Conditional for Issue #159
 			if(ItemTemplate.strInventoryImage == "")
 			{
+				// Vanilla behaviour if no strInventoryImage
 				//Base Attachment Images 
 				for( i = 0; i < WeaponTemplate.DefaultAttachments.length; i++ )
 				{

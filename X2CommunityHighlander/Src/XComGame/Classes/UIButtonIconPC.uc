@@ -3,6 +3,7 @@
 //  AUTHOR:  amineri / Pavonis Interactive
 //	PURPOSE: Extension of regular button for use with FlashControl XComButtonIconPC
 //			 Normally accessible only through NavHelp
+//	Issue #167
 //---------------------------------------------------------------------------------------
 
 class UIButtonIconPC extends UIPanel;

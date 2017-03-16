@@ -1,4 +1,4 @@
-
+// Start Issue #173
 // LWS Changes
 //
 // tracktwo - Moved VIP names out of UIInventory_VIPRecovered and into this class to support listing multiple VIPs. VIPs
@@ -13,6 +13,7 @@ struct ExtraVIPIcon
 };
 
 var config array<ExtraVIPIcon> ExtraVIPIcons;
+// End Issue #173
 
 var array<StateObjectReference> UnlockedTechs;
 var UIInventory_VIPRecovered VIPPanel;
@@ -23,6 +24,8 @@ var localized string m_strLootRecovered;
 var localized string m_strArtifactRecovered;
 var localized string m_strArtifactRecoveredEvac;
 var localized string m_strArtifactRecoveredSweep;
+
+// Variable for Issue #173
 var localized string m_strVIPRecovered;
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
@@ -39,7 +42,7 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	{
 		VIPPanel = Spawn(class'UIInventory_VIPRecovered', self).InitVIPRecovered();
 		VIPPanel.SetPosition(1300, 772); // position is based on guided out panel in Inventory.fla
-        VIPPanel.Hide(); // But don't display it: we only want the pawn.
+		VIPPanel.Hide(); // Issue #173 - But don't display it: we only want the pawn.
 	}
 
 	`XCOMGRI.DoRemoteEvent('CIN_HideArmoryStaff'); //Hide the staff in the armory so that they don't overlap with the soldiers
@@ -52,12 +55,13 @@ simulated function BuildScreen()
 {
 	super.BuildScreen();
 
-    List.OnSelectionChanged = LootSelectedItemChanged;
+	List.OnSelectionChanged = LootSelectedItemChanged; // Issue #173
 	
 	// Transition instantly to from UIAfterAction to UIInventory_LootRecovered
 	if( bIsIn3D ) class'UIUtilities'.static.DisplayUI3D(DisplayTag, CameraTag, 0);
 }
 
+// Start Issue #173
 simulated function LootSelectedItemChanged(UIList ContainerList, int ItemIndex)
 {
     local UIInventory_VIPListItem VIPListItem;
@@ -73,6 +77,7 @@ simulated function LootSelectedItemChanged(UIList ContainerList, int ItemIndex)
         super.SelectedItemChanged(ContainerList, ItemIndex);
     }
 }
+// End Issue #173
 
 function ContinueAfterActionMatinee()
 {
@@ -209,12 +214,14 @@ simulated function PopulateData()
 			AddLootItem(Artifacts[i]);
 	}
 
-    if(BattleData.RewardUnits.Length > 0)
-    {
-        Spawn(class'UIInventory_HeaderListItem', List.ItemContainer).InitHeaderItem("img:///UILibrary_Common.UIEvent_staff", m_strVIPRecovered);
-        for(i = 0; i <  BattleData.RewardUnits.Length; ++i)
-            AddVIPReward(BattleData.RewardUnits[i]);
-    }
+	// Start Issue #173
+	if(BattleData.RewardUnits.Length > 0)
+	{
+			Spawn(class'UIInventory_HeaderListItem', List.ItemContainer).InitHeaderItem("img:///UILibrary_Common.UIEvent_staff", m_strVIPRecovered);
+			for(i = 0; i <  BattleData.RewardUnits.Length; ++i)
+					AddVIPReward(BattleData.RewardUnits[i]);
+	}
+	// End Issue #173
 
 	SetCategory(List.ItemCount == 0 ? m_strNoLoot : "");
 
@@ -282,6 +289,7 @@ simulated function AddLootItem(XComGameState_Item ItemState)
 	Spawn(class'UIInventory_ListItem', List.ItemContainer).InitInventoryListItem(ItemState.GetMyTemplate(), ItemState.Quantity, ItemState.GetReference());
 }
 
+// Start Issue #173
 simulated function AddVIPReward(StateObjectReference UnitRef)
 {
     local XComGameState_Unit Unit;
@@ -344,6 +352,7 @@ simulated function AddVIPReward(StateObjectReference UnitRef)
     Spawn(class'UIInventory_VIPListItem', List.ItemContainer).InitVIPListItem(VIPstring, class'UIUtilities_Text'.static.GetColoredText(StatusLabel, VIPState));
 
 }
+// End Issue #173
 
 simulated function UpdateNavHelp()
 {

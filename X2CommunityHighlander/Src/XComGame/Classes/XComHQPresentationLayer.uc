@@ -289,6 +289,8 @@ simulated function ExitPostMissionSequence()
 	DisplayShakenSoldierPopups();
 
 	// If our force is understrength, warn the player
+	
+	// Start Issue #128
 	// LWS adding override to allow setting of this value to something else
 	if (class'Helpers_LW'.default.LowStrengthTriggerCount <= 0)
 	{
@@ -299,6 +301,7 @@ simulated function ExitPostMissionSequence()
 		LowSoldierWarningRequirement = class'Helpers_LW'.default.LowStrengthTriggerCount;
 	}
 	if (!XComHQ.AnyTutorialObjectivesInProgress() && XComHQ.GetNumberOfDeployableSoldiers() < LowSoldierWarningRequirement)
+	// End Issue #128
 	{ 
 		UIForceUnderstrength();
 	}
@@ -569,6 +572,8 @@ private function StrategyMap_FinishTransitionEnter()
 	}
 	else
 	{
+		// Conditional for Issue #129
+		// This selection should only occur when controller active
 		if (StrategyMap2D.HasLastSelectedMapItem() && `ISCONTROLLERACTIVE)
 		{
 			StrategyMap2D.SelectLastSelectedMapItem();
@@ -1661,6 +1666,8 @@ simulated function HotlinkToViewDarkEvents(optional bool bShowActiveDarkEvents =
 function UISquadSelect(optional bool bNoCancel=false)
 {
 	local UISquadSelect SquadSelectScreen;
+
+	// Start Issue #130
 	local class<UISquadSelect> ClassToBuild;
 
 	ClassToBuild = class<UISquadSelect>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UISquadSelect'));
@@ -1668,6 +1675,7 @@ function UISquadSelect(optional bool bNoCancel=false)
 	if(ScreenStack.IsNotInStack(ClassToBuild))
 	{
 		SquadSelectScreen = Spawn( ClassToBuild, self);
+		// End Issue #130
 		SquadSelectScreen.bNoCancel = bNoCancel;
 		ScreenStack.Push(SquadSelectScreen);
 	}
@@ -1689,15 +1697,16 @@ function UIAfterAction(optional bool bIsSimCombat)
 {
 	local class<UIAfterAction> ClassToBuild;
 
+	// Start Issue #130
 	ClassToBuild = class<UIAfterAction>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(class'UIAfterAction'));
 
 	if(ScreenStack.IsNotInStack(ClassToBuild))
 	{
 		ScreenStack.Push( Spawn( ClassToBuild, self ) );
-		
 		// TODO @rmcfall: Remove this once intro sequence is fixed for SimCombat
 		if(bIsSimCombat)
 			UIAfterAction(ScreenStack.GetScreen(ClassToBuild)).Show();
+		// End Issue #130
 
 		`XSTRATEGYSOUNDMGR.PlayAfterActionMusic();
 	}
@@ -1972,10 +1981,12 @@ simulated function OnMissionSelected(XComGameState_MissionSite MissionSite, opti
 	{
 		GoldenPathCB(eUIAction_Accept, MissionSite.Source, None, bInstant );
 	}
+	// Start Issue #131
 	else 
 	{
 		`XEVENTMGR.TriggerEvent('OnMissionSelectedUI', MissionSite, MissionSite); // LW added
 	}
+	// End Issue #131
 }
 simulated function UIGOpsMission(optional bool bInstant = false)
 {

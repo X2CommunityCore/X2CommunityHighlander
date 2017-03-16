@@ -3,7 +3,6 @@
 //  AUTHOR:  Brit Steiner --  12/22/2014
 //  PURPOSE:Soldier category options list. 
 //
-//  LWS: Added hooks for DLC/Mods to add additional items
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -12,6 +11,7 @@ class UIAvengerShortcuts extends UIPanel
 	config(UI);
 
 // LWS Mods:
+//  LWS: Added hooks for DLC/Mods to add additional items
 // tracktwo - Add customizable sub-menu items to the avenger shortcuts
 // tracktwo - Fix some controller-related log spam when using the mouse.
 
@@ -51,6 +51,7 @@ struct UIAvengerShortcutMessageCategory
 	var bool bAlert; 
 };
 
+// Start Issue #166
 // ******** BEGIN LWS VARIABLE CHANGES ***********
 
 // A custom sub-menu item. Contains an identifier to allow it to be located 
@@ -71,6 +72,7 @@ struct AvengerSubMenuList
 var array<AvengerSubMenuList> ModSubMenus;
 
 // ******** END LWS VARIABLE CHANGES ***********
+// End Issue #166
 
 var const config float CategoryBufferSpace; // pixel buffer between category buttons. 
 var const config float SubmenuYOffset;
@@ -179,8 +181,8 @@ simulated function UIAvengerShortcuts InitShortcuts(optional name InitName)
 	local XComGameStateHistory History;
 	local XComGameState_HeadquartersXCom XComHQ;
 
-    // LWS : call any time before before UpdateCategories
-    ModSubMenus.length = eUIAvengerShortcutCat_MAX;
+	// For Issue #166 : call any time before before UpdateCategories
+	ModSubMenus.length = eUIAvengerShortcutCat_MAX;
 
 	InitPanel(InitName); 
 	SetSize(300, 600);
@@ -292,6 +294,7 @@ simulated function SpawnNavHelpIcons()
 
 simulated function UpdateCategories()
 {
+	// Variable j for Issue #166
 	local int i, j;
 	local UIAvengerShortcutMessageCategory CurrentCat;
 	local XComGameStateHistory History;
@@ -335,11 +338,13 @@ simulated function UpdateCategories()
 		{
 			Categories[i].Button.Hide();
 		}
+		// Start Issue #166
 		//LWS : Update the configurable submenus
-        for (j = 0; j < ModSubMenus[i].SubMenuItems.Length; ++j)
-        {
-            Categories[i].Messages.AddItem(ModSubMenus[i].SubMenuItems[j].Message);
-        }
+		for (j = 0; j < ModSubMenus[i].SubMenuItems.Length; ++j)
+		{
+				Categories[i].Messages.AddItem(ModSubMenus[i].SubMenuItems[j].Message);
+		}
+		// End Issue #166
 	}
 	OnCategoryButtonSizeRealized();
 }
@@ -394,6 +399,7 @@ simulated function OnCategoryButtonSizeRealized()
 	// Center to the category list along the bottom of the screen.
 	SetX(CurrentCatX * -0.5); 
 
+	// Start Issue #129
 	// LWS: Don't adjust the bumpers unless we're using a controller
 	if (`ISCONTROLLERACTIVE)
 	{
@@ -404,6 +410,7 @@ simulated function OnCategoryButtonSizeRealized()
 	// LWS: Need a category to display the list
 	if (CurrentCategory >= 0)
 		RealizeListPosition();
+	// End Issue #129
 
 	if( ShouldShowWhenRealized )
 		super.Show();
@@ -1757,6 +1764,7 @@ simulated function RefreshTooltipShadowChamber(UITooltip Tooltip)
 }
 
 //==============================================================================
+// Start Issue #166
 
 // *************** BEGIN LWS HELPER FUNCTIONS *******************
 
@@ -1836,7 +1844,7 @@ simulated function RemoveSubMenu(int Category, name Id)
     }  
 }
 
-// *************** BEGIN LWS HELPER FUNCTIONS *******************
+// End Issue #166
 
 defaultproperties
 {

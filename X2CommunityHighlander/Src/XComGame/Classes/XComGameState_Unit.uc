@@ -11,6 +11,7 @@
 // LWS Mods: 
 // tracktwo - Clear the loot list when a unit is killed by explosives so the loot doesn't come back
 //            if they get resurrected and killed again.
+
 class XComGameState_Unit extends XComGameState_BaseObject 
 	implements(X2GameRulesetVisibilityInterface, X2VisualizedInterface, Lootable, UIQueryInterfaceUnit, Damageable, Hackable) 
 	dependson(XComCoverInterface)
@@ -549,6 +550,7 @@ event UpdateGameplayVisibility(out GameRulesCache_VisibilityInfo InOutVisibility
 				InOutVisibilityInfo.bVisibleGameplay = false;
 				InOutVisibilityInfo.GameplayVisibleTags.AddItem('PeekNotAvailable_Source');
 			}
+			// Start Issue #122
 			else if (!InOutVisibilityInfo.bVisibleFromDefault && ControllingPlayerIsAI() && 
 				GetCurrentStat(eStat_AlertLevel) < (class'Helpers_LW'.default.NoPeekInYellowAlert ? 2 : 1))
 			{
@@ -559,6 +561,7 @@ event UpdateGameplayVisibility(out GameRulesCache_VisibilityInfo InOutVisibility
 				InOutVisibilityInfo.bVisibleGameplay = false;
 				InOutVisibilityInfo.GameplayVisibleTags.AddItem('PeekNotAvailable_Source');
 			}
+			// End Issue #122
 		
 			History.GetCurrentAndPreviousGameStatesForObjectID(InOutVisibilityInfo.TargetID, TargetPreviousState, TargetCurrentState);
 			kTargetCurrent = XComGameState_Unit(TargetCurrentState);
@@ -572,14 +575,17 @@ event UpdateGameplayVisibility(out GameRulesCache_VisibilityInfo InOutVisibility
 				}
 
 				//Support for targeting non cover taking units with their peeks. Looks pretty bad though so it is gated by a config option...
-				// LWS Note: Setting that config also makes LoS asymmetrical because the above check for this unit
-				// being able to see the target with a peek doesn't have the same additional condition.
+				
 				if(kTargetCurrent.ControllingPlayerIsAI())
 				{
+					// Start Issue #122
+					// LWS Note: Setting that config also makes LoS asymmetrical because the above check for this unit
+					// being able to see the target with a peek doesn't have the same additional condition.
 					// LWS Mods: Allow a configurable hook to determine if the unit is "unalerted" and
 					// therefore shouldn't have cover or use peeks.
 					//bUnalerted = kTargetCurrent.GetCurrentStat(eStat_AlertLevel) == 0;
 					bUnalerted = kTargetCurrent.GetCurrentStat(eStat_AlertLevel) < (class'Helpers_LW'.default.NoPeekInYellowAlert ? 2 : 1);
+					// End Issue #122
 					bUnitCanUseCover = kTargetCurrent.GetMyTemplate().bCanTakeCover || class'X2Ability_DefaultAbilitySet'.default.bAllowPeeksForNonCoverUnits;
 
 					//Handle the case where the target's peeks should be unavailable. Either because they are moving or for some other game mechanics reason.
@@ -2601,6 +2607,9 @@ function RollForAWCAbility()
 	local array<SoldierClassAbilityType> EligibleAbilities;
 	local int AbilityRank, Idx, RemIdx;
 	local X2SoldierClassTemplate SoldierClassTemplate;
+
+	// Start Issue #105
+	// Allow overriding AWC Abilities Roll
 	local XComLWTuple OverrideTuple; // LWS  added
 
 	//LWS set up a Tuple -- false means roll AWC ability as usual, true means skip it
@@ -2615,6 +2624,7 @@ function RollForAWCAbility()
 
 	if(!OverrideTuple.Data[0].b)
 	{
+		// End Issue #105
 		bRolledForAWCAbility = true;
 		EligibleAbilities = class'X2SoldierClassTemplateManager'.static.GetSoldierClassTemplateManager().GetCrossClassAbilities(GetSoldierClassTemplate());
 		
@@ -2700,6 +2710,17 @@ function RollForPsiAbilities()
 		}
 	}
 
+	// Start Issue #197
+	//LW2: Force a capstone ability early to ensure it's achievable
+	if (class'Helpers_LW'.default.EnablePsiTreeOrganization)
+	{
+		PsiAbility.iRank = NumRanks - 2 + `SYNC_RAND (2);
+		PsiAbility.iBranch = `SYNC_RAND (2);
+		PsiAbilities.AddItem (PsiAbility);
+		PsiAbilityDeck.RemoveItem(PsiAbility);	
+	}
+	// End Issue #197
+
 	while (PsiAbilityDeck.Length > 0)
 	{
 		// Choose an ability randomly from the deck
@@ -2716,6 +2737,8 @@ function array<SoldierClassAbilityType> GetEarnedSoldierAbilities()
 	local array<SoldierClassAbilityType> EarnedAbilities, AbilityTree;
 	local SoldierClassAbilityType Ability;
 	local int i;
+
+	// Variables for Issue #106
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local X2DownloadableContentInfo DLCInfo;
 
@@ -2742,11 +2765,13 @@ function array<SoldierClassAbilityType> GetEarnedSoldierAbilities()
 		}
 	}
 
+	// Start Issue #106
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	foreach DLCInfos(DLCInfo)
 	{
 		DLCInfo.ModifyEarnedSoldierAbilities(EarnedAbilities, self);
 	}
+	// End Issue #106
 
 	return EarnedAbilities;
 }
@@ -3477,29 +3502,41 @@ function string GetName( ENameType eType )
 			return strFirstName @ strLastName;
 			break;
 		case eNameType_Rank:
+			// Issue #107
 			return class'LWUtilities_Ranks'.static.GetRankName(m_SoldierRank, m_SoldierClassTemplateName, self);
 			break;
 		case eNameType_RankLast:
+			// Issue #107
 			return class'LWUtilities_Ranks'.static.GetShortRankName(m_SoldierRank, m_SoldierClassTemplateName, self) @ strLastName;
 			break;
 		case eNameType_RankFull:
+			// Start Issue #107
 			if(bFirstNameBlank)
+			{
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName , self) @ strLastName;
+			}
 			return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strFirstName @ strLastName;
+			// End Issue #107
 			break;
 		case eNameType_FullNick:
+			// Start Issue #107
 			if( strNickName != "" )
 			{
 				if(bFirstNameBlank)
+				{
 					return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ "'"$strNickName$"'" @ strLastName;
+				}
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strFirstName @ "'"$strNickName$"'" @ strLastName;
 			}
 			else
 			{
 				if(bFirstNameBlank)
+				{
 					return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strLastName;
+				}
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_SoldierClassTemplateName, self) @ strFirstName @ strLastName;
 			}
+			// End Issue #107
 			break;
 		}
 
@@ -3539,25 +3576,34 @@ function string GetMPName( ENameType eType )
 		break;
 	case eNameType_Rank:
 		//return `GET_RANK_STR(m_SoldierRank, m_MPCharacterTemplateName);
+		// Issue #107
 		return class'LWUtilities_Ranks'.static.GetRankName(m_SoldierRank, m_MPCharacterTemplateName, self);
 		break;
 	case eNameType_RankLast:
 		//return `GET_RANK_ABBRV(m_SoldierRank, m_MPCharacterTemplateName) @ strLastName;
+		// Issue #107
 		return class'LWUtilities_Ranks'.static.GetShortRankName(m_SoldierRank, m_MPCharacterTemplateName, self) @ strLastName;
 		break;
 	case eNameType_RankFull:
 		//return `GET_RANK_ABBRV( m_SoldierRank, m_MPCharacterTemplateName ) @ strFirstName @ strLastName;
+		// Issue #107
 		return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_MPCharacterTemplateName, self) @ strFirstName @ strLastName;
 		break;
 	case eNameType_FullNick:
 		if(IsSoldier())
 		{
 			if(strNickName != "")
+			{
 				//return `GET_RANK_ABBRV( m_SoldierRank, m_MPCharacterTemplateName ) @ strFirstName @ "'"$strNickName$"'" @ strLastName;
+				// Issue #107
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_MPCharacterTemplateName, self) @ strFirstName @ "'"$strNickName$"'" @ strLastName;
+			}
 			else
+			{
 				//return `GET_RANK_ABBRV( m_SoldierRank, m_MPCharacterTemplateName ) @ strFirstName @ strLastName;
+				// Issue #107
 				return class'LWUtilities_Ranks'.static.GetShortRankName( m_SoldierRank, m_MPCharacterTemplateName, self) @ strFirstName @ strLastName;
+			}
 		}
 		else
 		{
@@ -4209,7 +4255,7 @@ protected function bool ApplyBleedingOut(XComGameState NewGameState)
 		ApplyData.EffectRef.LookupType = TELT_BleedOutEffect;
 		if (BleedOutEffect.ApplyEffect(ApplyData, self, NewGameState) == 'AA_Success')
 		{
-			LowestHP = 1; // makes wound times correct if unit is bleeding out
+			LowestHP = 1; // Issue #108 - makes wound times correct if unit is bleeding out
 			LogMsg = class'XLocalizedData'.default.BleedingOutLogMsg;
 			LogMsg = repl(LogMsg, "#Unit", GetName(eNameType_RankFull));
 			`COMBATLOG(LogMsg);
@@ -4350,6 +4396,8 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	local XComGameState_Effect EffectState;
 	local XComGameStateHistory History;
 	local X2Effect_Persistent PersistentEffect;
+
+	// Variable for Issue #110
 	local XComLWTuple OverrideTuple; // LWS  added
 
 	//  Cosmetic units should not take damage
@@ -4438,7 +4486,9 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	}
 
 	SetUnitFloatValue( 'LastEffectDamage', DmgResult.DamageAmount, eCleanup_BeginTactical );
-	if ((DamageAmount + MitigationAmount) > 0) // LWS Only trigger this if the unit actually took damage -- otherwise, misses will cancel suppression
+	// Conditional for Issue #109
+	// LWS Only trigger this if the unit actually took damage -- otherwise, misses will cancel suppression
+	if ((DamageAmount + MitigationAmount) > 0)
 	{
 		ThisObj = self;
 		EventManager = `XEVENTMGR;
@@ -4460,6 +4510,7 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	OverkillDamage = (GetCurrentStat( eStat_HP )) - DmgResult.DamageAmount;
 	if (OverkillDamage <= 0)
 	{
+		// Start Issue #110
 		//LWS set up a Tuple -- 
 		OverrideTuple = new class'XComLWTuple';
 		OverrideTuple.Id = 'OverrideKilledbyExplosion';
@@ -4473,6 +4524,7 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 		`XEVENTMGR.TriggerEvent('KilledbyExplosion', OverrideTuple, self, NewGameState);
 
 		bKilledByExplosion = OverrideTuple.Data[0].b;
+		// End Issue #110
 
 		KilledByDamageTypes = DamageTypes;
 		History = `XCOMHISTORY;
@@ -4570,7 +4622,7 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 	local XComGameState_HeadquartersXCom XComHQ;
 	local Name CharacterGroupName, CharacterDeathEvent;
 	//local XComGameState_BaseObject SourceOfDeath;
-	local X2Effect DeathEffect; // LWS Added
+	local X2Effect DeathEffect; // For Issue #111
 
 	LogMsg = class'XLocalizedData'.default.UnitDiedLogMsg;
 	LogMsg = repl(LogMsg, "#Unit", GetName(eNameType_RankFull));
@@ -4687,11 +4739,14 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 			else if( PendingLoot.LootToBeCreated.Length > 0 )
 			{
 				NewGameState.GetContext().PostBuildVisualizationFn.AddItem(VisualizeLootDestroyedByExplosives);
+
+				// Start Issue #112
 				// LWS Add: Empty out the pending loot for units killed by explosives. Otherwise if the get raised as a
 				// zombie and then killed again the loot magically becomes un-exploded.
 				NewUnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', ObjectID));
 				NewGameState.AddStateObject(NewUnitState);
 				NewUnitState.PendingLoot.LootToBeCreated.Length = 0;
+				// End Issue #112
 			}
 			RollForAutoLoot(NewGameState);
 		}
@@ -4710,7 +4765,8 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 		}
 	}
 
-	//LWS : fixed issue where unit death from bleeding out would be marked as friendly fire from bled-out unit
+	// Start Issue #111
+	// fixed issue where unit death from bleeding out would be marked as friendly fire from bled-out unit
 	DeathEffect = class'X2Effect'.static.GetX2Effect( EffectData.EffectRef );
 	if (X2Effect_BleedingOut(DeathEffect) != none)
 	{
@@ -4720,6 +4776,7 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 	{
 		m_strCauseOfDeath = class'UIBarMemorial_Details'.static.FormatCauseOfDeath( self, Killer, NewGameState.GetContext() );
 	}
+	// End Issue #111
 
 	if (ApplyToOwnerAndComponents)
 	{
@@ -5217,11 +5274,13 @@ simulated function XComUnitPawn CreatePawn( Actor PawnOwner, vector UseLocation,
 
     bIsInCreate = false;
 
+	// Start Issue #113
 	//Trigger to allow mods access to the newly created pawn
 	if(SaveGameActive())
 	{
 		`XEVENTMGR.TriggerEvent('OnCreateCinematicPawn', SpawnedPawn, self);
 	}
+	// End Issue #113
 	return SpawnedPawn;
 }
 
@@ -5302,6 +5361,8 @@ function bool AddItemToInventory(XComGameState_Item Item, EInventorySlot Slot, X
 	local X2BodyPartTemplateManager BodyPartMgr;
 	local X2SimpleBodyPartFilter Filter;
 	local X2ItemTemplate ItemTemplate;
+
+	// Variable for Issue #114
 	local int NumSlots;
 
 	ItemTemplate = Item.GetMyTemplate();
@@ -5335,6 +5396,7 @@ function bool AddItemToInventory(XComGameState_Item Item, EInventorySlot Slot, X
 		}
 		else if (Slot == eInvSlot_Armor)
 		{
+			// Start Issue #114
 			NumSlots = GetNumUtilitySlots(Item, NewGameState);
 			if(NumSlots < 0)
 			{
@@ -5348,6 +5410,7 @@ function bool AddItemToInventory(XComGameState_Item Item, EInventorySlot Slot, X
 				SetBaseMaxStat(eStat_UtilityItems, NumSlots);
 				SetCurrentStat(eStat_UtilityItems, NumSlots);
 			}
+			// End Issue #114
 
 			//  must ensure appearance matches 
 			if (GetMyTemplate().bAppearanceDefinesPawn)
@@ -5429,6 +5492,8 @@ simulated function bool CanAddItemToInventory(const X2ItemTemplate ItemTemplate,
 	local X2WeaponTemplate WeaponTemplate;
 	local X2GrenadeTemplate GrenadeTemplate;
 	local X2ArmorTemplate ArmorTemplate;
+
+	// Start Issue #124
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS: Added for hook
 	local int bCanAddItem; // LWS: hackery to avoid bool not being allowed to be out parameter
 
@@ -5440,6 +5505,7 @@ simulated function bool CanAddItemToInventory(const X2ItemTemplate ItemTemplate,
 			return bCanAddItem > 0; 
 		}
 	}
+	// End Issue #124
 
 	if( bIgnoreItemEquipRestrictions )
 		return true;
@@ -5692,6 +5758,8 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 {
 	local X2ItemTemplate ItemTemplate;
 	local X2ArmorTemplate ArmorTemplate;
+
+	// Variable for Issue #114
 	local int RemoveIndex, NumSlots;
 
 	if (CanRemoveItemFromInventory(Item, ModifyGameState))
@@ -5728,6 +5796,7 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 		switch(Item.InventorySlot)
 		{
 		case eInvSlot_Armor:
+			// Start Issue #114
 			NumSlots = GetNumUtilitySlots(Item, ModifyGameState);
 			if(NumSlots < 0)
 			{
@@ -5739,6 +5808,7 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 				SetBaseMaxStat(eStat_UtilityItems, NumSlots);
 				SetCurrentStat(eStat_UtilityItems, NumSlots);
 			}
+			// End Issue #114
 			break;
 		case eInvSlot_Backpack:
 			ModifyCurrentStat(eStat_BackpackSize, Item.GetItemSize());
@@ -5754,6 +5824,7 @@ simulated function bool RemoveItemFromInventory(XComGameState_Item Item, optiona
 	return false;
 }
 
+// Start Issue #113
 //LW helper function -- determines if we are in the shell or not
 simulated function bool SaveGameActive()
 {
@@ -5774,7 +5845,9 @@ simulated function bool SaveGameActive()
 
 	return true;
 }
+// End Issue #113
 
+// Start Issue #114
 //LW helper function - returns -1 if no override
 simulated function int GetNumUtilitySlots(optional XComGameState_Item Item, optional XComGameState CheckGameState)
 {
@@ -5792,6 +5865,7 @@ simulated function int GetNumUtilitySlots(optional XComGameState_Item Item, opti
 	}
 	return NumSlots;
 }
+// End Issue #114
 
 simulated function bool CanRemoveItemFromInventory(XComGameState_Item Item, optional XComGameState CheckGameState)
 {
@@ -6698,6 +6772,7 @@ static function CreateConcealmentBreakerTracks(XComGameState VisualizeGameState,
 	OutVisualizationTracks.AddItem(ConcealmentBreakerBuildTrack);
 }
 
+// Start Issue #126
 // LWS: Added helper to query DLC/mods to allow modifications to sound range based on unit/weapon/ability states.
 function int DLCModifySoundRange(XComGameState_Unit UnitState, XComGameState_Item WeaponState, XComGameState_Ability AbilityState, XComGameState GameState)
 {
@@ -6712,6 +6787,7 @@ function int DLCModifySoundRange(XComGameState_Unit UnitState, XComGameState_Ite
 	}
 	return Total;
 }
+// End Issue #126
 
 // unit makes an attack - alert to enemies with vision of the attacker
 function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
@@ -6758,25 +6834,28 @@ function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSo
 		{
 			SourceUnitState = XComGameState_Unit(History.GetGameStateForObjectID(ActivatedAbilityStateContext.InputContext.SourceObject.ObjectID));
 			WeaponState = XComGameState_Item(GameState.GetGameStateForObjectID(ActivatedAbilityStateContext.InputContext.ItemObject.ObjectID));
-            
-            // LWS Mods: If this weapon originates sound at the target and there is source ammo involved, use that sound range. This is needed
-            // for grenade launchers, which have a weapon range of 0, but the ammo is what we want to use for the sound range. Thrown grenades
-            // have no source ammo (the grenade is the weapon, there is no launcher) so we will use the weapon state in the else.
-            if (!WeaponState.SoundOriginatesFromOwnerLocation() && ActivatedAbilityState.GetSourceAmmo() != none)
-            {
-                SoundRange = ActivatedAbilityState.GetSourceAmmo().GetItemSoundRange();
-            }
-            else
-            {
-                SoundRange = WeaponState.GetItemSoundRange();
-            }
+							
+			// Start Issue #126
+			// LWS Mods: If this weapon originates sound at the target and there is source ammo involved, use that sound range. This is needed
+			// for grenade launchers, which have a weapon range of 0, but the ammo is what we want to use for the sound range. Thrown grenades
+			// have no source ammo (the grenade is the weapon, there is no launcher) so we will use the weapon state in the else.
+			if (!WeaponState.SoundOriginatesFromOwnerLocation() && ActivatedAbilityState.GetSourceAmmo() != none)
+			{
+					SoundRange = ActivatedAbilityState.GetSourceAmmo().GetItemSoundRange();
+			}
+			else
+			{
+					SoundRange = WeaponState.GetItemSoundRange();
+			}
 
-            // LWS Mods: let DLC/mods change the sound range.
-            SoundRange += DLCModifySoundRange(SourceUnitState, WeaponState, ActivatedAbilityState, GameState);
+			// LWS Mods: let DLC/mods change the sound range.
+			SoundRange += DLCModifySoundRange(SourceUnitState, WeaponState, ActivatedAbilityState, GameState);
+			// End Issue #126
 
 			if( SoundRange > 0 )
 			{
-                // LWS Mods: Use the target location if the sound *does not* originate at the owner and there is a target. Otherwise use the source.
+				// Conditional for Issue #126
+				// LWS Mods: Use the target location if the sound *does not* originate at the owner and there is a target. Otherwise use the source.
 				if( !WeaponState.SoundOriginatesFromOwnerLocation() && ActivatedAbilityStateContext.InputContext.TargetLocations.Length > 0 )
 				{
 					SoundLocation = ActivatedAbilityStateContext.InputContext.TargetLocations[0];
@@ -6802,7 +6881,7 @@ function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSo
 					// this unit just overheard the sound
 					else
 					{
-						UnitAGainsKnowledgeOfUnitB(EnemyInSoundRangeUnitState, SourceUnitState, GameState, eAC_DetectedSound, false);
+						UnitAGainsKnowledgeOfUnitB_LW(EnemyInSoundRangeUnitState, SourceUnitState, GameState, eAC_DetectedSound, false, SoundTileLocation);
 					}
 				}
 			}
@@ -6999,11 +7078,13 @@ static function UnitASeesUnitB(XComGameState_Unit UnitA, XComGameState_Unit Unit
 				AlertCause = eAC_SeesSpottedUnit;
 			}
 		}
-        // LWS MODS: "SeesAlertedAllies" does not fire when yellow alert is enabled. This spams the alert system for
-        // pods when they see their own pod mates in yellow. Even reducing it to only fire on allies in red does not
-        // work well as it'll frequently create a fresher suspicious alert at a worse location than the one that put
-        // them in yellow.
+		// Start Issue #125
+		// LWS MODS: "SeesAlertedAllies" does not fire when yellow alert is enabled. This spams the alert system for
+		// pods when they see their own pod mates in yellow. Even reducing it to only fire on allies in red does not
+		// work well as it'll frequently create a fresher suspicious alert at a worse location than the one that put
+		// them in yellow.
 		else if(!class'Helpers_LW'.static.YellowAlertEnabled() && UnitB.GetCurrentStat(eStat_AlertLevel) > 0)
+		// End Issue #125
 		{
 			// Prevent alerting the group if this is a fallback unit. (Fallback is not meant to aggro the other group)
 			UnitBGroup = UnitB.GetGroupMembership();
@@ -7017,8 +7098,23 @@ static function UnitASeesUnitB(XComGameState_Unit UnitA, XComGameState_Unit Unit
 	}
 }
 
+// Start Issue #198
+// tracktwo - Refactor UnitAGainsKnowledgeOfUnitB into a separate UnitAGainsKnowledgeOfUnitB_LW that the
+//            original calls, which also takes an additional tile parameter to use for the alert location.
+// PI Mods: Extracted the contents of UnitAGainsKnowledgeOfUnitB into another function with an additional parameter allowing
+// callers to specify the tile location to use for the alert. This is to avoid changing the public interface to
+// UnitAGainsKnoweldgeOfUnitB that other mods may be relying on.
 static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameState_Unit UnitB, XComGameState AlertInstigatingGameState, EAlertCause AlertCause, bool bUnitAIsMidMove)
 {
+	local TTile AlertLocation;
+	// The original version of this function uses the location of UnitB as the alert location.
+	UnitB.GetKeystoneVisibilityLocation(AlertLocation);
+	UnitAGainsKnowledgeOfUnitB_LW(UnitA, UnitB, AlertInstigatingGameState, AlertCause, bUnitAIsMidMove, AlertLocation);
+}
+
+static function UnitAGainsKnowledgeOfUnitB_LW(XComGameState_Unit UnitA, XComGameState_Unit UnitB, XComGameState AlertInstigatingGameState, EAlertCause AlertCause, bool bUnitAIsMidMove, out TTile AlertLocation)
+{
+	// End Issue #198 - below is vanilla behaviour mostly
 	local XComGameStateHistory History;
 	local AlertAbilityInfo AlertInfo;	
 	local X2TacticalGameRuleset Ruleset;
@@ -7031,7 +7127,7 @@ static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameSta
 	if( AlertCause != eAC_None )
 	{
 		History = `XCOMHISTORY;
-		UnitB.GetKeystoneVisibilityLocation(AlertInfo.AlertTileLocation);
+		AlertInfo.AlertTileLocation = AlertLocation; // Issue #198 - use AlertLocation
 		AlertInfo.AlertUnitSourceID = UnitB.ObjectID;
 		AlertInfo.AnalyzingHistoryIndex = History.GetCurrentHistoryIndex();
 		
@@ -7062,6 +7158,8 @@ static function UnitAGainsKnowledgeOfUnitB(XComGameState_Unit UnitA, XComGameSta
 					AIGroupState.InitiateReflexMoveActivate(UnitB, AlertCause);
 				}
 				// otherwise, reveal iff XCom has visibility of the current unit location
+				
+				// Conditional for Issue #123
 				// LWS -- removed this exploit, which can cause units to enter Red Alert but not scamper
 				else if(class'X2TacticalVisibilityHelpers'.static.GetNumEnemyViewersOfTarget(UnitA.ObjectID) >= 0)
 				{
@@ -8080,8 +8178,8 @@ function ValidateLoadout(XComGameState NewGameState)
 	local XComGameState_Item EquippedArmor, EquippedPrimaryWeapon, EquippedSecondaryWeapon; // Default slots
 	local XComGameState_Item EquippedHeavyWeapon, EquippedGrenade, EquippedAmmo, UtilityItem; // Special slots
 	local array<XComGameState_Item> EquippedUtilityItems; // Utility Slots
-	local int idx, NumSlots;
-	local int RequiredFilledUtilitySlots; // LWS Added
+	local int idx, NumSlots; // Variable for Issue #114
+	local int RequiredFilledUtilitySlots; // Variable for Issue #115
 
 	// Grab HQ Object
 	History = `XCOMHISTORY;
@@ -8182,6 +8280,7 @@ function ValidateLoadout(XComGameState NewGameState)
 	// UtilitySlots (Already grabbed equipped)
 	if(!IsMPCharacter())
 	{
+		// Start Issue #114
 		NumSlots = GetNumUtilitySlots(EquippedArmor, NewGameState);
 		if(NumSlots < 0)
 		{
@@ -8195,6 +8294,7 @@ function ValidateLoadout(XComGameState NewGameState)
 			SetBaseMaxStat(eStat_UtilityItems, NumSlots);
 			SetCurrentStat(eStat_UtilityItems, NumSlots);
 		}
+		// End Issue #114
 	}
 
 	// Remove Extra Utility Items
@@ -8214,11 +8314,14 @@ function ValidateLoadout(XComGameState NewGameState)
 		idx--;
 	}
 
+	// Start Issue #115
 	//LWS Add hook to set minimum number of required utility items
 	RequiredFilledUtilitySlots = 1;
 	DLCMinimumRequiredUtilityItems(RequiredFilledUtilitySlots, NewGameState);
+	// End Issue #115
 
 	// Equip Default Utility Item in first slot if needed
+	// Conditional for Issue #115
 	while(EquippedUtilityItems.Length < RequiredFilledUtilitySlots && GetCurrentStat(eStat_UtilityItems) > 0)
 	{
 		UtilityItem = GetBestUtilityItem(NewGameState);
@@ -8227,6 +8330,7 @@ function ValidateLoadout(XComGameState NewGameState)
 	}
 }
 
+// Start Issue #115
 // LWS: Added helper to query DLC/mods to determine minimum required utility items
 function DLCMinimumRequiredUtilityItems(out int Value, XComGameState NewGameState)
 {
@@ -8239,6 +8343,7 @@ function DLCMinimumRequiredUtilityItems(out int Value, XComGameState NewGameStat
 		DLCInfos[i].GetMinimumRequiredUtilityItems(Value, self, NewGameState);
 	}
 }
+// End Issue #115
 
 
 //------------------------------------------------------
@@ -8349,7 +8454,10 @@ function XComGameState_Item GetBestUtilityItem(XComGameState NewGameState)
 		return none;
 	}
 
-	ItemState = UtilityItemTemplates[`SYNC_RAND(UtilityItemTemplates.Length)].CreateInstanceFromTemplate(NewGameState);  // LWS : Removed cast to X2WeaponTemplate so that infinite equipment items can be equipped
+	// Issue #116
+	// LWS : Removed cast to X2WeaponTemplate so that infinite equipment items can be equipped
+	ItemState = UtilityItemTemplates[`SYNC_RAND(UtilityItemTemplates.Length)].CreateInstanceFromTemplate(NewGameState);
+
 	NewGameState.AddStateObject(ItemState);
 	
 	return ItemState;
@@ -8747,6 +8855,7 @@ function MakeItemsAvailable(XComGameState NewGameState, optional bool bStoreOldI
 			ItemState = XComGameState_Item(NewGameState.CreateStateObject(class'XComGameState_Item', ItemState.ObjectID));
 			NewGameState.AddStateObject(ItemState);
 
+			// Conditional for Issue #118
 			if (DLCCanRemoveItemFromInventory(CanRemoveItemFromInventory(ItemState, NewGameState), ItemState, NewGameState))
 			{
 				RemoveItemFromInventory(ItemState, NewGameState);
@@ -8772,6 +8881,7 @@ function MakeItemsAvailable(XComGameState NewGameState, optional bool bStoreOldI
 	ApplyBestGearLoadout(NewGameState);
 }
 
+// Start Issue #118
 // LWS: Added helper to query DLC/mods to determine if a particular item can be removed when making items available
 function bool DLCCanRemoveItemFromInventory(bool DefaultRemoval, XComGameState_Item ItemState, XComGameState NewGameState)
 {
@@ -8790,8 +8900,10 @@ function bool DLCCanRemoveItemFromInventory(bool DefaultRemoval, XComGameState_I
 	}
 	return DefaultRemoval;
 }
+// End Issue #118
 
 // Combines rookie and squaddie loadouts so that things like kevlar armor and grenades are included
+// Issue #117 - remove private from definition
 function array<X2EquipmentTemplate> GetCompleteDefaultLoadout()
 {
 	local X2ItemTemplateManager ItemTemplateManager;
@@ -9242,7 +9354,7 @@ function int GetXPValue()
 function bool CanRankUpSoldier()
 {
 	local int NumKills;
-	local XComLWTuple Tuple; // LWS  added
+	local XComLWTuple Tuple; // Variable for Issue #119
 
 	if (m_SoldierRank + 1 < `GET_MAX_RANK && !bRankedUp)
 	{
@@ -9257,6 +9369,7 @@ function bool CanRankUpSoldier()
 		// Add required kills of StartingRank
 		NumKills += class'X2ExperienceConfig'.static.GetRequiredKills(StartingRank);
 
+		// Start Issue #119
 		//LWS set up a Tuple -- false means roll AWC ability as usual, true means skip it
 		Tuple = new class'XComLWTuple';
 		Tuple.Id = 'GetNumKillsForRankUpSoldier';
@@ -9267,7 +9380,10 @@ function bool CanRankUpSoldier()
 		//LWS add hook for modifying the number of effective kills for leveling up purposes, accessible by DLC/mod
 		`XEVENTMGR.TriggerEvent('GetNumKillsForRankUpSoldier', Tuple, self);
 		if (Tuple.Data[0].kind == XComLWTVInt)
+		{
 			NumKills += Tuple.Data[0].i;
+		}
+		// End Issue #119
 
 		//  Check required xp if that system is enabled
 		if (class'X2ExperienceConfig'.default.bUseFullXpSystem)
@@ -9437,6 +9553,7 @@ function RankUpSoldier(XComGameState NewGameState, optional name SoldierClass, o
 // Show the promotion icon (in strategy)
 function bool ShowPromoteIcon()
 {
+	// Start Issue #120
 	//LWS add hook to allow DLC/Mods to show promote icon
 	local XComLWTuple OverrideTuple; // LWS  added
 
@@ -9451,6 +9568,7 @@ function bool ShowPromoteIcon()
 	`XEVENTMGR.TriggerEvent('ShouldShowPromoteIcon', OverrideTuple, self);
 
 	return OverrideTuple.Data[0].b;
+	// End Issue #120
 }
 
 function String GenerateNickname()
@@ -10622,8 +10740,11 @@ function int GetSuppressors(optional out array<StateObjectReference> Suppressors
 		if( EffectState != None )
 		{
 			Effect = EffectState.GetX2Effect();  
+
+			// Conditional for Issue #121
+			// LWS- changed so that child classes of X2Effect_Suppression count
 			//if( Effect.IsA('X2Effect_Suppression') )
-			if (X2Effect_Suppression(Effect) != none) // LWS- changed so that child classes of X2Effect_Suppression count
+			if (X2Effect_Suppression(Effect) != none)
 			{
 				Suppressors.AddItem(EffectState.ApplyEffectParameters.SourceStateObjectRef);
 			}

@@ -8,11 +8,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Modifications:
-//
-//  tracktwo - Add a DLCInfo hook to disable the reinforcement flare/psi-gate preview of the
-//             reinforcement location.
-
 class XComGameState_AIReinforcementSpawner extends XComGameState_BaseObject
 	implements(X2VisualizedInterface)
 	native(AI);
@@ -83,6 +78,8 @@ function EventListenerReturn OnReinforcementSpawnerCreated(Object EventData, Obj
 	local XComGameStateHistory History;
 	local Name CharTemplateName;
 	local X2CharacterTemplateManager CharTemplateManager;
+
+	/// Variables for Issue #68
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS: Added for hook
 	local int i; // LWS: Added for hook
 
@@ -118,6 +115,7 @@ function EventListenerReturn OnReinforcementSpawnerCreated(Object EventData, Obj
 	// build a character selection that will work at this location
 	SpawnManager.SelectPodAtLocation(NewSpawnerState.SpawnInfo, ForceLevel, AlertLevel);
 
+	/// Start Issue #68
 	// LWS : Added next 5 lines to allow DLC/Mods to override SpawnInfo data
 	//LWS - add call to DLCInfo hook to allow adjustment of select pod character selection
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
@@ -125,6 +123,7 @@ function EventListenerReturn OnReinforcementSpawnerCreated(Object EventData, Obj
 	{
 		DLCInfos[i].PostEncounterCreation(NewSpawnerState.SpawnInfo.EncounterID, NewSpawnerState.SpawnInfo, ForceLevel, AlertLevel, Self);
 	}
+	/// End Issue #68
 
 	// explicitly disabled all timed loot from reinforcement groups
 	NewSpawnerState.SpawnInfo.bGroupDoesNotAwardLoot = true;
@@ -440,6 +439,8 @@ function BuildVisualizationForSpawnerCreation(XComGameState VisualizeGameState, 
 	local XGUnit TempXGUnit;
 	local bool bUnitHasSpokenVeryRecently;
 	local X2Action_PlaySoundAndFlyOver SoundAndFlyOver;
+
+	// Variables for Issue #69
 	local bool bShouldDisableFlare;
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local int i;
@@ -448,6 +449,9 @@ function BuildVisualizationForSpawnerCreation(XComGameState VisualizeGameState, 
 	History = `XCOMHISTORY;
 	AISpawnerState = XComGameState_AIReinforcementSpawner(History.GetGameStateForObjectID(ObjectID));
 
+	// Start Issue #69
+	//  tracktwo - Add a DLCInfo hook to disable the reinforcement flare/psi-gate preview of the
+	//             reinforcement location.
 	// LWS Modifications: Allow mods to control visualization of the flare.
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	for (i = 0; i < DLCInfos.Length; ++i)
@@ -486,6 +490,7 @@ function BuildVisualizationForSpawnerCreation(XComGameState VisualizeGameState, 
 		OutVisualizationTracks.AddItem(BuildTrack);
 	}
 	// END LWS Modifications
+	// End Issue #69
 
 	// Add a track to one of the x-com soldiers, to say a line of VO (e.g. "Alien reinforcements inbound!").
 	foreach History.IterateByClassType( class'XComGameState_Unit', UnitIterator )
@@ -620,6 +625,8 @@ function AppendAdditionalSyncActions( out VisualizationTrack BuildTrack )
 {
 	local XComContentManager ContentManager;
 	local X2Action_PlayEffect ReinforcementSpawnerEffectAction;
+
+	// Variables for Issue #69
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local int i;
 
@@ -628,6 +635,7 @@ function AppendAdditionalSyncActions( out VisualizationTrack BuildTrack )
 		return; // we've completed the reinforcement and the effect was stopped
 	}
 
+	// Start Issue #69
 	// LWS Modifications: Allow mods to control visualization of the flare.
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	for (i = 0; i < DLCInfos.Length; ++i)
@@ -638,7 +646,8 @@ function AppendAdditionalSyncActions( out VisualizationTrack BuildTrack )
 			return;
 		}
 	}
-    // LWS Modifications: END
+	// LWS Modifications: END
+	// End Issue #69
 
 	ContentManager = `CONTENT;
 

@@ -4,20 +4,9 @@
 //  PURPOSE: This object represents the instance data for X-Com's HQ in the 
 //           X-Com 2 strategy game
 //           
-// LWS		 Updated to prevent units with eStatus_OnMission from having gear stripped
-//			 Updated to make soldiers with eStatus_OnMission not be returned in GetDeployableSoldiers
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
-
-// LWS Mods:
-//
-// Tracktwo: GetSoldierEvents(): Call a new GetDisplayName() function for Rookie Training projects rather than
-//           directly using the new class template. Allows subclasses to override and avoids enormous log spam
-//           about accesses to None.
-//           GetScienceScore(): Trigger an event to let mods apply modifiers to the science rate.
-// tracktwo: GetCompletedResearchTechs(): Remove duplicate tech IDs from the returned list. Avoids listing the
-//           same repeatable tech multiple times in the archives.
 
 class XComGameState_HeadquartersXCom extends XComGameState_Airship 
 	native(Core) 
@@ -414,12 +403,15 @@ static function SetUpHeadquarters(XComGameState StartState, optional bool bTutor
 		{
 			AllStartingRegions.AddItem(IterateRegion);
 
+			// Start Issue #85
+			// always use RegionLink Static Method to allow for configuration
 			// Try to find an optimal starting region
 			//if(IterateRegion.CanBeStartingRegion(StartState))
 			if (class'XComGameState_RegionLink'.static.IsEligibleStartRegion(StartState, IterateRegion)) // LWS: replacement to allow configurability for start regions
 			{
 				BestStartingRegions.AddItem(IterateRegion);
 			}
+			// End Issue #85
 		}
 	}
 
@@ -1949,6 +1941,8 @@ function array<XComGameState_Unit> GetSoldiers(optional bool bDontIncludeSquad =
 		{
 			if (Soldier.IsSoldier() && !Soldier.IsDead())
 			{
+				// Conditional for Issue #86
+				// LWS Updated to prevent units with eStatus_OnMission from having gear stripped
 				// LWS: added condition to not retrieve soldiers with eStatus_OnMission when bDontIncludeSquad is true
 				if(!bDontIncludeSquad || (bDontIncludeSquad && !IsUnitInSquad(Soldier.GetReference()) && Soldier.GetStatus() != eStatus_OnMission))
 				{
@@ -1974,6 +1968,8 @@ function array<XComGameState_Unit> GetDeployableSoldiers(optional bool bDontIncl
 
 		if(Soldier != none)
 		{
+			// Conditional for Issue #86
+			// Updated to make soldiers with eStatus_OnMission not be returned in GetDeployableSoldiers
 			if(Soldier.IsSoldier() && Soldier.IsAlive() && Soldier.GetStatus() != eStatus_OnMission && (Soldier.GetStatus() == eStatus_Active || Soldier.GetStatus() == eStatus_PsiTraining || 
 				((bAllowWoundedSoldiers || Soldier.IgnoresInjuries()) && Soldier.IsInjured())))
 			{
@@ -2315,6 +2311,8 @@ function int GetScienceScore(optional bool bAddLabBonus = false)
 	local XComGameState_Unit Scientist;
 	local XComGameState_FacilityXCom FacilityState;
 	local int idx, Score;
+
+	// Variable for Issue #83
 	local array<X2DownloadableContentInfo> DLCInfos;
 
 	Score = default.XComHeadquarters_StartingScienceScore;
@@ -2344,12 +2342,14 @@ function int GetScienceScore(optional bool bAddLabBonus = false)
 		}
 	}
 
+	// Start Issue #83
 	// LWS MODS: Allow mods to adjust the science score
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	for(idx = 0; idx < DLCInfos.Length; ++idx)
 	{
 		Score += DLCInfos[idx].GetScienceScoreMod(bAddLabBonus);
 	}
+	// End Issue #83
 
 	return Score;
 }
@@ -5355,6 +5355,7 @@ function array<StateObjectReference> GetCompletedResearchTechs()
 			CompletedTechs.AddItem(TechState.GetReference());
 	}
 
+	// Start Issue #84
 	// LWS mods: Strip duplicate entries before returning - some tech can be repeated multiple times, but we don't
 	// need to spam the archives with 15 ADVENT Datapads.
 	CompletedTechs.Sort(SortTechById);
@@ -5365,10 +5366,13 @@ function array<StateObjectReference> GetCompletedResearchTechs()
 			CompletedTechs.Remove(idx, 1);
 		}
 	}
+	// End Issue #84
 
 	return CompletedTechs;
 }
 
+// Start Issue #84
+// Sort function just for the code above.
 function int SortTechById(StateObjectReference RefA, StateObjectReference RefB)
 {
 	if (RefA.ObjectID < RefB.ObjectID)
@@ -5376,6 +5380,7 @@ function int SortTechById(StateObjectReference RefA, StateObjectReference RefB)
 
 	return RefB.ObjectID < RefA.ObjectID ? -1 : 0;
 }
+// End Issue #84
 
 //---------------------------------------------------------------------------------------
 function bool HasCompletedResearchTechs()
@@ -6642,10 +6647,16 @@ function GetSoldierEvents(out array<HQEvent> arrEvents)
 		if (TrainProject != none)
 		{			
 			UnitState = XComGameState_Unit(History.GetGameStateForObjectID(TrainProject.ProjectFocus.ObjectID));
-            // LWS Mod: Replace GetTrainingClassTemplate().DisplayName with new GetDisplayName() function.
+
+			// Start Issue #80
+			// Replace GetTrainingClassTemplate().DisplayName with new GetDisplayName() function.
+			// Tracktwo: GetSoldierEvents(): Call a new GetDisplayName() function for Rookie Training projects rather than
+			//           directly using the new class template. Allows subclasses to override and avoids enormous log spam
+			//           about accesses to None.
 			kEvent.Data = Caps(TrainProject.GetDisplayName()) @ TrainRookieEventLabel @ UnitState.GetName(eNameType_RankFull);
 			kEvent.Hours = TrainProject.GetCurrentNumHoursRemaining();
 			kEvent.ImagePath = class'UIUtilities_Image'.const.EventQueue_Staff;
+			// End Issue #80
 			
 			if (kEvent.Hours < 0)
 			{
@@ -7253,6 +7264,8 @@ final function SetPendingPointOfTravel(const out XComGameState_GeoscapeEntity Ge
 	NewGameState.AddStateObject(XComHQ);
 	`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 	MapItem = `HQPRES.StrategyMap2D.GetMapItem(GeoscapeEntity);
+	
+	// Issue #87 - fix behaviour by adding `ISCONTROLLERACTIVE
 	if (MapItem != none && !bRTB && `ISCONTROLLERACTIVE)
 	{
 		//bsg-jneal (8.17.16): set the last map item to the selected point of travel then select it, this fixes an issue where the strategy map would focus back on a previously selected different map item incorrectly because LastSelectedMapItem was not updated before opening screens like Mission Ops.

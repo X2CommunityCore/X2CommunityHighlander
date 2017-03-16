@@ -6,13 +6,6 @@
 // Copyright 1998-2008 Epic Games, Inc. All Rights Reserved.
 //=============================================================================
 
-// LWS Modifications
-//
-// tracktwo - Add calls to a new DLCInfo hook from DrawDebugLabels to allow mods
-//            to draw debug info to the screen.
-//          - Add calls to a new DLCInfo hook from Next/Prev unit selection to
-//            allow mods to sort units in the tab order list.
-
 class XComTacticalController extends XComPlayerController
 	implements(X2VisualizationMgrObserverInterfaceNative)
 	dependson(XComPathData)
@@ -105,7 +98,6 @@ var config float TacticalCursorStickAccelPower;
 var config float TacticalCursorTileAlignBlendFast;
 var config float TacticalCursorTileAlignBlendSlow;
 var config int TacticalCursorFramesBeforeAccel;
-
 
 cpptext
 {
@@ -289,8 +281,10 @@ simulated function bool Visualizer_SelectNextUnit()
 	local XComGameState_Unit SelectNewUnit;	
 	local XComGameState_Unit CurrentUnit;	
 	local bool bAllowedToSwitch;
-    local int DLCIndex;
-    local array<X2DownloadableContentInfo> DLCInfos;
+
+	// Variables for Issue #137
+	local int DLCIndex;
+	local array<X2DownloadableContentInfo> DLCInfos;
 
 	if (`TUTORIAL != none)
 	{
@@ -315,16 +309,22 @@ simulated function bool Visualizer_SelectNextUnit()
 		bAllowedToSwitch = bAllowedToSwitch && CurrentUnit.ReflexActionState != eReflexActionState_SelectAction;
 	}
 
-    // LWS Mods: Allow DLC/Mods to sort the tab order list
-    DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
-    for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
-    {
-        DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, true);
-    }
+	// Start Issue #137
+	//
+	// Add calls to a new DLCInfo hook from Next/Prev unit selection to
+	// allow mods to sort units in the tab order list.
+	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
+	{
+		DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, true);
+	}
+	// End Issue #137
 
 	while (EligibleUnits.Length > 0 && bAllowedToSwitch)
 	{
 		CurrentSelectedIndex = 0;
+
+		// Conditional for Issue #137
 		// LWS Mods: If this is a turn start, ControllingUnit will be empty, so don't try to go through this loop
 		// to select the unit after the currently selected unit, as it will always return unit index 1. We want to
 		// start turns at index 0 since Mods/DLC may have sorted the unit list, so starting at 1 will mean the unit
@@ -362,8 +362,10 @@ simulated function bool Visualizer_SelectPreviousUnit()
 	local array<XComGameState_Unit> EligibleUnits;
 	local XComGameState_Unit SelectNewUnit;
 	local XComGameState_Unit CurrentUnit;
-    local int DLCIndex;
-    local array<X2DownloadableContentInfo> DLCInfos;
+
+	// Variables for Issue #137
+	local int DLCIndex;
+	local array<X2DownloadableContentInfo> DLCInfos;
 
 	if (`TUTORIAL != none)
 	{
@@ -383,12 +385,14 @@ simulated function bool Visualizer_SelectPreviousUnit()
 	//Not allowed to switch if the currently controlled unit is being forced to take an action next
 	CurrentUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ControllingUnit.ObjectID));
 
-    // LWS Mods: Allow DLC/Mods to sort the tab order list
-    DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
-    for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
-    {
-        DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, false);
-    }
+	// Start Issue #137
+	// LWS Mods: Allow DLC/Mods to sort the tab order list
+	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	for (DLCIndex = 0; DLCIndex < DLCInfos.Length; ++DLCIndex)
+	{
+		DLCInfos[DLCIndex].SortTabOrder(EligibleUnits, CurrentUnit, false);
+	}
+	// End Issue #137
 
 	while( EligibleUnits.Length > 0 && CurrentUnit.ReflexActionState != eReflexActionState_SelectAction )
 	{
@@ -574,7 +578,6 @@ function bool IsControllerPressed()
 {
 	return m_iNumFramesPressed > 0;
 }
-
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 simulated function ActiveUnitChanged()
@@ -753,8 +756,10 @@ function DrawDebugLabels(Canvas kCanvas)
 	local XComSpawnRestrictor Restrictor;
 	local X2CharacterTemplate CharacterTemplate;
 	local Name CharacterTemplateName;
-    local array<X2DownloadableContentInfo> DLCInfos;
-    local int DLCInfoIndex;
+
+	// Variables for Issue #136
+	local array<X2DownloadableContentInfo> DLCInfos;
+	local int DLCInfoIndex;
 
 //	local XGAbility_BullRush kAb;
 	//local Actor tempActor;
@@ -830,15 +835,19 @@ function DrawDebugLabels(Canvas kCanvas)
 			}
 		}
 
-        // LWS Modifications:
-        //
-        // Allow DLC/Mods to draw debug information to the screen.
-        DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
-        for (DLCInfoIndex = 0; DLCInfoIndex < DLCInfos.Length; ++DLCInfoIndex)
-        {
-            DLCInfos[DLCInfoIndex].DrawDebugLabel(kCanvas);
-        }
-        // END LWS MODS
+		// Start Issue #136
+		// LWS Modifications:
+		// tracktwo - Add calls to a new DLCInfo hook from DrawDebugLabels to allow mods
+		//            to draw debug info to the screen.
+		//
+		// Allow DLC/Mods to draw debug information to the screen.
+		DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+		for (DLCInfoIndex = 0; DLCInfoIndex < DLCInfos.Length; ++DLCInfoIndex)
+		{
+				DLCInfos[DLCInfoIndex].DrawDebugLabel(kCanvas);
+		}
+		// END LWS MODS
+		// End Issue #136
 	}
 }
 function DrawDebugData( HUD H )
@@ -1417,7 +1426,7 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 	}
 
-		//INS:
+	//INS:
 	event BeginState(Name PreviousStateName)
 	{
 		m_bStartedWalking = true;
@@ -1471,22 +1480,11 @@ ignores SeePlayer, HearNoise, Bump;
 			Y.Z = 0;
 			X = Normal(X);
 			Y = Normal(Y);
-
-
-
-
-
-
-
 		
 			// We were using aForward and aStrafe.  We now use raw input values for platform independence, but 
 			// correct for the amount the previous values were being scaled with 1.7573578512.
 			LSAxisX = PlayerInput.RawJoyUp * 1.7573578512;
 			LSAxisY = PlayerInput.RawJoyRight * 1.7573578512;
-
-
-
-
 
 			JustPressedDir = LSAxisX*X + LSAxisY*Y;
 			JustPressedDir.Z = 0;
@@ -1504,7 +1502,6 @@ ignores SeePlayer, HearNoise, Bump;
 			}
 			else
 			{
-
 				m_iNumFramesPressed = 0;
 				m_iNumFramesReleased++;
 			}
@@ -1548,12 +1545,8 @@ ignores SeePlayer, HearNoise, Bump;
 						NewAccel.Z = 0;
 						Pawn.AccelRate = 0;
 
-
 						Pawn.Velocity.X = 0;
 						Pawn.Velocity.Y = 0;
-
-
-
 						Pawn.Velocity.Z = 0;
 					}
 					else
@@ -1576,9 +1569,7 @@ ignores SeePlayer, HearNoise, Bump;
 					Pawn.AccelRate = 0;
 
 					Pawn.Velocity.X = 0;
-
 					Pawn.Velocity.Y = 0;
-
 					Pawn.Velocity.Z = 0;
 				}
 			}
@@ -1591,7 +1582,6 @@ ignores SeePlayer, HearNoise, Bump;
 					JustPressedDir = JustPressedDir	* ((fMagAnalogInput - TacticalCursorDeadzone) / (1.0 - TacticalCursorDeadzone));
 					fMagAnalogInput = VSize(JustPressedDir);
 
-
 					Pawn.AccelRate = TacticalCursorAccel;
 
 					StickPowerScale = (abs(fMagAnalogInput) ** (TacticalCursorStickAccelPower - 1.0));
@@ -1599,7 +1589,6 @@ ignores SeePlayer, HearNoise, Bump;
 					NewAccel = JustPressedDir * StickPowerScale;
 					NewAccel.Z = 0.0;
 					NewAccel = Pawn.AccelRate * NewAccel;
-
 				}
 				else // Slow when L-analog is released.
 				{
@@ -1620,7 +1609,6 @@ ignores SeePlayer, HearNoise, Bump;
 				}
 			}
 			m_fLastMagAnalogInput = fMagAnalogInput;
-
 
 
 			if( Role < ROLE_Authority ) // then save this move and replicate it
@@ -1644,7 +1632,6 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 	}
 }
-
 
 //--------------------------------- FIRING MODE ------------------------------
 
@@ -1988,7 +1975,6 @@ simulated function HideInputButtonRelatedHUDElements(bool bHide)
 {
 	GetPres().GetTacticalHUD().HideInputButtonRelatedHUDElements(bHide);
 }
-
 /**
  * Looks at the current game state and uses that to set the
  * rich presence strings

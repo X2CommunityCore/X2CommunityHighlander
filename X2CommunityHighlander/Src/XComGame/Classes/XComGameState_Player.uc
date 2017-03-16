@@ -120,9 +120,11 @@ private function EventListenerReturn OnObjectVisibilityChanged(Object EventData,
 	if(SourceObject.GetAssociatedPlayerID() == ObjectID)
 	{
 		SeenUnit = XComGameState_Unit(EventData); // we only care about enemy units
-        // LWS Mods: Don't trigger on cosmetic units (see comments in XCGS_Unit about gremlins not wanting to receive movement events).
-        // Fixes bugs with Gremlins activating pods when you cancel a hack or when movement causes the gremlin to be visible while the unit
-        // isn't.
+
+		// Conditional for Issue #97
+		// LWS Mods: Don't trigger on cosmetic units (see comments in XCGS_Unit about gremlins not wanting to receive movement events).
+		// Fixes bugs with Gremlins activating pods when you cancel a hack or when movement causes the gremlin to be visible while the unit
+		// isn't.
 		if(SeenUnit != none && SourceObject.TargetIsEnemy(SeenUnit.ObjectID) && !SeenUnit.GetMyTemplate().bIsCosmetic)
 		{
 			SourceUnit = XComGameState_Unit(SourceObject);

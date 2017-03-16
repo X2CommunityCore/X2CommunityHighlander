@@ -725,6 +725,7 @@ simulated function WipeUpgradeTemplates()
 	Ammo = GetClipSize();
 }
 
+// Start Issue #88
 // LWS : Modified so that a weapon with only '' null modifications doesn't count as modified
 simulated function bool HasBeenModified()
 {
@@ -742,6 +743,7 @@ simulated function bool HasBeenModified()
 	}
 	return bHasBeenModified;
 }
+// End Issue #88
 
 simulated function bool IsStartingItem()
 {
@@ -798,8 +800,13 @@ simulated function array<WeaponAttachment> GetWeaponAttachments(optional bool bG
 		UpgradeTemplates = GetMyWeaponUpgradeTemplates();
 		for (i = 0; i < UpgradeTemplates.Length; ++i)
 		{
-            if (UpgradeTemplates[i] == none)
-                continue;
+			// Start Issue #88
+			// Blank names being allowed means 'none' template, guard here
+			if (UpgradeTemplates[i] == none)
+			{
+					continue;
+			}
+			// End Issue #88
 			for (j = 0; j < UpgradeTemplates[i].UpgradeAttachments.Length; ++j)
 			{
 				if (UpgradeTemplates[i].UpgradeAttachments[j].ApplyToWeaponTemplate != WeaponTemplate.DataName)
@@ -894,6 +901,11 @@ simulated function int GetItemSize()
 	return GetMyTemplate().iItemSize;
 }
 
+// Start Issue #90
+// Allow mods to override range returned, otherwise perform native behaviour,
+// which has been extracted out of native method.
+//
+// simulated native function int GetItemRange(const XComGameState_Ability AbilityState);
 simulated function int GetItemRange(const XComGameState_Ability AbilityState)
 {
 	local XComLWTuple OverrideTuple;
@@ -941,7 +953,9 @@ simulated function int GetItemRange(const XComGameState_Ability AbilityState)
 	}
 	return -1;
 }
+// End Issue #90
 
+// Start Issue #89
 //LW method added to generalize unequipping of items
 simulated function bool ItemCanBeUnequipped()
 {
@@ -961,8 +975,8 @@ simulated function bool ItemCanBeUnequipped()
 
 	return OverrideTuple.Data[0].b;
 }
+// End Issue #89
 
-//simulated native function int GetItemRange(const XComGameState_Ability AbilityState);
 simulated native function int GetItemRadius(const XComGameState_Ability AbilityState);
 simulated native function float GetItemCoverage(const XComGameState_Ability AbilityState);
 

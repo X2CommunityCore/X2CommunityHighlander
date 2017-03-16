@@ -4,15 +4,6 @@
 //  AUTHOR:  Sam Batista
 //  PURPOSE: UI for viewing and modifying a Soldiers equipment
 //
-// LWS		 Updated to prevent units with eStatus_OnMission from having gear stripped
-// tracktwo - Updated the OnStrip*Callback functions to pass 'false' to the 'bStoreOldItems'
-//            parameter, to make it consistent with the squad select button behavior. The
-//            re-equip behavior is unsafe to use for this, as the HQ inventory management
-//            code does not seem to be able to correctly handle re-equipping items in a loop
-//            across multiple soldiers without duplicating items.
-// tracktwo - GetSoldiersToStrip: Pass 'true' to GetSoldiers() so we only strip soldiers that
-//            are not in the current squad. Makes the buttons behave consistently whether you
-//            click them from the squad select screen or the loadout screen.
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -150,7 +141,9 @@ simulated function UpdateNavHelp()
 		{
 			NavHelp.AddRightHelp(class'UISquadSelect'.default.m_strStripGear, class'UIUtilities_Input'.static.GetGamepadIconPrefix() $class'UIUtilities_Input'.const.ICON_RT_R2, OnStripGear, false, m_strTooltipStripGear, class'UIUtilities'.const.ANCHOR_BOTTOM_CENTER);
 		}
-	
+
+		// For Issue #195
+		`XEVENTMGR.TriggerEvent('ArmoryLoadout_PostUpdateNavHelp', NavHelp, self);
 	}
 }
 
@@ -234,6 +227,13 @@ simulated function OnStripItemsDialogCallback(eUIAction eAction)
 		{
 			UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', Soldiers[idx].ObjectID));
 			NewGameState.AddStateObject(UnitState);
+
+			// Issue #161
+			// tracktwo - Updated the OnStrip*Callback functions to pass 'false' to the 'bStoreOldItems'
+			//            parameter, to make it consistent with the squad select button behavior. The
+			//            re-equip behavior is unsafe to use for this, as the HQ inventory management
+			//            code does not seem to be able to correctly handle re-equipping items in a loop
+			//            across multiple soldiers without duplicating items.
 			// LWS Mods: Make the loadout strip buttons behave the same as squad select: Don't re-equip stripped soldiers
 			// after leaving this screen.
 			UnitState.MakeItemsAvailable(NewGameState, false, RelevantSlots);
@@ -287,6 +287,8 @@ simulated function OnStripGearDialogCallback(eUIAction eAction)
 		{
 			UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', Soldiers[idx].ObjectID));
 			NewGameState.AddStateObject(UnitState);
+
+			// Issue #161
 			// LWS Mods: Make the loadout strip buttons behave the same as squad select: Don't re-equip stripped soldiers
 			// after leaving this screen.
 			UnitState.MakeItemsAvailable(NewGameState, false, RelevantSlots);
@@ -340,6 +342,8 @@ simulated function OnStripWeaponsDialogCallback(eUIAction eAction)
 		{
 			UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', Soldiers[idx].ObjectID));
 			NewGameState.AddStateObject(UnitState);
+
+			// Issue #161
 			// LWS Mods: Make the loadout strip buttons behave the same as squad select: Don't re-equip stripped soldiers
 			// after leaving this screen.
 			UnitState.MakeItemsAvailable(NewGameState, false, RelevantSlots);
@@ -425,6 +429,12 @@ simulated function array<XComGameState_Unit> GetSoldiersToStrip()
 	else
 	{
 		XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+
+		// Start Issue #161
+		// LWS		 Updated to prevent units with eStatus_OnMission from having gear stripped
+		// tracktwo - GetSoldiersToStrip: Pass 'true' to GetSoldiers() so we only strip soldiers that
+		//            are not in the current squad. Makes the buttons behave consistently whether you
+		//            click them from the squad select screen or the loadout screen.
 		// LWS Added: Pass 'true' so we don't strip people in the current squad (the confirm
 		// dialog says the strip items won't affect units on the current mission)
 		Soldiers = XComHQ.GetSoldiers(true);
@@ -443,6 +453,7 @@ simulated function array<XComGameState_Unit> GetSoldiersToStrip()
 				Soldiers.Remove(idx, 1);
 			}
 		}
+		// End Issue #161
 	}
 
 	return Soldiers;

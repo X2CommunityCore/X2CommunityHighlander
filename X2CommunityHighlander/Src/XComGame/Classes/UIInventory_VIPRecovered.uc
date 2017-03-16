@@ -9,12 +9,12 @@
 //--------------------------------------------------------------------------------------- 
 
 // LWS Changes:
-//
+// Major Changes for Issue #173
 // tracktwo - Added configurable reward VIP offsets & support displaying more than one VIP pawn. VIP status
 //            info removed to UIInventory_LootRecovered to allow for more to be listed without scrolling or
 //            needing to increase the size of the panel.
 
-class UIInventory_VIPRecovered extends UIPanel config(UI);
+class UIInventory_VIPRecovered extends UIPanel config(UI); // Add Config for Issue #173
 
 enum EVIPStatus
 {
@@ -28,9 +28,10 @@ enum EVIPStatus
 var name PawnLocationTag;
 var localized string m_strVIPStatus[eVIPStatus.EnumCount]<BoundEnum=eVIPStatus>;
 var localized string m_strEnemyVIPStatus[eVIPStatus.EnumCount]<BoundEnum=eVIPStatus>;
+
+// Variables for Issue #173
 var array<XComUnitPawn> ActorPawns;
 var array<StateObjectReference> RewardUnitRefs;
-
 var config array<int> Vip_X_Offsets;
 var config array<int> Vip_Y_Offsets;
 
@@ -47,46 +48,53 @@ simulated function PopulateData()
 	local XComGameState_Unit Unit;
 	local XComGameState_MissionSite Mission;
 	local XComGameState_HeadquartersXCom XComHQ;
-    local XComGameState_BattleData BattleData;
-    local StateObjectReference RewardUnitRef;
-    local int i;
+
+	// Variables for Issue #173
+	local XComGameState_BattleData BattleData;
+	local StateObjectReference RewardUnitRef;
+	local int i;
 
 	XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
 	Mission = XComGameState_MissionSite(`XCOMHISTORY.GetGameStateForObjectID(XComHQ.MissionRef.ObjectID));
-    BattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 
-    for(i = 0; i < BattleData.RewardUnits.Length; ++i)
-    {
-	    RewardUnitRef = BattleData.RewardUnits[i];
-	
-	    if(RewardUnitRef.ObjectID <= 0)
-	    {
-		    `RedScreen("UIInventory_VIPRecovered did not get a valid Unit Reference.");
-		    return;
-	    }
+	// Start Issue #173
+	BattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 
-	    Unit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(RewardUnitRef.ObjectID));
-	    VIPStatus = EVIPStatus(Mission.GetRewardVIPStatus(Unit));
+	for(i = 0; i < BattleData.RewardUnits.Length; ++i)
+	{
+		RewardUnitRef = BattleData.RewardUnits[i];
 
-	    switch(VIPStatus)
-	    {
-	    case eVIPStatus_Awarded:
-	    case eVIPStatus_Recovered:
-            if (i == 0 || (i < Vip_X_Offsets.Length && i < Vip_Y_Offsets.Length))
-            {
-		        CreateVIPPawn(Unit, i);
-                RewardUnitRefs.AddItem(RewardUnitRef);
-            }
-		    break;
-	    }
-    }
+		if(RewardUnitRef.ObjectID <= 0)
+		{
+			`RedScreen("UIInventory_VIPRecovered did not get a valid Unit Reference.");
+			return;
+		}
+
+		Unit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(RewardUnitRef.ObjectID));
+		VIPStatus = EVIPStatus(Mission.GetRewardVIPStatus(Unit));
+
+		switch(VIPStatus)
+		{
+		case eVIPStatus_Awarded:
+		case eVIPStatus_Recovered:
+			if (i == 0 || (i < Vip_X_Offsets.Length && i < Vip_Y_Offsets.Length))
+			{
+			CreateVIPPawn(Unit, i);
+				RewardUnitRefs.AddItem(RewardUnitRef);
+			}
+			break;
+		}
+	}
+	// End Issue #173
 }
 
 simulated function CreateVIPPawn(XComGameState_Unit Unit, int i)
 {
 	local PointInSpace PlacementActor;
-    local Vector Loc;
-    local XComUnitPawn ActorPawn;
+
+	// Variables for Issue #173
+	local Vector Loc;
+	local XComUnitPawn ActorPawn;
 
 	// Don't do anything if we don't have a valid UnitReference
 	if(Unit == none) return;
@@ -97,14 +105,16 @@ simulated function CreateVIPPawn(XComGameState_Unit Unit, int i)
 			break;
 	}
 
+	// Start Issue #173
 	loc = PlacementActor.Location;
-    loc.X += Vip_X_Offsets[i];
-    loc.Y += Vip_Y_Offsets[i];
+	loc.X += Vip_X_Offsets[i];
+	loc.Y += Vip_Y_Offsets[i];
 
 	ActorPawn = `HQPRES.GetUIPawnMgr().RequestPawnByState(self, Unit, Loc, PlacementActor.Rotation);
-	ActorPawn.GotoState('CharacterCustomization');
-	ActorPawn.EnableFootIK(false);
-    ActorPawns.AddItem(ActorPawn);
+	ActorPawn.GotoState('CharacterCustomization'); // vanilla statement
+	ActorPawn.EnableFootIK(false); // vanilla statement
+	ActorPawns.AddItem(ActorPawn);
+	// End Issue #173
 
 	if (Unit.IsSoldier())
 	{
@@ -121,13 +131,17 @@ simulated function Cleanup()
 {
 	local XComGameState NewGameState;
 	local XComGameState_HeadquartersResistance ResistanceHQ;
-    local int i;
 
+	// Variable for Issue #173
+	local int i;
+
+	// Start Issue #173
 	if (RewardUnitRefs.Length == 0)
 		return;
 
-    for( i = 0; i < RewardUnitRefs.Length; ++i)
-        `HQPRES.GetUIPawnMgr().ReleasePawn(self, RewardUnitRefs[i].ObjectID);
+	for( i = 0; i < RewardUnitRefs.Length; ++i)
+			`HQPRES.GetUIPawnMgr().ReleasePawn(self, RewardUnitRefs[i].ObjectID);
+	// End Issue #173
 
 	NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Clear VIP Reward Data");
 	ResistanceHQ = class'UIUtilities_Strategy'.static.GetResistanceHQ();
@@ -136,8 +150,10 @@ simulated function Cleanup()
 	ResistanceHQ.ClearVIPRewardsData();
 	`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 
-    RewardUnitRefs.Length = 0;
-    ActorPawns.Length = 0;
+	// Start Issue #173
+	RewardUnitRefs.Length = 0;
+	ActorPawns.Length = 0;
+	// End Issue #173
 }
 
 simulated function AS_UpdateData(string Title, string VIPName, string VIPIcon, string VIPReward)

@@ -7,20 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-// LWS Mods
-//  tracktwo - GetTileWithinOneActionPointMove: Bugfix for flying units to allow them to find valid stopping
-//             points along the path that are within movement range.
-//  tracktwo - ScoreDestinationTile: Do not score tiles based on cover value if this unit doesn't use cover.
-//  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
-//             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
-//             return "failure" and abort the node. Practically, this means that aliens wouldn't overwatch if you hunker
-//             everyone, because they'll all have a negative hit chance so the overwatch node will think there are no targets,
-//             not that it has only poor shots and thus overwatching is a decent idea. Clamping it to 0 means it'll return 0
-//             if there are targets with no chance to hit, and overwatch will be considered since the unit has only terrible
-//             shots.
-//  tracktwo - SkipTurn: Don't skip the entire group's turn if one unit skips its turn and the unit was unrevealed. This breaks
-//             the bonus reflex actions we award.
-
 class XGAIBehavior extends Actor
 	dependson(XComGameState_AIUnitData)
 	native(AI)
@@ -1065,9 +1051,13 @@ function ai_tile_score ScoreDestinationTile( TTile kTile, vector vLoc, XComCover
 	RawTileData_out = FillTileScoreData(kTile, vLoc, kCover,,fDistFromEnemy);
 	// Scoring data
 	// Cover value increases as our new cover improves over the old cover.  Also increases if we were flanked.
-    // LWS Mods: Only units that can use cover should score tiles based on cover value.
-    if (CanUseCover())
-	    kDiffScore.fCoverValue = RawTileData_out.fCoverValue - m_kCurrTileData.fCoverValue; 
+	
+	// Start Issue #144
+	//  tracktwo - ScoreDestinationTile: Do not score tiles based on cover value if this unit doesn't use cover.
+	// LWS Mods: Only units that can use cover should score tiles based on cover value.
+	if (CanUseCover())
+		kDiffScore.fCoverValue = RawTileData_out.fCoverValue - m_kCurrTileData.fCoverValue; 
+	// End Issue #144
 
 	// UPDATE- Distance score difference is no longer calculated here since the weighting factors into both sides of the difference calculation.
 	kDiffScore.fDistanceScore = RawTileData_out.fDistanceScore;
@@ -2559,10 +2549,20 @@ function int BT_GetHighestHitChanceAgainstXCom()
 		}
 		Ability.GetShotBreakdown(Target, Breakdown);
 		HitChance = Breakdown.FinalHitChance;
+
+		// Start Issue #145
+		//  tracktwo - BT_GetHighestHitChanceAgainstXCom - Clamp all computed hit chances to a minimum of 0. Negative return
+		//             values are treated as "failure - no targets" so if all visible targets have a negative chance this would
+		//             return "failure" and abort the node. Practically, this means that aliens wouldn't overwatch if you hunker
+		//             everyone, because they'll all have a negative hit chance so the overwatch node will think there are no targets,
+		//             not that it has only poor shots and thus overwatching is a decent idea. Clamping it to 0 means it'll return 0
+		//             if there are targets with no chance to hit, and overwatch will be considered since the unit has only terrible
+		//             shots.
 		// LWS Mods: Clamp hit chance to a minimum of 0: negative values are special and will fail
 		// the calling node, meaning if the unit asks "are all my hit chances below 50%?" the answer
 		// would be "fail!" and not "yes" if there are visible enemies but every tohit chance is negative.
 		HitChance = Max(0, HitChance);
+		// End Issue #145
 		if( HitChance > TopHitChance )
 		{
 			TopHitChance = HitChance;
@@ -3826,19 +3826,21 @@ function bool BT_AlertDataWasSoundMade()
 	local AlertData Data;
 	if( GetAlertData(Data) )
 	{
-        // LWS Mods: AlertRadius for sound was not implemented (SoundRange info isn't put into alert data). Use alert cause instead.
-        if (class'Helpers_LW'.static.YellowAlertEnabled())
-        {
-            switch(Data.AlertCause)
-            {
-            case eAC_DetectedSound:
-                return true;
-            }
+		// Start Issue #125
+		// LWS Mods: AlertRadius for sound was not implemented (SoundRange info isn't put into alert data). Use alert cause instead.
+		if (class'Helpers_LW'.static.YellowAlertEnabled())
+		{
+			switch(Data.AlertCause)
+			{
+			case eAC_DetectedSound:
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        return (Data.AlertRadius > 0);
+		return (Data.AlertRadius > 0);
+		// End Issue #125
 	}
 	return false;
 }
@@ -4143,12 +4145,14 @@ function string BT_GetLastAbilityName()
 
 function int BT_GetSuppressorCount()
 {
+	// Start Issue #121
 	// LWS - Modified to always GetSuppressors. Slower, but works correctly for child effects of Suppression
 	//if( UnitState.IsUnitAffectedByEffectName(class'X2Effect_Suppression'.default.EffectName) )
 	//{
 		return UnitState.GetSuppressors();
 	//}
 	//return 0;
+	// End Issue #121
 }
 function bool BT_SetSuppressorStack()
 {
@@ -7122,9 +7126,10 @@ state AlertDataMovement extends MoveState
 		return m_vBTDestination;
 	}
 
-    // LWS Mods: Alert move should move in a group if unactivated (implies EnableYellowAlert is
-    // true since otherwise all unactivated AI uses Green movement).
-    function bool IsGroupMove()
+	// Start Issue #125
+	// LWS Mods: Alert move should move in a group if unactivated (implies EnableYellowAlert is
+	// true since otherwise all unactivated AI uses Green movement).
+	function bool IsGroupMove()
 	{
 		if (UnitState.IsUnrevealedAI() && m_kPatrolGroup != None && !m_kPatrolGroup.bDisableGroupMove)
 		{
@@ -7132,6 +7137,7 @@ state AlertDataMovement extends MoveState
 		}
 		return super.IsGroupMove();
 	}
+	// End Issue #125
 }
 //------------------------------------------------------------------------------------------------
 state XComMovement extends MoveState // Only accessed via specialized behavior tree, i.e. panic/scamper/etc.
@@ -7196,19 +7202,24 @@ function bool GetTileWithinOneActionPointMove( TTile kTileIn, out TTile kTileOut
 	local array<TTile> arrPath;
 	local int iPathIdx;
 	local TTile kCurrTile;
-    local XComWorldData World;
 
-    World = `XWORLD;
+	// Variables for Issue #5
+	local XComWorldData World;
+	World = `XWORLD;
+
 	if (m_kUnit.m_kReachableTilesCache.BuildPathToTile(kTileIn, arrPath) && arrPath.Length > 0)
 	{
 		for (iPathIdx = arrPath.Length-1; iPathIdx >= 0; --iPathIdx)
 		{
 			kCurrTile = arrPath[iPathIdx];
-            // LWS Mods: Bugfix for flying units - the path will often have above-ground tiles on
-            // each point along the path except the start and end, so we need to reset each potential
-            // stopping point to the floor level before testing if it's in movement range, otherwise
-            // it will always return "-1" for an invalid end point tile that's above ground.
-            kCurrTile.Z = World.GetFloorTileZ(kCurrTile, true);
+
+			// Start Issue #5
+			// LWS Mods: Bugfix for flying units - the path will often have above-ground tiles on
+			// each point along the path except the start and end, so we need to reset each potential
+			// stopping point to the floor level before testing if it's in movement range, otherwise
+			// it will always return "-1" for an invalid end point tile that's above ground.
+			kCurrTile.Z = World.GetFloorTileZ(kCurrTile, true);
+			// End Issue #5
 			if( IsWithinMovementRange(kCurrTile, bAllowDashMovement) )
 			{
 				kTileOut = kCurrTile;
@@ -7540,6 +7551,9 @@ simulated function SkipTurn( optional string DebugLogText="" )
 	{
 		// If unrevealed, the entire group skips its turn.  Fixes assert with group movement, after group leader skips its move.
 
+		// Conditional for Issue #146
+		//  tracktwo - SkipTurn: Don't skip the entire group's turn if one unit skips its turn and the unit was unrevealed. This breaks
+		//             the bonus reflex actions we award.
 		// LWS Mods: This breaks reflex actions: A unit that is killed during scamper will skip its turn (no actions to take!)
 		// which will force the entire pod to skip any bonus reflex action (in addition to scamper, which is handled separately).
 		// I haven't seen this group movement assert, although making this change makes me pretty nervous. Hopefully this would

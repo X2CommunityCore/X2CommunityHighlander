@@ -1,6 +1,3 @@
-// LWS edits to make Ever Vigilant more versatile
-// LWS added hook to allow control of targeting reticle independent of weapontech, since it is used for other things
-
 class XComGameState_Ability extends XComGameState_BaseObject
 	dependson(X2TacticalGameRuleset, X2Effect, X2AbilityTemplate)
 	implements(UIQueryInterfaceAbility)
@@ -263,6 +260,7 @@ event int GetShotBreakdownNative(AvailableTarget kTarget, out ShotBreakdown kBre
 	return GetShotBreakdown(kTarget, kBreakdown);
 }
 
+// Start Issue #63
 //This function is native for performance reasons, the script code below describes its function -- LWS made non-native so that new MultiTargetStyle code can work
 simulated function name GatherAbilityTargets(out array<AvailableTarget> Targets, optional XComGameState_Unit OverrideOwnerState)
 {
@@ -321,6 +319,7 @@ simulated function name GatherAbilityTargets(out array<AvailableTarget> Targets,
 	}
 	return 'AA_Success';
 }
+// End Issue #63
 
 simulated function int SortAvailableTargets(AvailableTarget TargetA, AvailableTarget TargetB)
 {
@@ -1138,12 +1137,14 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 	MaxDamagePreview.Damage += Rupture;
 }
 
-// PI : Added DLCInfo hook so that DLC/Mods can override item environment damage
 event int GetEnvironmentDamagePreview( )
 {
 	local XComGameStateHistory History;
 	local int Damage;
 	local XComGameState_Item SourceItemState, SourceAmmoState, LoadedAmmoState;
+
+	/// Start Issue #64
+	// PI : Added DLCInfo hook so that DLC/Mods can override item environment damage
 	local array<X2DownloadableContentInfo> DLCInfos;
 	local int i, TempDamage, ReturnDamage;
 	local bool bAnyOverride;
@@ -1162,6 +1163,7 @@ event int GetEnvironmentDamagePreview( )
 	{
 		return ReturnDamage;
 	}
+	/// End Issue #64
 
 	History = `XCOMHISTORY;
 	Damage = 0;
@@ -1800,19 +1802,19 @@ function EventListenerReturn MeleeCounterattackListener(Object EventData, Object
 	return ELR_NoInterrupt;
 }
 
-// LWS -- Edits to make Ever Vigilant more versatile and respect a a slot setting to primary (so it won't force you to OW with a pistol if you have one)
-
 function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
 {
 	local XComGameState_Unit UnitState;
 	local UnitValue NonMoveActionsThisTurn;
-	local bool GotValue, FoundSlot;
 	local StateObjectReference OverwatchRef;
 	local XComGameState_Ability OverwatchState;
 	local XComGameStateHistory History;
 	local XComGameState NewGameState;
 	local EffectAppliedData ApplyData;
 	local X2Effect VigilantEffect;
+
+	// Variables for Issue #61
+	local bool GotValue, FoundSlot;
 	local array<SoldierClassAbilityType> SoldierAbilities;
 	local int k;
 
@@ -1826,6 +1828,9 @@ function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Objec
 		GotValue = UnitState.GetUnitValue('NonMoveActionsThisTurn', NonMoveActionsThisTurn);
 		if (!GotValue || NonMoveActionsThisTurn.fValue == 0)
 		{
+			// Start Issue #61
+			// LWS edits to make Ever Vigilant more versatile
+			// LWS -- Edits to make Ever Vigilant more versatile and respect a a slot setting to primary (so it won't force you to OW with a pistol if you have one)
 			// New Code starts here
 			FoundSlot = false;
 			SoldierAbilities = UnitState.GetEarnedSoldierAbilities();
@@ -1848,6 +1853,8 @@ function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Objec
 					OverwatchRef = UnitState.FindAbility('Overwatch');
 			}
 			// Ends here
+			// End Issue #61
+			
 			OverwatchState = XComGameState_Ability(History.GetGameStateForObjectID(OverwatchRef.ObjectID));
 			if (OverwatchState != none)
 			{
@@ -2498,6 +2505,8 @@ simulated function int GetUIReticleIndex()
 	local XComGameState_Item Weapon;
 	local name WeaponTech;
 	local name WeaponCategory;
+
+	// Variables for Issue #60
 	local array<X2DownloadableContentInfo> DLCInfos; // LWS Added
 	local X2DownloadableContentInfo DLCInfo;  // LWS Added
 	local int ReturnReticleIndex;
@@ -2511,6 +2520,8 @@ simulated function int GetUIReticleIndex()
 		WeaponCategory = Weapon.GetWeaponCategory();
 	}
 
+	// Start Issue #60
+	// LWS added hook to allow control of targeting reticle independent of weapontech, since it is used for other things
 	//LWS : Adding hook to allow DLC/mods override control over the targeting reticle chosen
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
 	foreach DLCInfos(DLCInfo)
@@ -2520,6 +2531,7 @@ simulated function int GetUIReticleIndex()
 			return ReturnReticleIndex;
 		}
 	}
+	// End Issue #60
 
 	if (Template.Hostility == eHostility_Defensive)
 		return eUIReticle_Defensive;
@@ -2931,14 +2943,16 @@ function bool DoesAbilityCauseSound()
 		}
 	}
 
-    // LWS: Don't forget to check multi-target effects!
-    foreach AbilityTemplate.AbilityMultiTargetEffects(AbilityEffect)
-    {
-        if (AbilityEffect.IsA('X2Effect_ApplyWeaponDamage'))
-        {
-            return true;
-        }
-    }
+	// Start Issue #62
+	// LWS: Don't forget to check multi-target effects!
+	foreach AbilityTemplate.AbilityMultiTargetEffects(AbilityEffect)
+	{
+			if (AbilityEffect.IsA('X2Effect_ApplyWeaponDamage'))
+			{
+					return true;
+			}
+	}
+	// End Issue #62
 
 	return false;
 }

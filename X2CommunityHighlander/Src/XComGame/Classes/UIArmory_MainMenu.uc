@@ -1,3 +1,5 @@
+// Issue #164 - Major Rewrite. Diff with vanilla to understand the changes
+// fully.
 // LWS : class modified to provide support for DLC/mod insertable elements into the ArmoryList
 
 class UIArmory_MainMenu 
@@ -39,7 +41,7 @@ var bool bIsHotlinking;
 var UIList List;
 var UIListItemString PromoteItem;
 
-//LWS : Added
+// Variables for Issue #164
 var UIPanel BGPanel;
 var UIListItemString CustomizeButton, LoadoutButton, PCSButton, WeaponUpgradeButton, PromotionButton, DismissButton;
 
@@ -48,6 +50,7 @@ simulated function InitArmory(StateObjectReference UnitRef, optional name DispEv
 	bUseNavHelp = class'XComGameState_HeadquartersXCom'.static.IsObjectiveCompleted('T0_M2_WelcomeToArmory');
 	super.InitArmory(UnitRef, DispEvent, SoldSpawnEvent, NavBackEvent, HideEvent, RemoveEvent, bInstant, CheckGameState);
 
+	// Start Issue #164
 	List = Spawn(class'UIList', self).InitList(); // LWS Initialize a new list so it can be positions
 	//List.OnItemClicked = OnItemClicked;  // LWS: remove this and let each button handle its own callbacks, so that mod buttons can change order/insert without breaking stuff
 	List.OnSelectionChanged = OnSelectionChanged;
@@ -60,7 +63,8 @@ simulated function InitArmory(StateObjectReference UnitRef, optional name DispEv
 	BGPanel.SetPosition(101, 126);
 	BGPanel.SetSize(425, 499);
 	BGPanel.bShouldPlayGenericUIAudioEvents = false;  
-    BGPanel.ProcessMouseEvents(List.OnChildMouseEvent); // hook mousewheel to scroll MainMenu list instead of rotating soldier
+	BGPanel.ProcessMouseEvents(List.OnChildMouseEvent); // hook mousewheel to scroll MainMenu list instead of rotating soldier
+	// End Issue #164
 
 	CreateSoldierPawn();
 	PopulateData();
@@ -71,6 +75,7 @@ simulated function InitArmory(StateObjectReference UnitRef, optional name DispEv
 simulated function PopulateData()
 {
 	local bool bInTutorialPromote;
+	// Variables removed for Issue #164
 
 	super.PopulateData();
 
@@ -78,6 +83,7 @@ simulated function PopulateData()
 
 	bInTutorialPromote = !class'XComGameState_HeadquartersXCom'.static.IsObjectiveCompleted('T0_M2_WelcomeToArmory');
 
+	// Start Issue #164
 	// -------------------------------------------------------------------------------
 	// Customize soldier: 
 	CustomizeButton = Spawn(class'UIListItemString', List.ItemContainer).InitListItem(m_strCustomizeSoldier).SetDisabled(bInTutorialPromote, "");
@@ -154,6 +160,9 @@ simulated function OnReceiveFocus()
 	Header.PopulateData();
 }
 
+
+// Issue #164
+// most behaviour transplanted from old PopulateData function
 //new helper method to update button status
 simulated function UpdateData()
 {
@@ -433,13 +442,15 @@ simulated function OnDismissUnit()
 simulated public function OnDismissUnitCallback(eUIAction eAction)
 {
 	local XComGameState_HeadquartersXCom XComHQ;
-	local XComGameState_Unit Unit;
+	local XComGameState_Unit Unit; // Variable for Issue #165
 
 	if( eAction == eUIAction_Accept )
 	{
+		// Start Issue #165
 		// LWS: trigger now to allow triggers when dismissing a unit (e.g. cleaning up component gamestates)
 		Unit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(UnitReference.ObjectID));
 		`XEVENTMGR.TriggerEvent('OnDismissSoldier', Unit, self);
+		// End Issue #165
 
 		XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
 		XComHQ.FireStaff(UnitReference);

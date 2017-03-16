@@ -88,10 +88,12 @@ simulated function BindLibraryItem()
 		ShadowChamber = Spawn(class'UIPanel', LibraryPanel);
 		ShadowChamber.InitPanel('ShadowChamber');
 
+		// Start Issue #174
 		if (!CanTakeMission())
 		{
 			IntelPanel.Hide();
 		}
+		// End Issue #174
 
 		Navigator.LoopSelection = true;
 		Navigator.LoopOnReceiveFocus = true;
@@ -170,6 +172,7 @@ simulated function BuildMissionPanel()
 simulated function BuildOptionsPanel()
 {
 	// LWS changes to make GPIntel function properly when it can be locked
+	// Start Issue #174
 	if (CanTakeMission())
 	{
 		LibraryPanel.MC.BeginFunctionOp("UpdateGoldenPathIntelButtonBlade");
@@ -188,6 +191,7 @@ simulated function BuildOptionsPanel()
 		LibraryPanel.MC.QueueString(m_strLockedHelp);
 		LibraryPanel.MC.QueueString(m_strOK); //OnCancelClicked
 	}
+	// End Issue #174
 	LibraryPanel.MC.EndOp();
 
 	// ---------------------
@@ -224,6 +228,7 @@ simulated function BuildOptionsPanel()
 
 simulated function RefreshIntelOptionsPanel()
 {
+	// Start Issue #174
 	if (CanTakeMission())
 	{
 		LibraryPanel.MC.BeginFunctionOp("UpdateGoldenPathIntel");
@@ -245,14 +250,17 @@ simulated function RefreshIntelOptionsPanel()
 		LibraryPanel.MC.QueueString("");
 		LibraryPanel.MC.EndOp();
 	}
+	// End Issue #174
 }
 
 simulated function UpdateData()
 {
+	// Start Issue #174
 	if (CanTakeMission())
 	{
 		UpdateDisplay();
 	}
+	// End Issue #174
 }
 
 simulated function UpdateDisplay()

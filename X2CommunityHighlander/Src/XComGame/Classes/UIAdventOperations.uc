@@ -1,5 +1,3 @@
-// LWS: Modified to add hook to SignalOnReceiveFocus when switching state from pending to active Dark Events
-
 class UIAdventOperations extends UIX2SimpleScreen;
 
 var public localized String m_strTitle;
@@ -81,6 +79,7 @@ simulated function RefreshNav()
 
 	if( !bResistanceReport )
 	{
+		// Conditional Removed for Issue #155
 		//if( ALIENHQ().ActiveDarkEvents.Length > 0 ) // LWS : Removed so that toggle is shown even if there aren't active pending events, since there may be active events
 		//{
 			if (bShowActiveEvents)
@@ -91,15 +90,18 @@ simulated function RefreshNav()
 			{
 				NavHelp.AddCenterHelp(m_strShowActiveButton, class'UIUtilities_Input'.static.GetGamepadIconPrefix() $ class'UIUtilities_Input'.const.ICON_Y_TRIANGLE, FlipScreenMode);
 			}
+		// Conditional Removed for Issue #155
 		//}
 	}
 
+	// Start Issue #155 - moved block from above !bResistanceReport
 	// Carry On
 	NavHelp.AddBackButton(OnContinueClicked);
 	if ( `ISCONTROLLERACTIVE &&  bResistanceReport)
 	{
 		NavHelp.AddContinueButton();
 	}
+	// End Issue #155
 }
 
 simulated function BuildTitlePanel()
@@ -350,6 +352,8 @@ simulated function FlipScreenMode()
 {
 	bShowActiveEvents = !bShowActiveEvents;
 	BuildScreen();
+
+	// Issue #156: Modified to add hook to SignalOnReceiveFocus when switching state from pending to active Dark Events
 	SignalOnReceiveFocus();
 }
 

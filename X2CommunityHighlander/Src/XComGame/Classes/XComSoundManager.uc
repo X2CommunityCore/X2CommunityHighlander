@@ -15,6 +15,7 @@ struct native AkEventMapping
 	var AkEvent TriggeredEvent;
 };
 
+// Start Issue #135
 // LWS: Equivalent to AkEventMapping but for sound cues.
 struct SoundCueMapping
 {
@@ -28,11 +29,13 @@ struct SoundAlias
     var string strKey;
     var string strValue;
 };
+// End Issue #135
 
 // Sound Mappings
 var config array<string> SoundEventPaths;
 var config array<AkEventMapping> SoundEvents;
 
+// Start Issue #135
 // LWS: Add a configurable sound event path mapping allowing mods
 // to replace any standard sound path with a custom version.
 var config array<SoundAlias> SoundAliases;
@@ -40,6 +43,7 @@ var config array<SoundAlias> SoundAliases;
 // LWS: Add sound-cue based sounds
 var config array<string> SoundCuePaths;
 var config array<SoundCueMapping> SoundCues;
+// End Issue #135
 
 struct AmbientChannel
 {
@@ -129,10 +133,12 @@ function PlaySoundEvent(string strKey)
 {
 	local int Index;
 
-    // LWS: Look for a sound alias first.
-    Index = SoundAliases.Find('strKey', strKey);
-    if (Index >= 0)
-        strKey = SoundAliases[Index].strValue;
+	// Start Issue #135
+	// LWS: Look for a sound alias first.
+	Index = SoundAliases.Find('strKey', strKey);
+	if (Index >= 0)
+			strKey = SoundAliases[Index].strValue;
+	// End Issue #135
 
 	Index = SoundEvents.Find('strKey', strKey);
 
@@ -140,14 +146,16 @@ function PlaySoundEvent(string strKey)
 	{
 		WorldInfo.PlayAkEvent(SoundEvents[Index].TriggeredEvent);
 	}
-    else
-    {
-        Index = SoundCues.Find('strKey', strKey);
-        if (Index != INDEX_NONE)
-        {
-            PlaySound(SoundCues[Index].Cue);
-        }
-    }
+	// Start Issue #135
+	else
+	{
+		Index = SoundCues.Find('strKey', strKey);
+		if (Index != INDEX_NONE)
+		{
+			PlaySound(SoundCues[Index].Cue);
+		}
+	}
+	// End Issue #135
 }
 
 //---------------------------------------------------------------------------------------
@@ -164,11 +172,13 @@ function Init()
 		ContentMgr.RequestObjectAsync(SoundEventPaths[idx], self, OnAkEventMappingLoaded);
 	}
 
-    // LWS: Load sound cues
-    for (idx = 0; idx < SoundCuePaths.Length; idx++ )
-    {
-        ContentMgr.RequestObjectAsync(SoundCuePaths[idx], self, OnSoundCueMappingLoaded);
-    }
+	// Start Issue #135
+	// LWS: Load sound cues
+	for (idx = 0; idx < SoundCuePaths.Length; idx++ )
+	{
+		ContentMgr.RequestObjectAsync(SoundCuePaths[idx], self, OnSoundCueMappingLoaded);
+	}
+	// End Issue #135
 }
 
 //---------------------------------------------------------------------------------------
@@ -187,6 +197,7 @@ function OnAkEventMappingLoaded(object LoadedArchetype)
 	}
 }
 
+// Start Issue #135
 // LWS
 function OnSoundCueMappingLoaded(object LoadedArchetype)
 {
@@ -201,5 +212,6 @@ function OnSoundCueMappingLoaded(object LoadedArchetype)
         SoundCues.AddItem(CueMapping);
     }
 }
+// End Issue #135
 
 //---------------------------------------------------------------------------------------

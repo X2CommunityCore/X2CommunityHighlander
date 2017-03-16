@@ -1,9 +1,7 @@
 //LWS : Override to allow support for ability-based and other new PCSes.
-//		Also fix query to UIArmory_MainMenu for retrieving unit to allow mod overrides to be found.
-//		This is done by changing GetScreen to GetFirstInstanceOf, which allow retrieving derived class type.
 
 
-class UIInventory_Implants extends UIInventory config(GameData);
+class UIInventory_Implants extends UIInventory config(GameData); // Config for Issue #170
 
 var localized string m_strNoImplants;
 
@@ -14,6 +12,7 @@ var localized string m_strReplaceImplantText;
 
 var array<XComGameState_Item> Implants;
 
+// Variable for Issue #170
 var config name PCSRemovalContinentBonusOverride;
 
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
@@ -109,12 +108,16 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 	local XComGameState_Unit Unit;
 	local XComGameState_Item Implant, ImplantToRemove;
 	local array<XComGameState_Item> EquippedImplants;
+
+	// Variables for Issue #171
 	local bool bCanEquipImplantResult;
-    local XComLWTuple Tuple;
-	
-	bCanEquipImplantResult = true;
+	local XComLWTuple Tuple;
+
 	Implant = XComGameState_Item(History.GetGameStateForObjectID(ImplantRef.ObjectID));
-	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // LWS : Changed GetScreen to GetFirstInstanceOf
+
+	// Start Issue #171
+	bCanEquipImplantResult = true;
+	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	if (Unit == none)
 	{
 		return false; // LWS : Added error-checking code
@@ -123,6 +126,7 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 	{
 		bCanEquipImplantResult = false; // LWS : added error checking code -- this should be captured by Armory_MainMenu
 	}
+	// End Issue #171
 	EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
 	ImplantToRemove = XComGameState_Item(`XCOMHISTORY.GetGameStateForObjectID(EquippedImplants[0].ObjectID));
 	
@@ -130,21 +134,23 @@ simulated function bool CanEquipImplant(StateObjectReference ImplantRef)
 		class'UIUtilities_Strategy'.static.GetStatBoost(ImplantToRemove).StatType  && 
 		class'UIUtilities_Strategy'.static.GetStatBoost(Implant).Boost <= 
 		class'UIUtilities_Strategy'.static.GetStatBoost(ImplantToRemove).Boost)
+	// Start Issue #171
 	{
 		bCanEquipImplantResult = false;
 	}
 
 	bCanEquipImplantResult = class'UIUtilities_Strategy'.static.GetStatBoost(Implant).StatType != eStat_PsiOffense || Unit.IsPsiOperative();
 
-    Tuple = new class'XComLWTuple';
-    Tuple.Id = 'OverrideCanEquipImplant';
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'OverrideCanEquipImplant';
 	Tuple.Data.Add(1);
-    Tuple.Data[0].Kind = XComLWTVBool;
-    Tuple.Data[0].b = bCanEquipImplantResult; // the default result
+	Tuple.Data[0].Kind = XComLWTVBool;
+	Tuple.Data[0].b = bCanEquipImplantResult; // the default result
 
-    `XEVENTMGR.TriggerEvent('OverrideCanEquipImplant', Tuple, self);
+	`XEVENTMGR.TriggerEvent('OverrideCanEquipImplant', Tuple, self);
 
 	return Tuple.Data[0].b;
+	// End Issue #171
 }
 
 simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
@@ -154,12 +160,12 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 	local UISoldierHeader SoldierHeader;
 	local array<XComGameState_Item> EquippedImplants;
 	local XComGameState_Item ImplantToAdd, ImplantToRemove;
-	local string Will, Aim, Health, Mobility, Tech, Psi, Dodge; // LWS : added dodge
+	local string Will, Aim, Health, Mobility, Tech, Psi, Dodge; // Issue #172 : added dodge
 
 	super.SelectedItemChanged(ContainerList, ItemIndex);
 
-	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // LWS : Changed GetScreen to GetFirstInstanceOf
-	SoldierHeader = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).Header; // LWS : Changed GetScreen to GetFirstInstanceOf
+	Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
+	SoldierHeader = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).Header; // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	SlotIndex = 0;
 	EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
 
@@ -171,13 +177,13 @@ simulated function SelectedItemChanged(UIList ContainerList, int ItemIndex)
 	Aim = string( int(Unit.GetCurrentStat( eStat_Offense )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Offense);
 	Health = string( int(Unit.GetCurrentStat( eStat_HP )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_HP);
 	Mobility = string( int(Unit.GetCurrentStat( eStat_Mobility )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Mobility);
-	Dodge = string( int(Unit.GetCurrentStat( eStat_Dodge )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Dodge); // LWS : Added dodge
+	Dodge = string( int(Unit.GetCurrentStat( eStat_Dodge )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Dodge); // Isssue #172 : Added dodge
 	Tech = string( int(Unit.GetCurrentStat( eStat_Hacking )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_Hacking);
 
 	if(Unit.IsPsiOperative())
 		Psi = string( int(Unit.GetCurrentStat( eStat_PsiOffense )) ) $ GetStatBoostString(ImplantToAdd, ImplantToRemove, eStat_PsiOffense);
 
-	SoldierHeader.SetSoldierStats(Health, Mobility, Aim, Will,, Dodge, Tech, Psi); // LWS : Added dodge
+	SoldierHeader.SetSoldierStats(Health, Mobility, Aim, Will,, Dodge, Tech, Psi); // Issue #172 : Added dodge
 }
 
 simulated function string GetStatBoostString(XComGameState_Item ImplantToAdd, XComGameState_Item ImplantToRemove, ECharStatType StatType)
@@ -242,11 +248,12 @@ simulated function OnItemSelected(UIList ContainerList, int ItemIndex)
 	
 	if (CanEquipImplant(ImplantRef))
 	{
-		Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // LWS : Changed GetScreen to GetFirstInstanceOf
+		Unit = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 		SlotIndex = 0;
 
 		EquippedImplants = Unit.GetAllItemsInSlot(eInvSlot_CombatSim);
 		
+		// Conditional for Issue #170
 		if (IsContinentBonusActive ())
 		{
 			// Skip the popups if the continent bonus for reusing upgrades is active
@@ -332,7 +339,7 @@ simulated function RemoveImplant()
 
 	UpdatedState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Remove Personal Combat Sim");
 
-	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // LWS : Changed GetScreen to GetFirstInstanceOf
+	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	UpdatedUnit = XComGameState_Unit(UpdatedState.CreateStateObject(class'XComGameState_Unit', UnitRef.ObjectID));
 	EquippedImplants = UpdatedUnit.GetAllItemsInSlot(eInvSlot_CombatSim);
 
@@ -342,6 +349,7 @@ simulated function RemoveImplant()
 	{
 		UpdatedState.AddStateObject(UpdatedUnit);
 
+		// Conditional for Issue #170
 		if (IsContinentBonusActive ()) // Continent Bonus is letting us reuse upgrades, so put it back into the inventory
 		{
 			XComHQ = XComGameState_HeadquartersXCom(UpdatedState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
@@ -369,7 +377,7 @@ simulated function InstallImplant()
 
 	UpdatedState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Install Personal Combat Sim");
 
-	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // LWS : Changed GetScreen to GetFirstInstanceOf
+	UnitRef = UIArmory_MainMenu(Movie.Pres.ScreenStack.GetFirstInstanceOf(class'UIArmory_MainMenu')).GetUnit().GetReference(); // Issue #169 : Changed GetScreen to GetFirstInstanceOf
 	UpdatedHQ = XComGameState_HeadquartersXCom(UpdatedState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
 	UpdatedUnit = XComGameState_Unit(UpdatedState.CreateStateObject(class'XComGameState_Unit', UnitRef.ObjectID));
 	UpdatedState.AddStateObject(UpdatedHQ);
@@ -417,6 +425,7 @@ simulated function CloseScreen()
 	Movie.Pres.PlayUISound(eSUISound_MenuClose);
 }
 
+// Start Issue #170
 //LWS : new helper function
 function bool IsContinentBonusActive ()
 {
@@ -438,6 +447,7 @@ function bool IsContinentBonusActive ()
 	}
 	return false;
 }
+// End Issue #170
 
 defaultproperties
 {

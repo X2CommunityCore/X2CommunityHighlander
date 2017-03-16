@@ -6,8 +6,6 @@
 //
 //           UIStrategyMap_HUD
 //
-//	LWS:	 Adding hook to override what gets displayed for the resistance HQ icon
-//	robojumper: #2 fix tooltips
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -466,6 +464,7 @@ simulated function HideCursor()
 
 simulated function ShowCursor()
 {
+	// Conditional for Issue #129
 	if (`ISCONTROLLERACTIVE && !bCursorAlwaysVisible)
 	{
 		if (m_eUIState != eSMS_Flight)
@@ -503,9 +502,11 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 	local int MapItemIndex;
 	local XComGameState_WorldRegion Region;
 	local XComGameState_GeoscapeEntity EntityState;
-	local array<int> PendingStatesNeedingLocations;  // LWS Added
-	local Vector NewLocation;  // LWS Added
-	local class<UIStrategyMapItem> NewClass; //LWS Added
+	local class<UIStrategyMapItem> NewClass; // Variable for Issue #130
+
+	// Variables for Issue #183
+	local array<int> PendingStatesNeedingLocations;
+	local Vector NewLocation;
 
 	WidgetName = name(Entity.GetUIWidgetName());
 
@@ -516,9 +517,11 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 	}
 	else
 	{
+		// Start Issue #130
 		// LWS Mods : allow recursive overriding of strategy map item classes
 		NewClass = class<UIStrategyMapItem>(class'Helpers_LW'.static.LWCheckForRecursiveOverride(Entity.GetUIClass()));
 		MapItem = Spawn(NewClass, ItemContainer).InitMapItem(Entity);
+		// End Issue #130
 		CachedWidgetNames.AddItem(WidgetName);
 		CachedMapItems.AddItem(MapItem);
 
@@ -530,6 +533,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 			Region = Entity.GetWorldRegion();
 		}
 
+		// Start Issue #183
 		// LWS Mods: GetMapItem() and GetRandomLocationInRegion() are mutually recursive. When we get here and try to
 		// update all the map items that need locations, we'll call GetRandomLocationInRegion for each one asking for a new
 		// spot to put the new item. This in turn will call back into this function to get the MapItem for the Region itself,
@@ -540,6 +544,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 		// again, looking for entities in our cached list and for each one of those first request the new random location and then
 		// create a new game state for this entity with the updated locations. This ensures we only call GetRandomLocationInRegion
 		// after we have cleared the bNeedsLocationUpdate flag for each entity in the region.
+		// End Issue #183
 		if (Region != none)
 		{
 			History = `XCOMHISTORY;
@@ -552,7 +557,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 					EntityState = XComGameState_GeoscapeEntity(NewGameState.CreateStateObject(EntityState.Class, EntityState.ObjectID));
 					NewGameState.AddStateObject(EntityState);
 					EntityState.bNeedsLocationUpdate = false;
-					PendingStatesNeedingLocations.AddItem(EntityState.ObjectID); // LWS Added
+					PendingStatesNeedingLocations.AddItem(EntityState.ObjectID); // Issue #183
 				}
 			}
 
@@ -565,6 +570,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 				History.CleanupPendingGameState(NewGameState);
 			}
 
+			// Start Issue #183
 			// LWS Added: handle setting new location for the entities that need it.
 			if (PendingStatesNeedingLocations.Length > 0)
 			{
@@ -582,6 +588,7 @@ simulated function UIStrategyMapItem GetMapItem(XComGameState_GeoscapeEntity Ent
 					}
 				}
 			}
+			// End Issue #183
 		}
 	}
 	
@@ -958,6 +965,7 @@ simulated function HideMissionButtons()
 	StrategyMapHUD.mc.BeginFunctionOp("AnimateMissionTrayOut");
 	StrategyMapHUD.mc.EndOp();
 	
+	// Conditional for Issue #129
 	if (`ISCONTROLLERACTIVE)
 	{
 		LeftBumperIcon.Hide();
@@ -1031,6 +1039,8 @@ simulated function UpdateMissions()
 			if(i < MAX_NUM_STRATEGYICONS)
 			{
 				i++;
+				// Start Issue #182
+				//	LWS:	 Adding hook to override what gets displayed for the resistance HQ icon
 				if (i == 1)  // LWS : added this block
 				{
 					Tuple = new class'XComLWTuple';
@@ -1042,6 +1052,7 @@ simulated function UpdateMissions()
 					if (Tuple.Data[0].b)
 						i++;
 				}
+				// End Issue #182
 				if(ScanSite.IsA('XComGameState_Haven'))
 				{
 					MissionItemUI.MissionIcons[0].SetScanSite(ScanSite);
@@ -1359,6 +1370,7 @@ simulated function UpdateSelection(float DeltaTime)
 			}
 		}
 
+		// Conditional for Issue #129
 		if (`ISCONTROLLERACTIVE && bSelectNearest)
 		{
 			SelectMapItemNearestLocation(ViewLocation);
@@ -1761,6 +1773,7 @@ simulated function OnReceiveFocus()
 		bMoveViewLocation = false;
 		bSelectNearest = false;
 	}
+	// Conditional for Issue #129
 	if (`ISCONTROLLERACTIVE)
 	{
 		SelectLastSelectedMapItem(); //bsg-jneal (8.17.16): reselect last map item since we cleared its focus when the map lost focus before.

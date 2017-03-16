@@ -1481,10 +1481,11 @@ function CreateDefaultAttachments()
 	}
 	if (XComHumanPawn(self) == none) // defer XComHumanPawn adjustments until part customization
 	{
-		DLCAppendSockets(); // LWS added call to helper function
+		DLCAppendSockets(); // For Issue #132
 	}
 }
 
+// Start Issue #132
 // helper function added by LWS to allow DLC/Mods to append sockets to units
 function DLCAppendSockets()
 {
@@ -1512,6 +1513,7 @@ function DLCAppendSockets()
 		}
 	}
 }
+// End Issue #132
 
 function CreateBodyPartAttachment(XComBodyPartContent BodyPartContent)
 {
@@ -1816,7 +1818,9 @@ simulated function EquipWeapon( XComWeapon kWeapon, bool bImmediate, bool bIsRea
 // as a mechanism for syncing the visual state of a unit during gameplay!
 simulated function CreateVisualInventoryAttachments(UIPawnMgr PawnMgr, XComGameState_Unit UnitState, optional XComGameState CheckGameState, bool bSetAsVisualizer=true, bool OffsetCosmeticPawn=true)
 {
+	// For Issue #143
 	RemoveWeaponVisualInventoryAttachments(PawnMgr, UnitState);
+
 	CreateVisualInventoryAttachment(PawnMgr, eInvSlot_PrimaryWeapon, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
 	CreateVisualInventoryAttachment(PawnMgr, eInvSlot_SecondaryWeapon, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
 	CreateVisualInventoryAttachment(PawnMgr, eInvSlot_HeavyWeapon, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
@@ -1827,9 +1831,12 @@ simulated function CreateVisualInventoryAttachments(UIPawnMgr PawnMgr, XComGameS
 	CreateVisualInventoryAttachment(PawnMgr, eInvSlot_QuinaryWeapon, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
 	CreateVisualInventoryAttachment(PawnMgr, eInvSlot_SenaryWeapon, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
 	CreateVisualInventoryAttachment(PawnMgr, eInvSlot_SeptenaryWeapon, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
+
+	// For Issue #143
 	CreateVisualInventoryAttachment_Pistol(PawnMgr, eInvSlot_Utility, UnitState, CheckGameState, bSetAsVisualizer, OffsetCosmeticPawn);
 }
 
+// Start Issue #143
 //LW Added
 simulated function RemoveWeaponVisualInventoryAttachments(UIPawnMgr PawnMgr, XComGameState_Unit UnitState)
 {
@@ -1907,6 +1914,7 @@ simulated function CreateVisualInventoryAttachment_Pistol(UIPawnMgr PawnMgr, EIn
 		}
 	}  
 }
+// End Issue #143
 
 simulated function SpawnCosmeticUnitPawn(UIPawnMgr PawnMgr, EInventorySlot InvSlot, string CosmeticUnitTemplate, XComGameState_Unit OwningUnit, bool OffsetForArmory)
 {

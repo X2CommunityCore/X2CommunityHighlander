@@ -3,8 +3,6 @@
 //  FILE:    UIArmory_WeaponUpgradeItem
 //  AUTHOR:  Sam Batista
 //  PURPOSE: UI that represents an upgrade item, largely based off of UIArmory_LoadoutItem
-
-// LWS:		 Adding capability for a DropItem Button for weapon upgrades, activatable only by mods
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -27,7 +25,7 @@ var X2WeaponUpgradeTemplate UpgradeTemplate;
 var XComGameState_Item Weapon;
 var int SlotIndex;
 
-// LWS Added
+// Variables for Issue #88
 var UIButton DropItemButton; 
 var int TooltipID;
 var localized string m_strRemoveUpgrade;
@@ -40,13 +38,15 @@ simulated function UIArmory_WeaponUpgradeItem InitUpgradeItem(XComGameState_Item
 
 	InitPanel();
 
-	// LWS : Adding DropItemButton and tooltip for drop button
+	// Start Issue #88
+	// Adding DropItemButton and tooltip for drop button
 	UpdateDropItemButton();
 	if(!bIsDisabled)
 	{
 		// add a custom text box since the flash component reports back with from the bg subcomponent
 		TooltipID = Movie.Pres.m_kTooltipMgr.AddNewTooltipTextBox(default.m_strRemoveUpgrade, 0, 0, MCPath $ ".DropItemButton.bg");
 	}
+	// End Issue #88
 
 	UpdateImage();
 	UpdateCategoryIcons();
@@ -242,6 +242,8 @@ simulated function OnLoseFocus()
 	}
 }
 
+// Start Issue #88
+// LWS:		 Adding capability for a DropItem Button for weapon upgrades, activatable only by mods
 // LWS: Adding functionality for "dropping" weapon upgrades without replacing them with anything else
 simulated function UpdateDropItemButton()
 {
@@ -325,12 +327,13 @@ simulated function OnCommand(string cmd, string arg)
 }
 
 // END LWS CHANGES
+// End Issue #88
 
 defaultproperties
 {
 	Width = 342;
 	Height = 145;
 	bAnimateOnInit = false;
-	bProcessesMouseEvents = false; // LWS: changed from false to true to enable the DropItem button to function
+	bProcessesMouseEvents = false; // Issue #88: changed from false to true to enable the DropItem button to function
 	LibID = "LoadoutListItem";
 }
