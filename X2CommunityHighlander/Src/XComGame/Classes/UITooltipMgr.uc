@@ -1,5 +1,3 @@
-// robojumper: fix tooltips
-
 class UITooltipMgr extends UIScreen
 	dependson(UITextTooltip)
 	native(UI);
@@ -358,10 +356,11 @@ simulated function UITooltip GetTooltipByID( int ID )
 
 	foreach Tooltips(Tooltip)
 	{ 
-		// robojumper: #2 unbreak tooltips
+		// robojumper: Start Issue #2
 		// previously, we'd use .ID == ID, but that's broken
 		// see issue text for details
 		if( Tooltip.MatchesID(ID) )
+		// robojumper: End Issue #2
 			return Tooltip; 
 	}
 	return none; 

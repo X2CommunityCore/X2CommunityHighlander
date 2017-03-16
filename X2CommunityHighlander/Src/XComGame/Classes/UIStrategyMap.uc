@@ -163,12 +163,14 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	Navigator.LoopSelection = true;
 	Navigator.OnSelectedIndexChanged = OnNavigationChanged;
 
-	// robojumper: #2 fix tooltips
+	// robojumper: Start Issue #2
 	// selecting an item via UINavigator breaks Mouse tooltips
+	// guarding with a controller check
 	if (`ISCONTROLLERACTIVE)
 	{
 		OnNavigationChanged(0);
 	}
+	// robojumper: End Issue #2
 	
 	if (!bCursorAlwaysVisible)
 	{
@@ -345,9 +347,11 @@ simulated function SelectMapItemNearestLocation(vector2D Loc)
 
 	if (SelectedMapItem != NewSelection)
 	{
-		// robojumper: removed hackery for continent bonus tooltips
-		// since tooltips are fixed (#2)
+		// robojumper: Start Issue #2
+		// removed hackery for continent bonus tooltips
+		// since tooltips are fixed
 		SetSelectedMapItem(NewSelection);
+		// robojumper: End Issue #2
 	}
 }
 
@@ -418,10 +422,11 @@ simulated function SetSelectedMapItem(UIStrategyMapItem Selection, optional bool
 		}
 	}
 
-	// robojumper: #2 fix tooltips
+	// robojumper: Start Issue #2
 	// this removes tooltips, so comment it out
 	// was redundant anyway (look at the beginning of the function)
 	//UpdateButtonHelp();
+	// robojumper: End Issue #2
 }
 
 simulated function OnNavigationChanged(int NewIndex)
@@ -1485,9 +1490,11 @@ simulated function ShowTooltip(UIStrategyMapItem MapItem)
 	ActiveTooltip = UITextTooltip( XComHQPresentationLayer(Movie.Pres).m_kTooltipMgr.GetTooltipByID(MapItem.CachedTooltipId) );
 	if (ActiveTooltip != none)
 	{
+		// robojumper: Start Issue #2
+		// commented out -- redundant
 		/*if(!ActiveTooltip.MatchesID(MapItem.m_iTooltipDataIndex))
-			return;*/ // robojumper: #2 fix tooltips -- redundant
-
+			return;*/
+		// robojumper: End Issue #2
 		if (ActiveTooltip.del_OnMouseIn != none)
 		{   
 			ActiveTooltip.del_OnMouseIn(ActiveTooltip);
@@ -1623,11 +1630,13 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_DOWN:
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_LEFT:
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_RIGHT:
-		// robojumper: #2 fix tooltips -- consume all navigator ones to prevent navigator from selecting items (which causes broken tooltips)
+		// robojumper: Start Issue #2
+		// consume all navigator ones to prevent navigator from selecting items when panning (which causes broken tooltips and weird focus)
 		case class'UIUtilities_Input'.const.FXS_ARROW_UP:
 		case class'UIUtilities_Input'.const.FXS_ARROW_DOWN:
 		case class'UIUtilities_Input'.const.FXS_ARROW_LEFT:
 		case class'UIUtilities_Input'.const.FXS_ARROW_RIGHT:
+		// robojumper: End Issue #2
 			break;
 		default:
 			return super.OnUnrealCommand(cmd, arg);

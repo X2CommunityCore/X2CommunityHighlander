@@ -3,7 +3,6 @@
 //  AUTHOR:  Brit Steiner       -- 01/31/12
 //           Tronster           -- 04/10/12
 //  PURPOSE: Controls the game side of the Options screen. (No longer PC only, rename? - 2.6.12)
-//  robojumper: #2 fix tooltips: RenableMechaListItems() removes all tooltips, so do it before setting tooltips
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //--------------------------------------------------------------------------------------- 
@@ -1454,8 +1453,12 @@ function SetVideoTabSelected()
 	VideoTabMC = Movie.GetVariableObject(MCPath$".TabGroup.Tab1");
 	if(VideoTabMC != none)
 		VideoTabMC.ActionScriptVoid("select");
-	// robojumper: #2 unbreak tooltips
+
+	// robojumper: Start Issue #2
+	// moved up
 	RenableMechaListItems(ePCTabVideo_Max);
+	// robojumper: End Issue #2
+
 	// NOTE: Keeping the actual widgets of removed settings so that the remaining
 	//		 ones are still operational - KD
 	// Mode: --------------------------------------------
@@ -1647,9 +1650,10 @@ function SetAudioTabSelected()
 		AudioTabMC.ActionScriptVoid("select");
 		
 	//ResetMechaListItems();
-	// robojumper: #2 unbreak tooltips
+	// robojumper: Start Issue #2
 	RenableMechaListItems(ePCTabAudio_Max); 
-
+	// robojumper: End Issue #2
+	
 	// Master Volume: --------------------------------------------
 	m_arrMechaItems[ePCTabAudio_MasterVolume].UpdateDataSlider(m_strAudioLabel_MasterVolume, "", m_kProfileSettings.Data.m_iMasterVolume, , UpdateMasterVolume);
 	m_arrMechaItems[ePCTabAudio_MasterVolume].BG.SetTooltipText(m_strAudioLabel_MasterVolume_Desc, , , 10, , , , 0.0f);
@@ -1724,13 +1728,15 @@ function SetGameplayTabSelected()
 	if(GameplayTabMC != none)
 		GameplayTabMC.ActionScriptVoid("select");
 
-	// robojumper: #2 unbreak tooltips
+	// robojumper: Start Issue #2
+	// RenableMechaListItems needs to be moved up, so we need to know how many items we need
 	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);	
 
 	SliderMapping.Length = 0;
 	PartTemplateManager = class'X2BodyPartTemplateManager'.static.GetBodyPartTemplateManager();
 	PartPackNames = PartTemplateManager.GetPartPackNames();
 	RenableMechaListItems(ePCTabGameplay_Max + PartPackNames.Length - 1);
+	// robojumper: End Issue #2
 
 	// Glam Cam: --------------------------------------------
 	m_arrMechaItems[ePCTabGameplay_GlamCam].UpdateDataCheckbox(m_strGameplayLabel_GlamCam,"",  m_kProfileSettings.Data.m_bGlamCam, UpdateGlamCam);
@@ -1839,9 +1845,9 @@ function SetInterfaceTabSelected()
 		InterfaceTabMC.ActionScriptVoid("select");
 		
 	ResetMechaListItems();
-	// robojumper: #2 unbreak tooltips
+	// robojumper: Start Issue #2
 	RenableMechaListItems(ePCTabInterface_Max);
-
+	// robojumper: End Issue #2
 	// Key Bindings screen
 	m_arrMechaItems[ePCTabInterface_KeyBindings].UpdateDataButton(m_strInterfaceLabel_KeyBindings, m_strInterfaceLabel_BindingsButton, OpenKeyBindingsScreen);
 	m_arrMechaItems[ePCTabInterface_KeyBindings].BG.SetTooltipText(m_strInterfaceLabel_KeyBindings_Desc, , , 10, , , , 0.0f);

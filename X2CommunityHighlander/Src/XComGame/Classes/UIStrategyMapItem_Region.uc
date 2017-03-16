@@ -522,9 +522,11 @@ function GenerateTooltip(string tooltipHTML)
 
 			if (ActiveTooltip == none)
 			{
+				// robojumper: Start Issue #2
+				// make use of CachedTooltipID
 				CachedTooltipID = Movie.Pres.m_kTooltipMgr.AddNewTooltipTextBox(strTooltip, 15, 0, string(MCPath),, false,, true);
-				// robojumperHighlander: #2 fixtooltips
 				Movie.Pres.m_kTooltipMgr.TextTooltip.SetUsePartialPath(CachedTooltipID, true);
+				// robojumper: End Issue #2
 			}
 			else
 			{
