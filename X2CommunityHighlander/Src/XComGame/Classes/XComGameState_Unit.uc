@@ -5123,14 +5123,18 @@ function bool HasAvailablePerksToAssign()
 	bCanAssignPerks = true;
 
 	if(m_SoldierRank == 0 || m_SoldierClassTemplateName == '' || m_SoldierClassTemplateName == 'PsiOperative')
+	{
 		bCanAssignPerks = false;
+	}
 
 	ClassTemplate = GetSoldierClassTemplate();
 	AbilityTree = ClassTemplate.GetAbilityTree(m_SoldierRank - 1);
 	for(i = 0; i < AbilityTree.Length; ++i)
 	{
 		if(HasSoldierAbility(AbilityTree[i].AbilityName))
+		{
 			bCanAssignPerks = false;
+		}
 	}
 
 	Tuple = new class'XComLWTuple';
