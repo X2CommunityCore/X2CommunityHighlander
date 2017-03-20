@@ -18,6 +18,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - 'OverrideBlackMarketGoods': customise goods for sale (#71)
 - 'PostPsiProjectCompleted': after psi training completes (#78)
 - 'SoldierRespecced': allow alteration of project points for respec (#79)
+- 'HasAvailablePerksToAssign': allow override of XGCS_Unit method (#33)
 - 'PreEndOfMonth': allow mods to process before vanilla processing (#81)
 - 'OnClosedMonthlyReportAlert': allow mod processing after month report (#179)
 - 'OnMonthlySuppliesReward': override supply reward (#82)

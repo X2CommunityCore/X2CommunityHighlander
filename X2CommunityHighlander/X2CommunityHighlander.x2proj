@@ -36,6 +36,12 @@
     <Content Include="Src\XComGame\Classes\CharacterPoolManager.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\CHXComGameVersion.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\CHXComGameVersionTemplate.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\Helpers.uc">
       <SubType>Content</SubType>
     </Content>
