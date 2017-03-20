@@ -131,6 +131,7 @@ simulated final function name ApplyEffect(const out EffectAppliedData ApplyEffec
 
 	foreach TargetConditions(kCondition)
 	{		
+		// Start Issue #209
 		AvailableCode = kCondition.MeetsCondition(TargetStateObject);
 		if (AvailableCode != 'AA_Success')
 			return AvailableCode;
@@ -138,10 +139,11 @@ simulated final function name ApplyEffect(const out EffectAppliedData ApplyEffec
 		AvailableCode = kCondition.MeetsConditionWithSource(TargetStateObject, SourceStateObject);
 		if (AvailableCode != 'AA_Success')
 			return AvailableCode;	
-
+	    
 		AvailableCode = kCondition.AbilityMeetsCondition(AbilityStateObject, TargetStateObject);
 		if (AvailableCode != 'AA_Success')
 			return AvailableCode;	
+		// End Issue #209
 	}
 	foreach DamageTypes(DamageType)
 	{
