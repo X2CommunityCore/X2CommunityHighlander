@@ -282,3 +282,4 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix 'OnCreateCinematicPawn' to only be called inside games, not in the shell
   (#113)
 - Fix Vertical Autoscrolling in UITextContainer (#190)
+- Fix tooltips (#2)
