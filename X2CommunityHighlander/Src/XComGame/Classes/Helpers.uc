@@ -286,8 +286,7 @@ static function int GetNumCiviliansKilled(optional out int iTotal, optional bool
 	if (Tuple.Data.Length == 3 &&
 		Tuple.Data[0].Kind == XComLWTVBool &&
 		Tuple.Data[1].Kind == XComLWTVInt &&
-		Tuple.Data[2].Kind == XComLWTVInt &&
-    Tuple.Data[0].b == true
+		Tuple.Data[2].Kind == XComLWTVInt
   )
 	{
 		// Expect num killed in Data[1] and total in Data[2]
