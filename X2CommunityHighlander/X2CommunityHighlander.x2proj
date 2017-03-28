@@ -453,6 +453,9 @@
     <Content Include="Src\XComGame\Classes\XComHumanPawn.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\XComIdleAnimationStateMachine.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\XComLootDropActor.uc">
       <SubType>Content</SubType>
     </Content>
