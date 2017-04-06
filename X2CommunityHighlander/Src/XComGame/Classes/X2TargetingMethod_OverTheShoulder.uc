@@ -117,6 +117,9 @@ function DirectSetTarget(int TargetIndex)
 	NewTarget = TargetIndex % Action.AvailableTargets.Length;
 	if(NewTarget < 0) NewTarget = Action.AvailableTargets.Length + NewTarget;
 
+	// robojumper: Issue #217: move this up to properly un-notify the target
+	NotifyTargetTargeted(false);
+
 	// put the targeting reticle on the new target
 	TacticalHud = Pres.GetTacticalHUD();    
 	if(NewTarget != LastTarget)
@@ -126,13 +129,15 @@ function DirectSetTarget(int TargetIndex)
 	}
 
 	History = `XCOMHISTORY;
-	
-	NotifyTargetTargeted(false);
 
 	NewTargetActor = History.GetVisualizer(Action.AvailableTargets[LastTarget].PrimaryTarget.ObjectID);
 
 	// have the camera look at the new target
-	FiringUnit.TargetingCamera.SetTarget(NewTargetActor);
+	// robojumper: Issue #213 -- guard in if clause, targeting cameras can be turned off
+	if (FiringUnit.TargetingCamera != none)
+	{
+		FiringUnit.TargetingCamera.SetTarget(NewTargetActor);
+	}
 
 	FiringUnit.IdleStateMachine.bTargeting = true;
 	FiringUnit.IdleStateMachine.CheckForStanceUpdate();
@@ -180,7 +185,28 @@ private function NotifyTargetTargeted(bool Targeted)
 
 function bool GetCurrentTargetFocus(out Vector Focus)
 {
-	Focus = FiringUnit.TargetingCamera.GetTargetLocation();
+	// robojumper: Issue #213 -- ots cams can be turned off
+	local Actor TargetActor;
+	if (FiringUnit.TargetingCamera != none)
+	{
+		// originally only this line
+		Focus = FiringUnit.TargetingCamera.GetTargetLocation();
+	}
+	else
+	{
+		TargetActor = GetTargetedActor();
+		// check if the actor has a preferred targeting focus location
+		if (X2VisualizerInterface(TargetActor) != none)
+		{
+			Focus = X2VisualizerInterface(TargetActor).GetTargetingFocusLocation();
+		}
+		else
+		{
+			// if not, fall back
+			Focus = TargetActor.Location;
+		}
+	}
+	// issue #213 end
 	return true;
 }
 
