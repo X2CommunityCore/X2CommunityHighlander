@@ -303,6 +303,9 @@
     <Content Include="Src\XComGame\Classes\X2Effect_ApplySmokeToWorld.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2Effect_ApplyWeaponDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2Effect_MindControl.uc">
       <SubType>Content</SubType>
     </Content>
