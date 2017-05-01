@@ -326,15 +326,17 @@ simulated function GetDamagePreview(StateObjectReference TargetRef, XComGameStat
 	{
 		foreach TargetConditions(ConditionIter)
 		{
-			AvailableCode = ConditionIter.AbilityMeetsCondition(AbilityState, TargetUnit);
-			if (AvailableCode != 'AA_Success')
-				return;
+			// Start Issue #209
 			AvailableCode = ConditionIter.MeetsCondition(TargetUnit);
 			if (AvailableCode != 'AA_Success')
 				return;
 			AvailableCode = ConditionIter.MeetsConditionWithSource(TargetUnit, SourceUnit);
 			if (AvailableCode != 'AA_Success')
 				return;
+			AvailableCode = ConditionIter.AbilityMeetsCondition(AbilityState, TargetUnit);
+			if (AvailableCode != 'AA_Success')
+				return;
+			// End Issue #209
 		}
 		foreach DamageTypes(DamageType)
 		{
