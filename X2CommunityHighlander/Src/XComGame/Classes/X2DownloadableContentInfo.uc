@@ -431,3 +431,23 @@ static function bool OverrideWorldFireTickEvent(X2Effect_ApplyFireToWorld Effect
     return false;
 }
 /// End Issue #23
+
+/// Start Issue #230
+/// <summary>
+/// Called from XComGameState_HeadquartersAlien::AddDoomToFortress
+/// Allows DLC/Mods to override the doom addition behavior.
+/// Return the amount of doom this mod has processed.
+static function int AddDoomToFortress(XComGameState_HeadquartersAlien AlienHQ, XComGameState NewGameState, int DoomToAdd, String DoomMessage, bool bCreatePendingDoom)
+{
+	return 0;
+}
+
+/// <summary>
+/// Called from XComGameState_HeadquartersAlien::RemoveDoomFromFortress
+/// Allows DLC/Mods to override the doom removal behavior.
+/// Return the amount of doom this mod has processed.
+static function int RemoveDoomFromFortress(XComGameState_HeadquartersAlien AlienHQ, XComGameState NewGameState, int DoomToRemove, String DoomMessage, bool bCreatePendingDoom)
+{
+	return 0;
+}
+/// End Issue #230

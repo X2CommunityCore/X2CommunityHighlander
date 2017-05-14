@@ -114,7 +114,13 @@ function bool IsWeaponAllowedByClass(X2WeaponTemplate WeaponTemplate)
 	// Issue #42
 	// this causes a vanilla incompatibility, this will be commented for now,
 	// and reinstated for LW1.3 (where a config value will be introduced)
-	// case eInvSlot_HeavyWeapon: break; // added to support Technical class use of Heavy Weapon slot
+	case eInvSlot_HeavyWeapon:
+		// LW added to support Technical class use of Heavy Weapon slot
+		if (class'Helpers_LW'.default.ClassLimitHeavyWeapons)
+		{
+			break;
+		}
+		// fallthrough
 	default:
 		return true;
 	}

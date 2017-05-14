@@ -175,10 +175,8 @@ function bool CanBeScanned()
 	{
 		return false;
 	}
-	else 
-	{
-		return (GetWorldRegion().IsStartingRegion());
-	}
+
+	return (GetWorldRegion().IsStartingRegion());
 	// End Issue #75
 }
 
@@ -189,10 +187,8 @@ function bool ShouldBeVisible()
 	{
 		return false;
 	}
-	else 
-	{
-		return (ResistanceActive() && GetWorldRegion().ResistanceLevel == eResLevel_Outpost);
-	}
+
+	return (ResistanceActive() && GetWorldRegion().ResistanceLevel == eResLevel_Outpost);
 	// End Issue #75
 }
 
@@ -241,10 +237,8 @@ protected function bool CanInteract()
 	{
 		return false;
 	}
-	else 
-	{
-		return (ResistanceActive() && GetWorldRegion().IsStartingRegion());
-	}
+
+	return (ResistanceActive() && GetWorldRegion().IsStartingRegion());
 	// End Issue #75
 }
 

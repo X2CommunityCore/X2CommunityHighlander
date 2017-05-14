@@ -1,6 +1,5 @@
 //LWS : Override to allow support for ability-based and other new PCSes.
 
-
 class UIInventory_Implants extends UIInventory config(GameData); // Config for Issue #170
 
 var localized string m_strNoImplants;
@@ -34,6 +33,7 @@ simulated function PopulateData()
 	super.PopulateData();
 
 	Implants = XComHQ.GetAllCombatSimsInInventory();
+	Implants.Sort(SortImplantsName); // For Issue #234 - Only necessary when PCS with distinct names can have the same tier and stat (e.g. perk pcs)
 	Implants.Sort(SortImplants);
 	Implants.Sort(SortImplantsStatType);
 	Implants.Sort(SortItemsTier);
@@ -69,6 +69,22 @@ simulated function int SortImplants(XComGameState_Item A, XComGameState_Item B)
 	else if(StatBoostA.Boost > StatBoostB.Boost) return 1;
 	return 0;
 }
+
+// Start Issue #234
+// PI Added: Also sort the implants by name (first, so it affects the order the least)
+// so they aren't randomly arranged in the list.
+simulated function int SortImplantsName(XComGameState_Item A, XComGameState_Item B)
+{
+	local String NameA, NameB;
+
+	NameA = Caps(A.GetMyTemplate().GetItemFriendlyName(A.ObjectID));
+	NameB = Caps(B.GetMyTemplate().GetItemFriendlyName(B.ObjectID));
+
+	if(NameA < NameB) return 1;
+	else if( NameA > NameB) return -1;
+	return 0;
+}
+// End Issue #234
 
 simulated function int SortImplantsStatType(XComGameState_Item A, XComGameState_Item B)
 {
@@ -382,7 +398,15 @@ simulated function InstallImplant()
 	UpdatedUnit = XComGameState_Unit(UpdatedState.CreateStateObject(class'XComGameState_Unit', UnitRef.ObjectID));
 	UpdatedState.AddStateObject(UpdatedHQ);
 
-	UpdatedHQ.GetItemFromInventory(UpdatedState, Implants[List.SelectedIndex].GetReference(), UpdatedImplant);
+	// Start Issue #233
+	if (UpdatedHQ.GetItemFromInventory(UpdatedState, Implants[List.SelectedIndex].GetReference(), UpdatedImplant))
+	{
+		// PI Mods: If GetItemFromInventory() returned true then we just returned the item we found as-is. We need to create a new
+		// item state before equipping. If it returned false then UpdatedImplant was already added to the state for us.
+		UpdatedImplant = XComGameState_Item(UpdatedState.CreateStateObject(class'XComGameState_Item', UpdatedImplant.ObjectID));
+		UpdatedState.AddStateObject(UpdatedImplant);
+	}
+	// End Issue #233
 	
 	UpdatedUnit.AddItemToInventory(UpdatedImplant, eInvSlot_CombatSim, UpdatedState);
 	UpdatedState.AddStateObject(UpdatedUnit);

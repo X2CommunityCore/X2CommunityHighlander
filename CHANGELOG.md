@@ -13,6 +13,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - 'GetNumUtilitySlotsOverride': override a unit's utility slots (#114)
 - 'GetMinimumRequiredUtilityItems': override a unit's minimum utility slots
   (#114)
+- 'AddDoomToFortress': override adding doom to fortress (#230)
+- 'RemoveDoomToFortress': override adding doom to fortress (#230)
 
 ### Event Hooks
 - 'OverrideBlackMarketGoods': customise goods for sale (#71)
@@ -86,6 +88,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - GPIntelOptions now functions properly when a mission is locked (#174)
 - Always show DarkEvents toggle on UIAdventOperations (#155)
 - Remove hardcoded false to Unit.IsPsiOperative for AfterAction_ListItem (#157)
+- Sort UIInventory_Implants partially by name so order is predictable (#234)
 
 ### Fixes
 - log spam fix in UITacticalHUD (#186)
@@ -97,6 +100,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Controller Fixes on Strategy UI (#87) (#129)
 - Fix bug where XGCS_PointOfInterest weight could drop to zero, rendering it
   unselectable (#98)
+- Fix bug in UIInventory_Implants where PCSs disappear (#233)
 
 
 
@@ -125,6 +129,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - 'SortTabOrder': alter tab order of XCOM Units (#137)
 
 ### Event Hooks
+- 'AlterMissionConcealStatus': override mission start concealment (#226)
 - 'GetCameraRotationAngle': override camera behavior (#138)
 - 'GetNumCiviliansKilled': used by UIMissionSummary (#6)
 - 'OnFinalizeHitChance': used by X2AbilityToHitCalc (#14)
@@ -157,6 +162,9 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Projectile Sound mappings to override fire and death sounds (#49)
 - Disable peeking in LoS calculations for Yellow Alert Units (#122)
 - Civilian 'Yell' ability in AI (#147)
+- Allow usage of HeavyWeapon inventory slot for soldier class (#42)
+- Optionally apply rupture damage cumulatively (#228)
+- Optionally clamp graze damage to 1 (#229)
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)
@@ -212,10 +220,9 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   (#150)
 - Improve SoldierInfoTooltip, show defense + hide psi if not psiop (#189)
 - Empty out pending loot for units killed by explosives (#112)
-- Allow usage of HeavyWeapon inventory slot for soldier class (#42) - BREAKS
-  VANILLA, COMMENTED OUT UNTIL LW1.3
 
 ### Fixes
+- Fix for Restart Mission (#227)
 - Remove exploit causing enemy units to enter RedAlert without scamper (#123)
 - Fix XCGS_LootDrop when multiple drops active (#91)
 - Ensure Patrol Locations are within map bounds to ensure they are set (#67)
@@ -260,6 +267,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 ### Modding Exposures
 - SignalOnReceiveFocus on UIViewObjectives so listeners can detect change events
   (#193)
+- UIPanel.AS_SetMCColor allows setting colors of arbitrary MCs within UIPanel
+  (#232)
 - Dynamic Override system added to some UI classes, to allow mods to share
   overrides more safely: (#130)
   - UISquadSelect
@@ -283,3 +292,5 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   (#113)
 - Fix Vertical Autoscrolling in UITextContainer (#190)
 - Fix tooltips (#2)
+- Swap controls in UIPanel navigator to ensure controller/keyboard nav stays in
+  sync (#231)

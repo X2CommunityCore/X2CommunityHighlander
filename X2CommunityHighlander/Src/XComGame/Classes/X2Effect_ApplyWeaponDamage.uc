@@ -601,6 +601,15 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 	NewRupture = BaseDamageValue.Rupture + ExtraDamageValue.Rupture + BonusEffectDamageValue.Rupture + AmmoDamageValue.Rupture + UpgradeDamageValue.Rupture;
 	NewShred = BaseDamageValue.Shred + ExtraDamageValue.Shred + BonusEffectDamageValue.Shred + AmmoDamageValue.Shred + UpgradeDamageValue.Shred;
 	RuptureCap = WeaponDamage;
+	
+	// Start Issue #228
+	// PI Mods: Cumulative rupture (if applicable)
+	if (class'Helpers_LW'.default.CumulativeRupture)
+	{
+		// Note: the new rupture value isn't capped, but the bonus damage will be.
+		NewRupture += kTarget.GetRupturedValue();
+	}
+	// End Issue #228
 
 	`log(`ShowVar(bIgnoreBaseDamage) @ `ShowVar(DamageTag), true, 'XCom_HitRolls');
 	`log("Weapon damage:" @ WeaponDamage @ "Potential spread:" @ DamageSpread, true, 'XCom_HitRolls');
@@ -639,11 +648,27 @@ simulated function int CalculateDamageAmount(const out EffectAppliedData ApplyEf
 	}
 	else if (ApplyEffectParameters.AbilityResultContext.HitResult == eHit_Graze)
 	{
-		WeaponDamage *= GRAZE_DMG_MULT;
+		// Start Issue #229
+		// PI Mods: Optionally disallow allow a non-zero damage roll to be reduced to 0 by a graze.
+		if (class'Helpers_LW'.default.ClampGrazeMinDamage && WeaponDamage >= 1)
+			WeaponDamage = Max(1, WeaponDamage * GRAZE_DMG_MULT);
+		else
+			WeaponDamage *= GRAZE_DMG_MULT;
+		// End Issue #229
 		`log("GRAZE! Adjusted damage:" @ WeaponDamage, true, 'XCom_HitRolls');
 	}
 
-	RuptureAmount = min(kTarget.GetRupturedValue() + NewRupture, RuptureCap);
+	// Start Issue #228
+	if (class'Helpers_LW'.default.CumulativeRupture)
+	{
+		RuptureAmount = min(kTarget.GetRupturedValue(), RuptureCap);
+	}
+	else
+	{
+		RuptureAmount = min(kTarget.GetRupturedValue() + NewRupture, RuptureCap);
+	}
+	// End Issue #228
+
 	if (RuptureAmount != 0)
 	{
 		WeaponDamage += RuptureAmount;

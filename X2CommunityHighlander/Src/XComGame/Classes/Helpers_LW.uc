@@ -68,6 +68,13 @@ var config bool bWorldSmokeShouldDisableExtraLOSCheck;
 var config bool bWorldSmokeGrenadeShouldDisableExtraLOSCheck;
 // End Issue #24
 
+// Start Issue #42
+// Control whether or not to class-limit heavy weapons. If false, any class can equip any heavy weapon (provided they have the
+// correct inventory items to allow it). If true heavy weapons can be class-limited. Used to restrict which weapons the technical
+// can equip.
+var config bool ClassLimitHeavyWeapons;
+// End Issue #42
+
 // Start Issue #48
 // This is to double check in grenade targeting that the affected unit is actually in a tile that will get the world effect, not just that it is occupying such a tile.
 // This can occur because tiles are only 1 meter high, so many unit occupy multiple vertical tiles, but only really count as occupying the one at their feet in other places.
@@ -107,6 +114,38 @@ var config bool EnablePsiTreeOrganization;
 //allow certain classes to be overridden recursively, so the override can be overridden
 var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
 
+//These variables are generic patrol zone settings for reinforcements who land before concealment is broken
+var config int REINF_EZ_WIDTH;
+var config int REINF_EZ_DEPTH;
+var config int REINF_EZ_OFFSET;
+
+var config bool USE_FLOAT_PRICE_MULTIPLIER;
+var config array<float> InterestPriceMultiplierFloat;
+
+// These variables control AI AoE targeting behavior.
+var config bool RequireVisibilityForAoETarget;
+var config bool AllowSquadVisibilityForAoETarget;
+
+// Start Issue #229
+// If true a graze cannot reduce weapon damage that was > 0 to 0. Mostly detectable on items that apply
+// 1 damage, such as pistols or poison. If they hit with a graze, the damage would be reduced to < 1 and
+// truncated to 0 by the graze modifier. With this set damage will not be reduced below 1 by graze.
+var config bool ClampGrazeMinDamage;
+// End Issue #229
+
+// Start Issue #228
+// If cumulative rupture is enabled, each rupture value from each successful attack on a unit stacks. However,
+// unlike the default behavior, the new rupture value applied on a particular attack does not affect that attack,
+// only subsequent attacks. For example, hitting a unit 3 times for 5 damage each with a weapon that does
+// +1 rupture damage would do: (5+0), (5+1), (5+2) damage. Bonus rupture damage is capped at the average damage
+// of the weapon making an attack.
+// When false, the default algorithm is used, where only the highest rupture value is stored on a unit. Attacking
+// a ruptured unit with a weapon that does less rupture damage than they already have will not change their rupture
+// amount and so won't affect subsequent shots, but will still give a bonus to that particular attack.
+var config bool CumulativeRupture;
+// End Issue #228
+
+
 simulated static function class<object> LWCheckForRecursiveOverride(class<object> ClassToCheck)
 {
 	local int idx;
@@ -139,9 +178,23 @@ simulated static function class<object> LWCheckForRecursiveOverride(class<object
 // End Issue #130
 
 // Start Issue #26 - allow radius manager to be usable on more than just 'Terror' missions
-static function bool ShouldUseRadiusManagerForMission(String MissionName)
+static function bool ShouldUseRadiusManagerForMission(String MissionType)
 {
-    return default.RadiusManagerMissionTypes.Find(MissionName) >= 0;
+	local XComGameStateHistory History;
+	local XComGameState_BattleData BattleData;
+	local XComGameState_MissionSite MissionSite;
+
+	// Note: X2TacticalGameRuleset checked the mission type very early in the mission startup process, before the MapData
+	// is set in the BattleData object. If we are called with an empty string, try to find the type from the mission state.
+	if (MissionType == "")
+	{
+		History = `XCOMHISTORY;
+		BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
+		MissionSite = XComGameState_MissionSite(History.GetGameStateForObjectID(BattleData.m_iMissionID));
+		MissionType = MissionSite.GeneratedMission.Mission.sType;
+	}
+
+	return default.RadiusManagerMissionTypes.Find(MissionType) >= 0;
 }
 // End Issue #26
 

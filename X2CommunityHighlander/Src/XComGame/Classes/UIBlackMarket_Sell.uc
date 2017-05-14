@@ -120,6 +120,7 @@ simulated function PopulateData()
 
 	BlackMarketState = XComGameState_BlackMarket(`XCOMHISTORY.GetGameStateForObjectID(BlackMarketReference.ObjectID));
 	Items = BlackMarketState.BuyPrices;
+	Items.Sort(SortByName); // PI added
 	Items.Sort(SortByInterest);
 	
 	foreach Items(Item)
@@ -145,6 +146,25 @@ simulated function PopulateData()
 	{
 		ClearItemCard();
 	}
+}
+
+// PI Added: Also sort the items by name (first, so it affects the order the least)
+// so they aren't randomly arranged in the list.
+function int SortByName(BlackMarketItemPrice A, BlackMarketItemPrice B)
+{
+	local String NameA, NameB;
+	local XComGameState_Item ItemA, ItemB;
+
+	History = `XCOMHISTORY;
+	ItemA = XComGameState_Item(History.GetGameStateForObjectID(A.ItemRef.ObjectID));
+	ItemB = XComGameState_Item(History.GetGameStateForObjectID(B.ItemRef.ObjectID));
+
+	NameA = Caps(ItemA.GetMyTemplate().GetItemFriendlyName(ItemA.ObjectID));
+	NameB = Caps(ItemB.GetMyTemplate().GetItemFriendlyName(ItemB.ObjectID));
+
+	if(NameA < NameB) return 1;
+	else if( NameA > NameB) return -1;
+	return 0;
 }
 
 function int SortByInterest(BlackMarketItemPrice BuyPriceA, BlackMarketItemPrice BuyPriceB)

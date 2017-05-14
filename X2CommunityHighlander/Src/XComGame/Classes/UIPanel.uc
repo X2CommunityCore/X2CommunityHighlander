@@ -463,6 +463,15 @@ simulated function UIPanel SetColor(string HexColor)
 	return self;
 }
 
+// Start Issue #232
+// PI Mods: Allow changing of colors of arbitrary MCs within a panel. Pass the full path to the MC
+// as the first argument as string, and the hex color as the 2nd argument as SetColor above.
+simulated function AS_SetMCColor(string ClipPath, string HexColor)
+{
+	Movie.ActionScriptVoid("Colors.setColor");
+}
+// End Issue #232
+
 /*** IMPORTANT NOTICE ****
  *  
  * The following cannot return self because we wish them to be manipulated by Scrollbar.
@@ -913,6 +922,12 @@ simulated function SwapChildren(int ChildIndexA, int ChildIndexB)
 	Panel = ChildPanels[ChildIndexA];
 	ChildPanels[ChildIndexA] = ChildPanels[ChildIndexB];
 	ChildPanels[ChildIndexB] = Panel;
+
+	// Start Issue #231
+	// PI Mods: Tell the navigator to swap its controls too
+	// or keyboard nav will be out of sync.
+	Navigator.SwapControls(ChildIndexA, ChildIndexB);
+	// End Issue #231
 }
 
 simulated function int NumChildren()

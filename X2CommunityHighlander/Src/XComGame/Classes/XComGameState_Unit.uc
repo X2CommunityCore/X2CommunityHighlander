@@ -897,6 +897,8 @@ function PostCreateInit(XComGameState NewGameState, X2CharacterTemplate kTemplat
 	local bool bDropCharacterPoolUnit;
 	local CharacterPoolManager CharacterPool;
 	local XComGameState_Unit CharacterPoolUnitState;
+	
+	local XComLWTuple Tuple; // LW2 addition
 		
 	History = `XCOMHISTORY;
 
@@ -981,6 +983,15 @@ function PostCreateInit(XComGameState NewGameState, X2CharacterTemplate kTemplat
 		{
 			SetCurrentStat(eStat_AlertLevel, `ALERT_LEVEL_YELLOW);
 		}
+
+		Tuple = new class'XComLWTuple';
+		Tuple.Id = 'AlterStartingMissionAlert';
+		Tuple.Data.Add(1);
+		Tuple.Data[0].Kind = XComLWTVInt;
+		Tuple.Data[0].i = int(GetCurrentStat (eStat_AlertLevel));
+		`XEVENTMGR.TriggerEvent('OnSetUnitAlert', Tuple, self);
+		SetCurrentStat(eStat_AlertLevel, float(Tuple.Data[0].i));
+
 	}
 
 	class'XGUnit'.static.CreateVisualizer(NewGameState, self, PlayerState, ReanimatedFromUnit);
@@ -1844,6 +1855,10 @@ function OnBeginTacticalPlay()
 
 	CleanupUnitValues(eCleanup_BeginTactical);
 
+	// PI Mods: Keep track of the HP this unit had when we started the mission. See
+	// EndTacticalHealthMod for the use of this.
+	SetUnitFloatValue('LW_MaxHP', GetCurrentStat(eStat_HP), eCleanup_BeginTactical);
+
 	//Units removed from play in previous tactical play are no longer removed, unless they are explicitly set to remain so.
 	//However, this update happens too late to get caught in the usual tile-data build.
 	//So, if we're coming back into play, make sure to update the tile we now occupy.
@@ -1854,6 +1869,11 @@ function OnBeginTacticalPlay()
 	}
 
 	bRequiresVisibilityUpdate = true;
+
+	// PI Mods: Reset the body recovered flag. A unit that was previously carried to evac while KO'd/bleeding out will have
+	// this flag set, and this flag prevents units from being carried. If this unit gets KO'd again, they won't be able to
+	// be picked up if this flag is still set.
+	bBodyRecovered = false;
 }
 
 function OnEndTacticalPlay()
@@ -1938,12 +1958,34 @@ function EndTacticalHealthMod()
 {
 	local float HealthPercent, NewHealth;
 	local int RoundedNewHealth, HealthLost;
+	local UnitValue HPValue; // PI Added
 
 	HealthLost = HighestHP - LowestHP;
+
+	// PI Added
+	GetUnitValue('LW_MaxHP', HPValue);
 
 	// If Dead or never injured, return
 	if(LowestHP <= 0 || HealthLost <= 0)
 	{
+		// PI Mods: If the unit didn't take any damage on this mission, make sure they don't
+		// end with more current HP than they started the mission with. E.g. taking a wounded
+		// soldier on avenger defense shouldn't magically heal the unit.
+		// Example: Unit starts mission with 6/9 base HP and is wearing +13 HP worth of 
+		// equipment. They start the mission with 19/22 HP with LowestHP and HighestHP both
+		// 19, and they complete the mission without additional damage. The HP granting
+		// effects are removed by the OnEndTacticalPlay function above, leaving the unit with
+		// 9/9 HP, and so they are instantly healed to full health and are eligible to go on 
+		// missions (but their HQ healing project remains). In vanilla this was ordinarily not
+		// so bad unless you put them in a training project, as when their healing project completes
+		// they will have their status reset to "Active" even if they're still in a tube. LW2 is worse,
+		// they may be infiltrating when the project completes and they become active again in the HQ.
+		// With this change the starting HP value of 6 is less than the final value of 9, so they are
+		// reduced back to 6 HP.
+		if (LowestHP > 0 && HPValue.fValue > 0 && (HPValue.fValue < GetCurrentStat(eStat_HP)))
+		{
+			SetCurrentStat(eStat_HP, int(HPValue.fValue));
+		}
 		return;
 	}
 
@@ -1955,6 +1997,14 @@ function EndTacticalHealthMod()
 	RoundedNewHealth = Round(NewHealth);
 	RoundedNewHealth = Clamp(RoundedNewHealth, 1, (int(GetBaseStat(eStat_HP)) - 1));
 	SetCurrentStat(eStat_HP, RoundedNewHealth);
+
+	// PI Mods: As above: If the new health is higher than the HP they started the mission with,
+	// use the mission start HP instead. Leave them with the lower of their current adjusted HP
+	// or the HP they started the mission with.
+	if (HPValue.fValue > 0 && (HPValue.fValue < RoundedNewHealth))
+	{
+		SetCurrentStat(eStat_HP, int(HPValue.fValue));
+	}
 }
 
 /**

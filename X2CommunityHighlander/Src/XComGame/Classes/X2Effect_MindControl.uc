@@ -208,16 +208,19 @@ simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState
 simulated function AddX2ActionsForVisualization_Removed(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack, const name EffectApplyResult, XComGameState_Effect RemovedEffect)
 {
 	local XComGameState_Unit UnitState;
-	local X2Action_CameraLookAt LookAtAction;
+	// PI Mods: Moved the camera action out of X2Effect_MindControl and into the OnRemovedFn
+	//local X2Action_CameraLookAt LookAtAction;
 
 	super.AddX2ActionsForVisualization_Removed(VisualizeGameState, BuildTrack, EffectApplyResult, RemovedEffect);
 	UnitState = XComGameState_Unit(BuildTrack.StateObject_NewState);
 	if(UnitState != None)
 	{
-		LookAtAction = X2Action_CameraLookAt(class'X2Action_CameraLookAt'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
-		LookAtAction.UseTether = false;
-		LookAtAction.LookAtObject = UnitState;
-		LookAtAction.BlockUntilActorOnScreen = true;
+		// PI Removed: This is moved into X2StatusEffects.MindControlVisualizationRemoved. Allows mods to decide whether a MC removal should be 
+		// visualized (useful for permanent MC effects like Full Override so the camera doesn't pan if you evac them).
+		//LookAtAction = X2Action_CameraLookAt(class'X2Action_CameraLookAt'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
+		//LookAtAction.UseTether = false;
+		//LookAtAction.LookAtObject = UnitState;
+		//LookAtAction.BlockUntilActorOnScreen = true;
 
 		class'X2Action_SwapTeams'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext());
 		if(UnitState.IsTurret())

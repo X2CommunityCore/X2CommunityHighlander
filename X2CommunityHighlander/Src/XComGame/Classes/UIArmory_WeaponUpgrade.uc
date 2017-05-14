@@ -388,6 +388,9 @@ simulated function ChangeActiveList(UIList kActiveList, optional bool bSkipAnima
 	}
 
 	UpdateNavHelp();
+
+	// PI Mods: Trigger an event to indicate the list has changed to allow mods to alter the navhelp, etc.
+	`XEVENTMGR.TriggerEvent('WeaponUpgradeListChanged', kActiveList, self);
 } 
 
 simulated function OnItemClicked(UIList ContainerList, int ItemIndex)
@@ -437,22 +440,21 @@ simulated function OnItemClicked(UIList ContainerList, int ItemIndex)
 	}
 }
 
-//<workshop> Remove Rotate when in UpgradesList - CN 2016/06/02
-simulated function UpdateNavHelp()
+// PI Mods: Patch 7 introduced an override to UpdateNavHelp in this class to be able to control whether or not the select
+// help is shown. This caused bugs with the soldier left/right toggle buttons when the mouse was active as "super" was 
+// never called to do the parent class nav help refresh. Instead, do not override UpdateNavHelp and just let the parent
+// class query whether or not the select help is needed.
+simulated function bool NeedsSelectHelp()
 {
-	NavHelp.ClearButtonHelp();
-	NavHelp.AddBackButton(OnCancel);
 	if(!(ActiveList == UpgradesList && ActiveList.ItemCount == 0)) //will not show 'select' if there is nothing to select
 	{
-		NavHelp.AddSelectNavHelp();
+		return true;
 	}
-	NavHelp.AddLeftHelp(class'UIUtilities_Input'.static.InsertGamepadIcons("%LB %RB" @ m_strTabNavHelp));
-	if (ActiveList == SlotsList)
-	{
-		NavHelp.AddLeftHelp(class'UIUtilities_Input'.static.InsertGamepadIcons("%RS" @ m_strRotateNavHelp));
-	}
-	NavHelp.Show();
+
+	return false;
 }
+
+// PI Mod: Removed UpdateNavHelp() override. See comment above.
 
 simulated function PreviewUpgrade(UIList ContainerList, int ItemIndex)
 {

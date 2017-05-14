@@ -792,7 +792,11 @@ simulated static function array<XComGameState_Item> GetEquippedItemsInSlot(XComG
 			// Ignore any items in the grenade pocket when checking for utility items, since otherwise grenades get added as utility items
 			if (SlotType == eInvSlot_Utility)
 			{
-				if (ItemState.InventorySlot != eInvSlot_GrenadePocket)
+				if (ItemState.InventorySlot != eInvSlot_GrenadePocket
+				// PI Mods: Also ignore items in the ammo pocket. This isn't used by XCOM2 or LW2 but is used by other mods.
+					&& ItemState.InventorySlot != eInvSlot_AmmoPocket
+				// End PI Mod.
+				)
 					arrItems.AddItem(ItemState);
 			}
 			else
