@@ -125,6 +125,15 @@ simulated function bool CanCancel()
 
 	return class'XComGameState_HeadquartersXCom'.static.IsObjectiveCompleted('T0_M2_WelcomeToArmory');
 }
+
+// PI Mods: Add new NeedsSelectHelp function to allow sub-classes to decide whether or not to display the select
+// help in the navbar. Defaults to 'true' but can be overridden by classes that don't want it (like weapon upgrades
+// in some circumstances).
+simulated function bool NeedsSelectHelp()
+{
+	return true;
+}
+
 simulated function UpdateNavHelp()
 {
 	local int i;
@@ -166,7 +175,9 @@ simulated function UpdateNavHelp()
 			}
 		}
 
-		NavHelp.AddSelectNavHelp();
+		// PI Mods: Only add select help if the screen needs it. Defaults to true, but may be overridden by sub-classes.
+		if (NeedsSelectHelp())
+			NavHelp.AddSelectNavHelp();
 
 		if (`ISCONTROLLERACTIVE && 
 			XComHQPresentationLayer(Movie.Pres) != none && IsAllowedToCycleSoldiers() && 

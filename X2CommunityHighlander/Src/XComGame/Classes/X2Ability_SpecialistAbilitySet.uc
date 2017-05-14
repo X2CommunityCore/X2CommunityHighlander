@@ -769,6 +769,9 @@ static function X2AbilityTemplate FinalizeIntrusion(name FinalizeName, bool bHay
 	Template.OverrideAbilities.AddItem( 'FinalizeHack' );
 	Template.bOverrideWeapon = true;
 
+	// PI Mods: There's no fire animation for hack.
+	Template.bSkipFireAction = true;
+
 	return Template;
 }
 

@@ -1076,6 +1076,7 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 	local XComGameState_BaseObject TargetObj;
 	local Damageable DamageableTarget;
 	local int i, Rupture;
+	local bool HasWeaponDamage; // PI added
 
 	AbilityTemplate = GetMyTemplate();
 
@@ -1107,6 +1108,11 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 	{
 		if (TargetEffects[i] != none)
 		{
+			// PI Mods: Remember if this ability has a weapon damage effect.
+			if (X2Effect_ApplyWeaponDamage(TargetEffects[i]) != none)
+			{
+				HasWeaponDamage = true;
+			}
 			TempMaxDamage = EmptyDamageValue;
 			TempMinDamage = EmptyDamageValue;
 			TargetEffects[i].GetDamagePreview(TargetRef, self, TempMinDamage, TempMaxDamage, AllowsShield);
@@ -1134,8 +1140,17 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 			MaxDamagePreview.Shred  += MaxDamagePreview.Shred * BurstFire.NumExtraShots;
 		}
 	}
-	MinDamagePreview.Damage += Rupture;
-	MaxDamagePreview.Damage += Rupture;
+
+	// PI Mods: Only add rupture damage to the preview if this ability is doing weapon damage.
+	// Other ability kinds don't add rupture damage even if they are damaging abilities, and
+	// many abilities don't do any damage at all and still show rupture in the preview without
+	// this test (e.g. aid protocoling a ruptured soldier claims it'd do 1 damage to them if
+	// they're ruptured for 1)
+	if (HasWeaponDamage)
+	{
+		MinDamagePreview.Damage += Rupture;
+		MaxDamagePreview.Damage += Rupture;
+	}
 }
 
 // PI : Added DLCInfo hook so that DLC/Mods can override item environment damage

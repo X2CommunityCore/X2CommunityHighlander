@@ -111,7 +111,13 @@ function bool IsWeaponAllowedByClass(X2WeaponTemplate WeaponTemplate)
 	{
 	case eInvSlot_PrimaryWeapon: break;
 	case eInvSlot_SecondaryWeapon: break;
-	case eInvSlot_HeavyWeapon: break;   // LW added to support Technical class use of Heavy Weapon slot
+	case eInvSlot_HeavyWeapon:
+		// LW added to support Technical class use of Heavy Weapon slot
+		if (class'Helpers_LW'.default.ClassLimitHeavyWeapons)
+		{
+			break;
+		}
+		// fallthrough
 	default:
 		return true;
 	}

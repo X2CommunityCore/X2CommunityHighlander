@@ -19,6 +19,8 @@
 //            XCOM.
 // tracktwo - Civilians don't flee aliens on missions where aliens aren't shooting them. We don't want them firing 'yell'
 //            alerts when an alien gets close to them.
+// johnnylump - Add event when conceal status is set for possible override
+
 class X2TacticalGameRuleset extends X2GameRuleset 
 	dependson(X2GameRulesetVisibilityManager, X2TacticalGameRulesetDataStructures, XComGameState_BattleData)
 	config(GameCore)
@@ -857,14 +859,28 @@ function ApplyStartOfMatchConditions()
 	local X2HackRewardTemplate Template;
 	local XComGameState NewGameState;
 	local Name HackRewardName;
+	local bool OverrideScheduleConcealSetting;
+	local XComLWTuple Tuple;
 
 	History = `XCOMHISTORY;
 
 	MissionManager = `TACTICALMISSIONMGR;
 	MissionManager.GetActiveMissionSchedule(ActiveMissionSchedule);
 
+	// LW2 tuple: Check to override XComSquadStartsConcealed=true setting in mission schedule
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'AlterMissionConcealStatus';
+	Tuple.Data.Add(1);
+	Tuple.Data[0].Kind = XComLWTVBool;
+	Tuple.Data[0].b = false;
+	`XEVENTMGR.TriggerEvent('OnSetMissionConceal', Tuple, self);
+	if (Tuple.Data[0].b)
+	{
+		OverrideScheduleConcealSetting = true;
+	}
+
 	// set initial squad concealment
-	if( ActiveMissionSchedule.XComSquadStartsConcealed )
+	if( ActiveMissionSchedule.XComSquadStartsConcealed && !OverrideScheduleConcealSetting)
 	{
 		foreach History.IterateByClassType(class'XComGameState_Player', PlayerState)
 		{
@@ -1573,7 +1589,8 @@ static function CleanupTacticalMission(optional bool bSimCombat = false)
 		// recover all dead soldiers, remove all other soldiers from play/clear deathly ailments
 		foreach History.IterateByClassType(class'XComGameState_Unit', UnitState)
 		{
-			if( XComHQ.IsUnitInSquad(UnitState.GetReference()) )
+			// PI Mods: Units spawned from the avenger should be recovered too.
+			if( XComHQ.IsUnitInSquad(UnitState.GetReference()) || UnitState.bSpawnedFromAvenger )
 			{
 				UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', UnitState.ObjectID));
 				NewGameState.AddStateObject(UnitState);
@@ -2792,6 +2809,26 @@ Begin:
 	WorldInfo.TriggerGlobalEventClass(class'SeqEvent_OnTacticalMissionStartNonBlocking', WorldInfo);
 
 	StartStateCheckAndBattleDataCleanup();
+
+	// PI Mods: Bugfix for "Restart Mission". Both a regular load and a restart mission trigger
+	// a tactical game load. The restart is basically just a load from the tactical start state rather
+	// than some other state later in the mission. Usually when loading into a regular tactical game, we'll
+	// pick up on the current XCOM turn because at the point of the save there will be XCOM actions available.
+	// But the start state is created before XCOM's first turn begins and any action points are awarded,
+	// so on "Restart Mission" we will get into the TurnPhase_UnitActions state and discover that XCOM has no
+	// available actions and skip to the alien turn (with no UI hint that this happened, and the mission turn
+	// counter isn't affected.) This is usually fairly harmless, but in some circumstances it's possible that
+	// this "free turn" by the aliens may result in a pod activation, especially on dense maps. It's also a big
+	// problem on vanilla "protect device" missions, where a restart will often result in the device being 
+	// immediately shot.
+	//
+	// We only get into the PostCreateTacticalGame state for a restart mission load (or a DLC multi-phase
+	// mission transition?). Regular loads from within a mission, even right from the very first action,
+	// will not re-enter this state because the post-tactical work has already been done and is in the save
+	// we loaded. So we can just turn off the loading flag at this point and let the rest of the mission
+	// init proceed as if we were launching the mission direct from strategy (which in effect, we are).
+	// This ensures we just force it to be XCOM's turn and makes sure they are awarded action points.
+	bLoadingSavedGame = false;
 
 	GotoState(GetNextTurnPhase(GetStateName()));
 }

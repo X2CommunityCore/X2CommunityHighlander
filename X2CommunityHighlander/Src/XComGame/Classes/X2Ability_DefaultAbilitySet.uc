@@ -1847,6 +1847,10 @@ simulated function FinalizeHackAbility_BuildVisualization(XComGameState Visualiz
 
 	History = `XCOMHISTORY;
 
+	// PI Mods: Use the typical visualization function first to sync visualizers on any effects
+	// that were added or removed as part of this hack.
+	TypicalAbility_BuildVisualization(VisualizeGameState, OutVisualizationTracks);
+
 	//Configure the visualization track for the shooter
 	//****************************************************************************************
 	AbilityContext = XComGameStateContext_Ability(VisualizeGameState.GetContext());

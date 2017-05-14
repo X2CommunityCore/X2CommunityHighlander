@@ -134,6 +134,7 @@ function ResetBlackMarketGoods(XComGameState NewGameState)
 	CleanUpForSaleItems(NewGameState);
 	BuyPrices.Length = 0;
 	SetInterests();
+
 	//SetClosingTime();
 	SetUpForSaleItems(NewGameState);
 	UpdateBuyPrices();
@@ -556,9 +557,15 @@ function private BlackMarketItemPrice GetItemPrice(StateObjectReference ItemRef)
 
 	if(InterestTemplates.Find(ItemState.GetMyTemplateName()) != INDEX_NONE)
 	{
-		BuyPrice.Price *= default.InterestPriceMultiplier[`DIFFICULTYSETTING];
+		if (!class'Helpers_LW'.default.USE_FLOAT_PRICE_MULTIPLIER)
+		{
+			BuyPrice.Price *= default.InterestPriceMultiplier[`DIFFICULTYSETTING];
+		}
+		else
+		{
+			BuyPrice.Price *= class'Helpers_LW'.default.InterestPriceMultiplierFloat[`DIFFICULTYSETTING];
+		}
 	}
-
 	return BuyPrice;
 }
 

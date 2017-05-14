@@ -324,9 +324,9 @@ function bool ShouldMoveToIntercept(out Vector TargetInterceptLocation, XComGame
             ShouldIntercept = true;
             if (Tuple.Data.Length == 6 && Tuple.Data[3].Kind == XComLWTVFloat && Tuple.Data[4].Kind == XComLWTVFloat && Tuple.Data[5].Kind == XComLWTVFloat)
             {
-                TargetInterceptLocation.X = Tuple.Data[1].f;
-                TargetInterceptLocation.Y = Tuple.Data[2].f;
-                TargetInterceptLocation.Z = Tuple.Data[3].f;
+                TargetInterceptLocation.X = Tuple.Data[3].f;
+                TargetInterceptLocation.Y = Tuple.Data[4].f;
+                TargetInterceptLocation.Z = Tuple.Data[5].f;
                 return true;
             }
         default:

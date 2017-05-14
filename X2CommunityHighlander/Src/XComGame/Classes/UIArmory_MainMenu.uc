@@ -331,48 +331,21 @@ simulated function bool CheckForDisabledListItem(UIButton kButton)
 
 simulated function OnAccept()
 {
-	local XComGameState_Unit UnitState;
-	local XComGameState_HeadquartersXCom XComHQ;
-	local XComHQPresentationLayer HQPres;
+	local UIListItemString ListItemString;
 
-	if( UIListItemString(List.GetSelectedItem()).bDisabled )
+	ListItemString = UIListItemString(List.GetSelectedItem());
+
+	if( ListItemString.bDisabled )
 	{
 		`XSTRATEGYSOUNDMGR.PlaySoundEvent("Play_MenuClickNegative");
 		return;
 	}
 
-	XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
-	HQPres = XComHQPresentationLayer(Movie.Pres);
-
-	// Index order matches order that elements get added in 'PopulateData'
-	switch( List.selectedIndex )
-	{
-	case 0: // CUSTOMIZE
-		UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(UnitReference.ObjectID));
-		Movie.Pres.UICustomize_Menu(UnitState, ActorPawn);
-		break;
-	case 1: // LOADOUT
-		if( HQPres != none )    
-			HQPres.UIArmory_Loadout(UnitReference);
-		break;
-	case 2: // NEUROCHIP IMPLANTS
-		if( HQPres != none && XComHQ.HasCombatSimsInInventory() )		
-			`HQPRES.UIInventory_Implants();
-		break;
-	case 3: // WEAPON UPGRADE
-		// Release pawn so it can get recreated when the screen receives focus
-		ReleasePawn();
-		if( HQPres != none && XComHQ.bModularWeapons )
-			HQPres.UIArmory_WeaponUpgrade(UnitReference);
-		break;
-	case 4: // PROMOTE
-		if( HQPres != none && GetUnit().GetRank() >= 1 || GetUnit().CanRankUpSoldier() || GetUnit().HasAvailablePerksToAssign() )
-			HQPres.UIArmory_Promotion(UnitReference);
-		break;
-	case 5: // DISMISS
-		OnDismissUnit();
-		break;
-	}
+	// robojumper: issue #58: navigable button bg for UIListItemString start
+	// buttons are self-contained. send event to list
+	// assume arg and cmd
+	List.OnUnrealCommand(class'UIUtilities_Input'.const.FXS_KEY_ENTER, class'UIUtilities_Input'.const.FXS_ACTION_RELEASE);
+	// robojumper: issue #58: navigable button bg for UIListItemString end
 	`XSTRATEGYSOUNDMGR.PlaySoundEvent("Play_MenuSelect");
 }
 

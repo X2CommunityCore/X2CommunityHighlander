@@ -179,13 +179,20 @@ function Spawn(XComGameState NewGameState)
 function ChooseInformation()
 {
 	local int idx, RandIndex;
+	local int LowerBound, TemplateWeight; // PI added
 	
 	RandIndex = `SYNC_RAND_STATIC(AvailablePOIs.Length);
 	POIDataIndex = AvailablePOIs[RandIndex];	
 	AvailablePOIs.Remove(RandIndex, 1); // Remove the POI number which was just picked
 
+	// PI Mods:
+	// Retreive the original weight from the POI template. We'll set the lower bound to reset
+	// this template weight to as the smaller of the POI template weight and 1.
+	TemplateWeight = m_Template.Weights[CurrentWeightIndex].Weight[`DIFFICULTYSETTING];
+	LowerBound = Min(TemplateWeight, 1);
+
 	Weight -= Delta;
-	Weight = max(Weight, 1); // ensure non-negative weight // LWS : changed from 0 to 1
+	Weight = max(Weight, LowerBound); // ensure non-negative weight // LWS : changed from 0
 	NumSpawns++;
 	
 	if (AvailablePOIs.Length == 0)

@@ -841,6 +841,17 @@ function AddDoomToFortress(XComGameState NewGameState, int DoomToAdd, optional s
 	local XComGameState_MissionSite MissionState;
 	local PendingDoom DoomPending;
 	local int DoomDiff;
+	local array<X2DownloadableContentInfo> DLCInfos; //PI: Added
+	local int i; //PI: Added
+
+	// PI : Allow mods to override doom behavior.
+	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	for(i = 0; i < DLCInfos.Length; ++i)
+	{
+		DoomToAdd -= DLCInfos[i].AddDoomToFortress(self, NewGameState, DoomToAdd, DoomMessage, bCreatePendingDoom);
+		if (DoomToAdd <= 0)
+			return;
+	}
 
 	DoomDiff = GetMaxDoom() - GetCurrentDoom(true);
 	DoomToAdd = Clamp(DoomToAdd, 0, DoomDiff);
@@ -883,6 +894,17 @@ function RemoveDoomFromFortress(XComGameState NewGameState, int DoomToRemove, op
 {
 	local XComGameState_MissionSite MissionState;
 	local PendingDoom DoomPending;
+	local array<X2DownloadableContentInfo> DLCInfos; //PI: Added
+	local int i; //PI: Added
+
+	// PI: Allow mods to override doom behavior.
+	DLCInfos = `ONLINEEVENTMGR.GetDLCInfos(false);
+	for(i = 0; i < DLCInfos.Length; ++i)
+	{
+		DoomToRemove -= DLCInfos[i].RemoveDoomFromFortress(self, NewGameState, DoomToRemove, DoomMessage, bCreatePendingDoom);
+		if (DoomToRemove <= 0)
+			return;
+	}
 
 	MissionState = GetAndAddFortressMission(NewGameState);
 	DoomToRemove = Clamp(DoomToRemove, 0, MissionState.Doom);

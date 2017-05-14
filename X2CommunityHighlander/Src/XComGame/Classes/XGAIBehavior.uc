@@ -4409,7 +4409,8 @@ simulated function bool FindAoETarget(Name ProfileName)
 		TargetStyle = AbilityState.GetMyTemplate().AbilityMultiTargetStyle;
 
 		// Get all potential AoE targets based on profile settings.
-		if( !GetAllAoETargets(TargetList, Profile, RequiredTarget) )
+		// PI Mods: Add a config knob for the bVisibleOnly flag
+		if( !GetAllAoETargets(TargetList, Profile, RequiredTarget, class'Helpers_LW'.default.RequireVisibilityForAoETarget) )
 		{
 			return false;
 		}
@@ -4573,6 +4574,7 @@ function bool GetAllAoETargets(out array<TTile> TargetList, AoETargetingInfo Pro
 	local XComGameState_Unit TargetState;
 	local AvailableTarget Target;
 	local XComGameState_Ability AbilityState;
+	local bool bCanSeeLocation; // PI Added
 	Battle = `BATTLE;
 
 	if( Profile.bRequirePotentialTarget )
@@ -4645,7 +4647,17 @@ function bool GetAllAoETargets(out array<TTile> TargetList, AoETargetingInfo Pro
 		       && !TargetState.IsIncapacitated()   // Skip bleeding out / unconscious / Stasis lanced.
 			   && !TargetState.IsConcealed() )      // Do not consider units we should not be able to see.
 		{
-			if (!bVisibleOnly || class'X2TacticalVisibilityHelpers'.static.CanUnitSeeLocation(UnitState.ObjectID, TargetState.TileLocation))
+			// PI Mods: If the bVisibleOnly flag is set, check another config flag to determine whether AoE targets
+			// are needed to be directly visible to the shooter or only visible to the team.
+			if (class'Helpers_LW'.default.AllowSquadVisibilityForAoETarget)
+			{
+				bCanSeeLocation = class'X2TacticalVisibilityHelpers'.static.CanSquadSeeLocation(UnitState.ControllingPlayer.ObjectID, TargetState.TileLocation);
+			}
+			else
+			{
+				bCanSeeLocation = class'X2TacticalVisibilityHelpers'.static.CanUnitSeeLocation(UnitState.ObjectID, TargetState.TileLocation);
+			}
+			if (!bVisibleOnly || bCanSeeLocation)
 			{
 				TargetList.AddItem(TargetState.TileLocation);
 			}
@@ -5207,7 +5219,8 @@ function bool CanHitAoETarget( int AbilityObjectID, out AoETarget Target, AoETar
 		}
 
 		// Get all potential AoE targets based on profile settings.
-		GetAllAoETargets(TargetList, Profile, RequiredTarget);
+		// PI Mods: Add a config knob for the bVisibleOnly flag
+		GetAllAoETargets(TargetList, Profile, RequiredTarget, class'Helpers_LW'.default.RequireVisibilityForAoETarget);
 
 		// Get points to avoid. Include destructible Objective locations and teammates if friendly fire is to be avoided.
 		GetAoEAvoidancePoints(FailOnHitList, Profile);
