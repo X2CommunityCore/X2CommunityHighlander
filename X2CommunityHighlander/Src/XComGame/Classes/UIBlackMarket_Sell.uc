@@ -120,7 +120,7 @@ simulated function PopulateData()
 
 	BlackMarketState = XComGameState_BlackMarket(`XCOMHISTORY.GetGameStateForObjectID(BlackMarketReference.ObjectID));
 	Items = BlackMarketState.BuyPrices;
-	Items.Sort(SortByName); // PI added
+	Items.Sort(SortByName); // For Issue #238
 	Items.Sort(SortByInterest);
 	
 	foreach Items(Item)
@@ -148,6 +148,7 @@ simulated function PopulateData()
 	}
 }
 
+// Start Issue #238
 // PI Added: Also sort the items by name (first, so it affects the order the least)
 // so they aren't randomly arranged in the list.
 function int SortByName(BlackMarketItemPrice A, BlackMarketItemPrice B)
@@ -166,6 +167,7 @@ function int SortByName(BlackMarketItemPrice A, BlackMarketItemPrice B)
 	else if( NameA > NameB) return -1;
 	return 0;
 }
+// End Issue #238
 
 function int SortByInterest(BlackMarketItemPrice BuyPriceA, BlackMarketItemPrice BuyPriceB)
 {

@@ -91,6 +91,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Always show DarkEvents toggle on UIAdventOperations (#155)
 - Remove hardcoded false to Unit.IsPsiOperative for AfterAction_ListItem (#157)
 - Sort UIInventory_Implants partially by name so order is predictable (#234)
+- Sort UIBlackMarket_Sell partially by name so order is predictable (#238)
 
 ### Fixes
 - log spam fix in UITacticalHUD (#186)
