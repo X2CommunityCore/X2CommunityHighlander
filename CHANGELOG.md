@@ -44,6 +44,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - 'ArmoryLoadout_PostUpdateNavHelp': after loadout nav help updates (#195)
 - 'WeaponUpgradeListChanged': listener for altering the nav help on
   UIArmory_WeaponUpgrade (#236)
+- 'OverrideInitialPsiTraining': override initial psi training cost (#255)
 
 ### Modding Exposures
 - remove private from XGCS_BlackMarket.OnUnitHeadCaptureFinished (#72)

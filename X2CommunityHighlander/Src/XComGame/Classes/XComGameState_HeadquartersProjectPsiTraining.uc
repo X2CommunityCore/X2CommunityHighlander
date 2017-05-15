@@ -72,19 +72,21 @@ function int CalculatePointsToTrain(optional bool bClassTraining = false)
 	local XComGameState_HeadquartersXCom XComHQ;
 	local XComGameState_Unit Unit;
 	local int RankDifference;
-	local XComLWTuple OverrideTuple; // PI added
+	local XComLWTuple OverrideTuple; // For Issue #255
 
 	History = `XCOMHISTORY;
 	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
 	if (bClassTraining)
 	{
+		// Start Issue #255
 		OverrideTuple = new class'XComLWTuple';
 		OverrideTuple.Id = 'OverrideInitialPsiTraining';
 		OverrideTuple.Data.Add(1);
 		OverrideTuple.Data[0].kind = XComLWTVInt;
-		OverrideTuple.Data[0].i = XComHQ.GetPsiTrainingDays();
+		OverrideTuple.Data[0].i = XComHQ.GetPsiTrainingDays(); // vanilla value
 		`XEVENTMGR.TriggerEvent('PsiTrainingBegun', OverrideTuple, self);
 		return OverrideTuple.Data[0].i * XComHQ.XComHeadquarters_DefaultPsiTrainingWorkPerHour * 24;
+		// End Issue #255
 	}
 	else
 	{
