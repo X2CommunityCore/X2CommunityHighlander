@@ -3,10 +3,6 @@
 //---------------------------------------------------------------------------------------
 class X2Condition_BerserkerDevastatingPunch extends X2Condition;
 
-// PI Mods
-//
-// tracktwo - Disallow friendly targets unless enraged.
-
 event name CallMeetsCondition(XComGameState_BaseObject kTarget) 
 { 
 	local XComGameState_Unit TargetUnit;
@@ -63,6 +59,7 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
 		return 'AA_UnitIsFriendly';
 	}
 
+	// Start Issue #245
 	// PI Mods: No punching friendly units unless enraaged. This can occur when the BT is looking for
 	// priority targets while in yellow: if there is a device to destroy on the mission, it'll check all available targets
 	// to melee, and we don't want friendlies to appear here.
@@ -71,6 +68,7 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
 	{
 		return 'AA_UnitIsFriendly';
 	}
+	// End Issue #245
 	
 	return 'AA_Success';
 }
