@@ -45,7 +45,8 @@ simulated event Tick( float DeltaTime )
 	{
 		UnitPawn = XGUnit( Unit.GetVisualizer( ) ).GetPawn( );
 
-		// PI Mods: use the team from the unit state not the pawn: the pawn's
+		// Conditional for ISsue #248
+		// use the team from the unit state not the pawn: the pawn's
 		// team does not update when teams are swapped.
 		if ((UnitPawn == none) || (Unit.GetTeam() != eTeam_Neutral))
 		{

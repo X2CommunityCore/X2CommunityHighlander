@@ -110,6 +110,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix bug in UIInventory_Implants where PCSs disappear (#233)
 - Fix bug in UIArmory_WeaponUpgrade where select nav help would fail to refresh
   (#237)
+- Fix X2RadiusManager using Pawn and not Unit as source of truth for a unit's
+  team. (#248)
 
 
 
