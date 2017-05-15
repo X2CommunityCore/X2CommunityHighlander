@@ -4,6 +4,7 @@ class UITacticalHUD_Countdown extends UIPanel
 var localized string m_strReinforcementsTitle;
 var localized string m_strReinforcementsBody;
 
+// Start Issue #239
 // PI Added: The ReinforcementOverride delegate is a function that is called when refreshing the 
 // reinforcement counter display if it is set to a non-none value. It takes three out parameters
 // of the strings to use for the reinforcements title (m_strReinforcementsTitle = REINFORCEMENTS),
@@ -20,6 +21,7 @@ var localized string m_strReinforcementsBody;
 // function is invoked on every visualization sync, so a delegate is used instead.
 var delegate<ReinforcementOverrideFn> ReinforcementOverride;
 delegate bool ReinforcementOverrideFn(out string sTitle, out string sBody, out string sColor);
+// End Issue #239
 
 simulated function UITacticalHUD_Countdown InitCountdown()
 {
@@ -54,9 +56,10 @@ event OnVisualizationIdle();
 event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 {
 	local XComGameState_AIReinforcementSpawner AISpawnerState;
-	local string title, body, clr; // PI Added
+	local string title, body, clr; // Variables for Issue #239
 
-	// PI Mods: Allow mods to control the counter visualization. The delegate should return a bool flag and if the flag
+	// Start Issue #239
+	// Allow mods to control the counter visualization. The delegate should return a bool flag and if the flag
 	// is true, the out params hold strings to use to update the UI. The first two strings are the title and body strings
 	// respectively (REINFORCEMENTS and INCOMING in vanilla). The third string is the color to use for the dags control.
 	if (ReinforcementOverride != none && ReinforcementOverride(title, body, clr))
@@ -66,7 +69,7 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 		Show();
 		return;
 	}
-	// End PI Mods
+	// End Issue #239
 
 	foreach AssociatedGameState.IterateByClassType(class'XComGameState_AIReinforcementSpawner', AISpawnerState)
 	{
@@ -75,12 +78,14 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 	}
 }
 
+// Start Issue #239
 // Returns true if a mod is overriding the countdown UI.
 simulated function bool ReinforcementOverrideEnabled()
 {
 	local string title, body, clr;
 	return ReinforcementOverride != none && ReinforcementOverride(title, body, clr);
 }
+// End Issue #239
 
 simulated function RefreshCounter(XComGameState_AIReinforcementSpawner AISpawnerState)
 {

@@ -179,6 +179,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Remove protection of Behaviors on X2AIBTBehaviorTree (#13)
 - Remove protection of LootTables on X2LootTable (#41)
 - Remove private from vars on X2TargetingMethod_EvacZone (#46)
+- add delegate for reinforcement countdown that allows mods to override the
+  reinforcement display (#239)
 - allow subclassses of X2Effect_Suppression to be counted as suppressor (#121)
 - Created LWVisualisedInterface to allow for same visualisations as
   X2VisualisedInterface without needing native class (#103)

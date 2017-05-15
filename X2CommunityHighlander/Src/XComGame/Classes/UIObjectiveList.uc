@@ -95,10 +95,11 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 		break;
 	}
 
-	// PI Mods: Allow mods to customize the reinforcements display. If they have, we need to shift the objectives.
+	// Issue #239: Allow mods to customize the reinforcements display. If they have, we need to shift the objectives.
 	ReinforcementsOverride = ReinforcementsOverrideActive();
 
 	// if this state has nothing for us to update, then just return
+	// Conditional altered for Issue #239
 	if(ObjectiveList == none && AISpawnerState == none && !ReinforcementsOverride)
 	{
 		return;
@@ -114,6 +115,7 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 		break;
 	}
 
+	// Start Issue #239
 	// PI Mods: Handle mod override of position.
 	if (ReinforcementsOverride)
 	{
@@ -121,6 +123,7 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 	}
 	else
 	{
+		// vanilla behaviour here
 		foreach History.IterateByClassType(class'XComGameState_AIReinforcementSpawner', AISpawnerState)
 		{
 			AISpawnerState = XComGameState_AIReinforcementSpawner(History.GetGameStateForObjectID(AISpawnerState.ObjectID,, AssociatedGameState.HistoryIndex));
@@ -128,6 +131,7 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 			break;
 		}
 	}
+	// End Issue #239
 
 	SyncedToState = AssociatedGameState.HistoryIndex;
 }
@@ -564,6 +568,7 @@ simulated function ShowCompletedObjectivesDialogue(XComGameState NewGameState)
 	
 }
 
+// Start Issue #239
 // PI Mods: Test if we are overriding the reinforcements display. If so we need to adjust the
 // objective position even if there are no currently pending reinfs.
 function bool ReinforcementsOverrideActive()
@@ -576,6 +581,7 @@ function bool ReinforcementsOverrideActive()
 
 	return Countdown != none && Countdown.ReinforcementOverrideEnabled();
 }
+// End Issue #239
 
 //Defaults: ------------------------------------------------------------------------------
 defaultproperties
