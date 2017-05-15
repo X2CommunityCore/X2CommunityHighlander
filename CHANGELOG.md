@@ -103,6 +103,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix bug where XGCS_PointOfInterest weight could drop to zero, rendering it
   unselectable (#98)
 - Fix bug in UIInventory_Implants where PCSs disappear (#233)
+- Fix bug in UIArmory_WeaponUpgrade where select nav help would fail to refresh
+  (#237)
 
 
 

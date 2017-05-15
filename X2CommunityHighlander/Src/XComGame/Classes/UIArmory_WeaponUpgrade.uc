@@ -440,6 +440,7 @@ simulated function OnItemClicked(UIList ContainerList, int ItemIndex)
 	}
 }
 
+// Start Issue #237
 // PI Mods: Patch 7 introduced an override to UpdateNavHelp in this class to be able to control whether or not the select
 // help is shown. This caused bugs with the soldier left/right toggle buttons when the mouse was active as "super" was 
 // never called to do the parent class nav help refresh. Instead, do not override UpdateNavHelp and just let the parent
@@ -453,8 +454,8 @@ simulated function bool NeedsSelectHelp()
 
 	return false;
 }
-
 // PI Mod: Removed UpdateNavHelp() override. See comment above.
+// End Issue #237
 
 simulated function PreviewUpgrade(UIList ContainerList, int ItemIndex)
 {
