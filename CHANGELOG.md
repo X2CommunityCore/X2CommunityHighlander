@@ -159,6 +159,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   (#151)
 - 'OverrideObjectiveAbilityIconColor': override objective ability color (#187)
 - 'OverrideAbilityIconColor': override non objective ability color (#187)
+- 'IgnoreReinforcementsAlert': used by XComGameState_AIReinforcementSpawner
+  (#251)
 
 ### Configuration
 - Configure poison, smoke and smoke grenades to regard/disregard cover when
