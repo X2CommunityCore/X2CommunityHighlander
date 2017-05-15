@@ -898,7 +898,7 @@ function PostCreateInit(XComGameState NewGameState, X2CharacterTemplate kTemplat
 	local CharacterPoolManager CharacterPool;
 	local XComGameState_Unit CharacterPoolUnitState;
 	
-	local XComLWTuple Tuple; // LW2 addition
+	local XComLWTuple Tuple; // For Issue #256
 		
 	History = `XCOMHISTORY;
 
@@ -984,6 +984,7 @@ function PostCreateInit(XComGameState NewGameState, X2CharacterTemplate kTemplat
 			SetCurrentStat(eStat_AlertLevel, `ALERT_LEVEL_YELLOW);
 		}
 
+		// Start Issue #256
 		Tuple = new class'XComLWTuple';
 		Tuple.Id = 'AlterStartingMissionAlert';
 		Tuple.Data.Add(1);
@@ -991,6 +992,7 @@ function PostCreateInit(XComGameState NewGameState, X2CharacterTemplate kTemplat
 		Tuple.Data[0].i = int(GetCurrentStat (eStat_AlertLevel));
 		`XEVENTMGR.TriggerEvent('OnSetUnitAlert', Tuple, self);
 		SetCurrentStat(eStat_AlertLevel, float(Tuple.Data[0].i));
+		// End Issue #256
 
 	}
 
