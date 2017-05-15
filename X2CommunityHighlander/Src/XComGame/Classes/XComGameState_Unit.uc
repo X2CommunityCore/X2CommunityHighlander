@@ -1857,7 +1857,8 @@ function OnBeginTacticalPlay()
 
 	CleanupUnitValues(eCleanup_BeginTactical);
 
-	// PI Mods: Keep track of the HP this unit had when we started the mission. See
+	// For Issue #258
+	// Keep track of the HP this unit had when we started the mission. See
 	// EndTacticalHealthMod for the use of this.
 	SetUnitFloatValue('LW_MaxHP', GetCurrentStat(eStat_HP), eCleanup_BeginTactical);
 
@@ -1961,17 +1962,18 @@ function EndTacticalHealthMod()
 {
 	local float HealthPercent, NewHealth;
 	local int RoundedNewHealth, HealthLost;
-	local UnitValue HPValue; // PI Added
+	local UnitValue HPValue; // For Issue #258
 
 	HealthLost = HighestHP - LowestHP;
 
-	// PI Added
+	// For Issue #258
 	GetUnitValue('LW_MaxHP', HPValue);
 
 	// If Dead or never injured, return
 	if(LowestHP <= 0 || HealthLost <= 0)
 	{
-		// PI Mods: If the unit didn't take any damage on this mission, make sure they don't
+		// Start Issue #258
+		// If the unit didn't take any damage on this mission, make sure they don't
 		// end with more current HP than they started the mission with. E.g. taking a wounded
 		// soldier on avenger defense shouldn't magically heal the unit.
 		// Example: Unit starts mission with 6/9 base HP and is wearing +13 HP worth of 
@@ -1989,6 +1991,7 @@ function EndTacticalHealthMod()
 		{
 			SetCurrentStat(eStat_HP, int(HPValue.fValue));
 		}
+		// End Issue #258
 		return;
 	}
 
@@ -2001,6 +2004,7 @@ function EndTacticalHealthMod()
 	RoundedNewHealth = Clamp(RoundedNewHealth, 1, (int(GetBaseStat(eStat_HP)) - 1));
 	SetCurrentStat(eStat_HP, RoundedNewHealth);
 
+	// Start Issue #258
 	// PI Mods: As above: If the new health is higher than the HP they started the mission with,
 	// use the mission start HP instead. Leave them with the lower of their current adjusted HP
 	// or the HP they started the mission with.
@@ -2008,6 +2012,7 @@ function EndTacticalHealthMod()
 	{
 		SetCurrentStat(eStat_HP, int(HPValue.fValue));
 	}
+	// End Issue #258
 }
 
 /**

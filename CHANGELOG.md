@@ -281,6 +281,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Bug fix for previously units carried out while bleeding/KOed not having
   bBodyRecovered reset, meaning they will not be able to be picked up in a
   future mission. (#257)
+- Fix issue where wounded units could recover health permanently when deployed
+  in an Avenger mission, resulting in a bad UnitState. (#258)
 
 
 
