@@ -2131,7 +2131,7 @@ function RemoveGPDoom(XComGameState NewGameState, XComGameState_MissionSite Miss
 
 	// Remove Doom based on min/max amounts from mission
 	DoomToRemove = MissionState.FixedDoomToRemove;
-	// PI Mods: Clamp max doom removal to the current doom, not just the doom in the fortress.
+	// Issue #247: Clamp max doom removal to the current doom, not just the doom in the fortress.
 	DoomToRemove = Clamp(DoomToRemove, 0, AlienHQ.GetCurrentDoom(true));
 
 	if(DoomToRemove > 0)

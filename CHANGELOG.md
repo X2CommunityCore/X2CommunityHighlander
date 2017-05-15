@@ -97,6 +97,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 
 ### Fixes
 - log spam fix in UITacticalHUD (#186)
+- clamp max doom removal to the total current doom, not just the Fortress doom
+  (#247)
 - avoid recursion of GetMapItem and GetRandomLocationInRegion (#183)
 - Bugfix for Insight Hack Reward, where project completion only applies on
   a staffing change, rather than when reward is applied (#38)
