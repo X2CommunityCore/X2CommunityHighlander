@@ -50,6 +50,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - remove private from XGCS_Unit.GetCompleteDefaultLoadout (#117)
 - SignalOnReceiveFocus when switching from pending to active dark events on
   UIAdventOperations (#156)
+- when checking for utility items skip over AmmoPocket (#241)
 - Allow mods to add items UIAvengerShortcuts (#166)
 - Support overrides of UISquadSelect by ensuring dependants look for
   subclasses too (#196)
