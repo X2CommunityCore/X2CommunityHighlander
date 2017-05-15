@@ -267,6 +267,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 ### Modding Exposures
 - SignalOnReceiveFocus on UIViewObjectives so listeners can detect change events
   (#193)
+- UIArmory.NeedsSelectHelp allows subclasses to determine whether SelectNavHelp
+  should be displayed (#235)
 - UIPanel.AS_SetMCColor allows setting colors of arbitrary MCs within UIPanel
   (#232)
 - Dynamic Override system added to some UI classes, to allow mods to share
