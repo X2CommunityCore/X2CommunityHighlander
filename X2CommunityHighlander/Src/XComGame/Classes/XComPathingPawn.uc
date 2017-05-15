@@ -164,9 +164,12 @@ var protected StaticMeshComponent OutOfRangeMeshComponent; // mesh that shows wh
 var privatewrite array<WaypointTile>			    Waypoints; // all tiles with a waypoint on them
 var private array<X2WaypointStaticMeshComponent>    WaypointMeshPool; // pool to prevent needless waypoint allocations
 var private array<TTile>						    WaypointsPath; // path from the unit to the last waypoint, cached
+
+// Start Issue #259
 var protectedwrite array<HazardMarker>			    HazardMarkers; // all tiles with a hazard on them
 var protectedwrite array<TTile>					    NoiseMarkers; // all tiles with a noise marker on them
 var protectedwrite array<TTile>					    ConcealmentMarkers; // all tiles with a concealment marker on them
+// End Issue #259
 
 // renderable path
 var protected XComRenderablePathComponent RenderablePath; // component that draws the path ribbon from the unit to the puck

@@ -187,6 +187,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)
+- Change Hazard, Noise & Concealment Markers to protectedwrite on
+  XComPathingPawn (#259)
 - Remove protections of AbilityTemplate Effects for easier runtime alteration
   (#12)
 - Remove protection of ShotBreakdown on X2AbilityToHitCalc (#13)
