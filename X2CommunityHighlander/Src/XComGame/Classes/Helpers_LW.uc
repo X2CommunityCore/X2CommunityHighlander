@@ -126,9 +126,11 @@ var config bool USE_FLOAT_PRICE_MULTIPLIER;
 var config array<float> InterestPriceMultiplierFloat;
 // End Issue #254
 
+// Start Issue #260
 // These variables control AI AoE targeting behavior.
 var config bool RequireVisibilityForAoETarget;
 var config bool AllowSquadVisibilityForAoETarget;
+// End Issue #260
 
 // Start Issue #229
 // If true a graze cannot reduce weapon damage that was > 0 to 0. Mostly detectable on items that apply

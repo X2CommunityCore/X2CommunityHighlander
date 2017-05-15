@@ -184,6 +184,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Add config to disable test that hides Radius Rings when cursor is near Unit
   (#249)
 - Add config for reinforcement patrol zones when not in scamper/red alert (#252)
+- Add config for AI behaviour regarding AOE Targeting and Visibility (#260)
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)
