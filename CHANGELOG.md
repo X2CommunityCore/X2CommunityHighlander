@@ -229,6 +229,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   (#150)
 - Improve SoldierInfoTooltip, show defense + hide psi if not psiop (#189)
 - Empty out pending loot for units killed by explosives (#112)
+- Visualization Fixes for Hacking to accomodate effect addition/removal better
+  than vanilla does (#242)
 
 ### Fixes
 - Fix for Restart Mission (#227)
