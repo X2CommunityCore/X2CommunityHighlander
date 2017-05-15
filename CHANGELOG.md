@@ -68,6 +68,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - allow config of extra Squad Select auto remove functionality (#240)
 - Add PsiTreeOrganisation, to force a capstone ability early to ensure it is
   achievable (#197)
+- allow config override of BlackMarket 'Interested' multipliers (#254)
 
 ### Improvements
 - Prevent Secondary Weapons contributing to stat markups on Loadout/Stats

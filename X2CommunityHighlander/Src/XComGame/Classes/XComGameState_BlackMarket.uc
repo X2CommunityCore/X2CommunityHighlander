@@ -560,14 +560,17 @@ function private BlackMarketItemPrice GetItemPrice(StateObjectReference ItemRef)
 
 	if(InterestTemplates.Find(ItemState.GetMyTemplateName()) != INDEX_NONE)
 	{
+		// Start Issue #254
 		if (!class'Helpers_LW'.default.USE_FLOAT_PRICE_MULTIPLIER)
 		{
+			// vanilla behaviour
 			BuyPrice.Price *= default.InterestPriceMultiplier[`DIFFICULTYSETTING];
 		}
 		else
 		{
 			BuyPrice.Price *= class'Helpers_LW'.default.InterestPriceMultiplierFloat[`DIFFICULTYSETTING];
 		}
+		// End Issue #254
 	}
 	return BuyPrice;
 }

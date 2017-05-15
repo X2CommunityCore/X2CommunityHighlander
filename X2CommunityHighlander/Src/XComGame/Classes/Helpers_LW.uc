@@ -121,8 +121,10 @@ var config int REINF_EZ_DEPTH;
 var config int REINF_EZ_OFFSET;
 // End Issue #252
 
+// Start Issue #254
 var config bool USE_FLOAT_PRICE_MULTIPLIER;
 var config array<float> InterestPriceMultiplierFloat;
+// End Issue #254
 
 // These variables control AI AoE targeting behavior.
 var config bool RequireVisibilityForAoETarget;
