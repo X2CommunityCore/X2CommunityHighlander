@@ -1,12 +1,15 @@
 # X2CommunityHighlander
 
 Welcome to the X2CommunityHighlander Github project. This is where the work happens.
-This file will be very bare-bones as of now, but should be filled up quickly.
+
+# What version are we at?
+
+The working version of X2CommunityHighlander is 1.2.
+It supports Long War 2, version 1.3.
 
 # TODO
 
-* Prepare first release
-* Get work done on the Highlander
+* Complete issues.
 
 # What IS the X2CommunityHighlander
 
