@@ -7,9 +7,6 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //----------------------------------------------------------------------------
 
-// PI Mods:
-//
-// tracktwo - Add "SwapControls" function to handle owning UI element swapping children around.
 class UINavigator extends Object;
 
 struct UINavTarget
@@ -117,6 +114,7 @@ public function RemoveControl(UIPanel Control)
 	}
 }
 
+// Start Issue #231
 // PI Mods: Add SwapControls function to handle control reordering from the owning
 //          UI element.
 public function SwapControls(int ControlIndexA, int ControlIndexB)
@@ -126,6 +124,7 @@ public function SwapControls(int ControlIndexA, int ControlIndexB)
 	NavigableControls[ControlIndexA] = NavigableControls[ControlIndexB];
 	NavigableControls[ControlIndexB] = Panel;
 }
+// End Issue #231
 
 simulated function bool OnUnrealCommand( int Cmd, int Arg )
 {

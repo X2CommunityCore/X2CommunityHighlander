@@ -299,5 +299,5 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   (#113)
 - Fix Vertical Autoscrolling in UITextContainer (#190)
 - Fix tooltips (#2)
-- Swap controls in UIPanel navigator to ensure controller/keyboard nav stays in
-  sync (#231)
+- Swap controls in UIPanel and UINavigator navigator to ensure
+  controller/keyboard nav stays in sync (#231)
