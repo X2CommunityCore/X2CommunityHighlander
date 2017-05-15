@@ -372,6 +372,10 @@ static function int GetNumEnemiesKilled(out int iOutTotal)
 	local array<XComGameState_Unit> arrUnits;
 	local XComGameState_BattleData StaticBattleData;
 
+	// Variables for Issue #206
+	local XComLWTuple Tuple;
+	local XComLWTValue Value;
+
 	StaticBattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 	if(StaticBattleData.IsMultiplayer())
 	{
@@ -399,10 +403,25 @@ static function int GetNumEnemiesKilled(out int iOutTotal)
 		iKilled += StaticBattleData.DirectTransferInfo.AliensKilled;
 	}
 
+	// Mod Hook for Issue #206 Start
+	// Allows mods to calculate the result for GetNumEnemiesKilled
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'GetNumEnemiesKilled';
+
+	Value.Kind = XComLWTVInt;
+	Value.i = iKilled;
+	Tuple.Data.AddItem(Value);
+
+	Value.i = iTotal;
+	Tuple.Data.AddItem(Value);
+
+	`XEVENTMGR.TriggerEvent('GetNumEnemiesKilled', Tuple, none, none);
+
 	// since it's possible (and currently the case) that you pass a value used in this function into
 	// the function as the out value, do computations on a local to prevent memory aliasing
-	iOutTotal = iTotal;
-	return iKilled;
+	iOutTotal = Tuple.Data[1].i;
+	return Tuple.Data[0].i;
+	// End Hook for Issue #206
 }
 
 function string GetSoldiersKilled()
@@ -430,6 +449,10 @@ function int GetNumSoldiersKilled(out int iTotal)
 	local int iKilled, i;
 	local array<XComGameState_Unit> arrUnits;
 
+	// Variables for Issue #206
+	local XComLWTuple Tuple;
+	local XComLWTValue Value;
+
 	if(BattleData.IsMultiplayer())
 	{
 		XComTacticalController(GetALocalPlayerController()).m_XGPlayer.GetOriginalUnits(arrUnits, true);
@@ -439,8 +462,7 @@ function int GetNumSoldiersKilled(out int iTotal)
 		BATTLE().GetHumanPlayer().GetOriginalUnits(arrUnits, true);
 	}
 
-	iTotal = arrUnits.Length;
-	for(i = 0; i < iTotal; i++)
+	for(i = 0; i < arrUnits.Length; i++)
 	{
 		if(arrUnits[i].IsDead() || arrUnits[i].IsBleedingOut()) //Bleeding-out units get cleaned up by SquadTacticalToStrategyTransfer, but that happens later
 		{
@@ -448,7 +470,25 @@ function int GetNumSoldiersKilled(out int iTotal)
 		}
 	}
 
-	return iKilled;
+	// Mod Hook for Issue #206 Start
+	// Allows mods to calculate the result for GetNumSoldiersKilled
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'GetNumSoldiersKilled';
+
+	Value.Kind = XComLWTVInt;
+	Value.i = iKilled;
+	Tuple.Data.AddItem(Value);
+
+	Value.i = arrUnits.Length;
+	Tuple.Data.AddItem(Value);
+
+	`XEVENTMGR.TriggerEvent('GetNumSoldiersKilled', Tuple, none, none);
+
+	// since it's possible (and currently the case) that you pass a value used in this function into
+	// the function as the out value, do computations on a local to prevent memory aliasing
+	iTotal = Tuple.Data[1].i;
+	return Tuple.Data[0].i;
+	// End Hook for Issue #206
 }
 
 function string GetSoldiersInjured()
@@ -476,6 +516,10 @@ function int GetNumSoldiersInjured(out int iTotal)
 	local int iInjured, i;
 	local array<XComGameState_Unit> arrUnits;
 
+	// Variables for Issue #206
+	local XComLWTuple Tuple;
+	local XComLWTValue Value;
+
 	if(BattleData.IsMultiplayer())
 	{
 		XComTacticalController(GetALocalPlayerController()).m_XGPlayer.GetOriginalUnits(arrUnits, true);
@@ -485,8 +529,7 @@ function int GetNumSoldiersInjured(out int iTotal)
 		BATTLE().GetHumanPlayer().GetOriginalUnits(arrUnits, true);
 	}
 
-	iTotal = arrUnits.Length;
-	for(i = 0; i < iTotal; i++)
+	for(i = 0; i < arrUnits.Length; i++)
 	{
 		if(arrUnits[i].WasInjuredOnMission())
 		{
@@ -494,7 +537,25 @@ function int GetNumSoldiersInjured(out int iTotal)
 		}
 	}
 
-	return iInjured;
+	// Mod Hook for Issue #206 Start
+	// Allows mods to calculate the result for GetNumSoldiersInjured
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = 'GetNumSoldiersInjured';
+
+	Value.Kind = XComLWTVInt;
+	Value.i = iInjured;
+	Tuple.Data.AddItem(Value);
+
+	Value.i = arrUnits.Length;
+	Tuple.Data.AddItem(Value);
+
+	`XEVENTMGR.TriggerEvent('GetNumSoldiersInjured', Tuple, none, none);
+
+	// since it's possible (and currently the case) that you pass a value used in this function into
+	// the function as the out value, do computations on a local to prevent memory aliasing
+	iTotal = Tuple.Data[1].i;
+	return Tuple.Data[0].i;
+	// End Hook for Issue #206
 }
 
 static function XGBattle_SP BATTLE()
