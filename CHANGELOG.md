@@ -191,6 +191,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Remove const and private declarations from XComTacticalMissionManager (#139)
 - Create XCGS_Unit.UnitAGainsKnowledgeOfUnitB with extra argument to allow for
   provision of an AlertTile (#198)
+- Move CameraAction for X2Effect_MindControl and into the OnRemovedFn so mods
+  can decide on the visualization (#246)
 
 ### Improvements
 - Flying Enemies path searching improved to use unlimited search depth on
