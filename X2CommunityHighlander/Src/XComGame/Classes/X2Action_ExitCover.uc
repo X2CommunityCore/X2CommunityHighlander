@@ -566,7 +566,9 @@ Begin:
 			Unit.bShouldStepOut = Unit.GetStepOutCoverInfo(PrimaryTarget, TargetLocation, UseCoverDirectionIndex, UsePeekSide, RequiresLean, bCanSeeFromDefault, StepOutVisibilityHistoryIndex);
 
 			//Save our location so that it can be reset later in EnterCover if not already stepped out
-			// PI Mods: Implement the "if not already stepped out" part. Fixes bugs with multiple overwatch
+
+			// Conditional for Issue #244
+			// Implement the "if not already stepped out" part. Fixes bugs with multiple overwatch
 			// shots overwriting the RestoreLocation with the tile they already stepped out into, leaving the
 			// unit on the wrong tile when re-entering cover.
 			if (!Unit.bSteppingOutOfCover)

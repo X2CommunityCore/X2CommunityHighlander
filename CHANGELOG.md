@@ -235,6 +235,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 
 ### Fixes
 - Fix for Restart Mission (#227)
+- Fix X2Action_ExitCover breaking step back location when called while already
+  out of cover, resulting in unit reentering wrong tile on EnterCover (#244)
 - Remove exploit causing enemy units to enter RedAlert without scamper (#123)
 - Fix XCGS_LootDrop when multiple drops active (#91)
 - Ensure Patrol Locations are within map bounds to ensure they are set (#67)
