@@ -1872,7 +1872,8 @@ function OnBeginTacticalPlay()
 
 	bRequiresVisibilityUpdate = true;
 
-	// PI Mods: Reset the body recovered flag. A unit that was previously carried to evac while KO'd/bleeding out will have
+	// For Issue #257
+	// Reset the body recovered flag. A unit that was previously carried to evac while KO'd/bleeding out will have
 	// this flag set, and this flag prevents units from being carried. If this unit gets KO'd again, they won't be able to
 	// be picked up if this flag is still set.
 	bBodyRecovered = false;

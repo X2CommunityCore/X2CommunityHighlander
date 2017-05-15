@@ -278,6 +278,9 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix incorrect GameplayVisibility Filter for reinforcements spawning (#250)
 - Fix showing rupture damage in damage previews for non rupturing abilities
   (#253)
+- Bug fix for previously units carried out while bleeding/KOed not having
+  bBodyRecovered reset, meaning they will not be able to be picked up in a
+  future mission. (#257)
 
 
 
