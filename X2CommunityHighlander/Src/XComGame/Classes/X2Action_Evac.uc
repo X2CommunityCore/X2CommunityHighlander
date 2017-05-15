@@ -6,6 +6,7 @@ var private Actor RopeTemplate;
 
 var bool bIsVisualizingGremlin;
 
+// Start Issue #243
 var AnimNodeSequence	PlayingSequence;
 
 struct AnimOverride
@@ -18,6 +19,7 @@ struct AnimOverride
 var config array<AnimOverride> AnimOverrides; // PI added
 var int AnimOverrideIdx;
 var BoneAtom	StartingAtom;
+// End Issue #243
 
 //------------------------------------------------------------------------------------------------
 
@@ -74,7 +76,7 @@ simulated state Executing
 		Rope.DynamicNode.PlayDynamicAnim(Params);
 	}
 
-	// PI Added
+	// Start Issue #243
 	function int GetAnimOverride()
 	{
 		local XComGameState_Unit UnitState;
@@ -93,6 +95,7 @@ simulated state Executing
 		// Use the default anim
 		return -1;
 	}
+	// End Issue #243
 	
 Begin:
 	if (bIsVisualizingGremlin)
@@ -106,7 +109,8 @@ Begin:
 	}
 	else
 	{
-		// PI Added: Let mods override evac anims for particular units
+		// Start Issue #243
+		// Let mods override evac anims for particular units
 		AnimOverrideIdx = GetAnimOverride();
 		if (AnimOverrideIdx >= 0)
 		{
@@ -131,22 +135,24 @@ Begin:
 		}
 		else
 		{
+			// vanilla behaviour
 			if( UnitPawn.EvacWithRope )
 			{
-			RequestRopeArchetype();
+				RequestRopeArchetype();
 
-			while( RopeTemplate == None )
-			{
-				Sleep(0.0f);
-			}
+				while( RopeTemplate == None )
+				{
+					Sleep(0.0f);
+				}
 
-			SpawnAndPlayRopeAnim();
+				SpawnAndPlayRopeAnim();
 			}
 
 			AnimParams.AnimName = 'HL_EvacStart';
 			AnimParams.PlayRate = GetNonCriticalAnimationSpeed();
 			FinishAnim(UnitPawn.GetAnimTreeController().PlayFullBodyDynamicAnim(AnimParams));
 		}
+		// End Issue #243
 
 		CompleteAction();
 

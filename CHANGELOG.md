@@ -172,6 +172,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Allow usage of HeavyWeapon inventory slot for soldier class (#42)
 - Optionally apply rupture damage cumulatively (#228)
 - Optionally clamp graze damage to 1 (#229)
+- allow overrides of evac animations for specific character templates (#243)
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)
