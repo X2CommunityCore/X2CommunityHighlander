@@ -42,6 +42,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - 'OnInsertFirstMissionIcon': override resistanceHQ icon (#182)
 - 'OverridePersonnelStatusSeparate': override personnel strategy state (#192)
 - 'ArmoryLoadout_PostUpdateNavHelp': after loadout nav help updates (#195)
+- 'WeaponUpgradeListChanged': listener for altering the nav help on
+  UIArmory_WeaponUpgrade (#236)
 
 ### Modding Exposures
 - remove private from XGCS_BlackMarket.OnUnitHeadCaptureFinished (#72)

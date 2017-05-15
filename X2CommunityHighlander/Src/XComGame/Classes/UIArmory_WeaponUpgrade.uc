@@ -389,7 +389,7 @@ simulated function ChangeActiveList(UIList kActiveList, optional bool bSkipAnima
 
 	UpdateNavHelp();
 
-	// PI Mods: Trigger an event to indicate the list has changed to allow mods to alter the navhelp, etc.
+	// For Issue #236: Trigger an event to indicate the list has changed to allow mods to alter the navhelp, etc.
 	`XEVENTMGR.TriggerEvent('WeaponUpgradeListChanged', kActiveList, self);
 } 
 
