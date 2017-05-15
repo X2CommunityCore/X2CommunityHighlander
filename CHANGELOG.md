@@ -68,8 +68,6 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - allow config of extra Squad Select auto remove functionality (#240)
 - Add PsiTreeOrganisation, to force a capstone ability early to ensure it is
   achievable (#197)
-- Add config to disable test that hides Radius Rings when cursor is near Unit
-  (#249)
 
 ### Improvements
 - Prevent Secondary Weapons contributing to stat markups on Loadout/Stats
@@ -112,8 +110,6 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix bug in UIInventory_Implants where PCSs disappear (#233)
 - Fix bug in UIArmory_WeaponUpgrade where select nav help would fail to refresh
   (#237)
-- Fix X2RadiusManager using Pawn and not Unit as source of truth for a unit's
-  team. (#248)
 
 
 
@@ -179,6 +175,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Optionally apply rupture damage cumulatively (#228)
 - Optionally clamp graze damage to 1 (#229)
 - allow overrides of evac animations for specific character templates (#243)
+- Add config to disable test that hides Radius Rings when cursor is near Unit
+  (#249)
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)
@@ -268,6 +266,9 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix vertical scrolling in Tactical Shot Wings (#188)
 - Fix X2Effect_MindControl bug where ticking effects when reverted would tick on
   wrong playerstate (#194)
+- Fix X2RadiusManager using Pawn and not Unit as source of truth for a unit's
+  team. (#248)
+- Fix incorrect GameplayVisibility Filter for reinforcements spawning (#250)
 
 
 

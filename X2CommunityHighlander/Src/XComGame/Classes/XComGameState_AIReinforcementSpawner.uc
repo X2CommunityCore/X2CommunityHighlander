@@ -301,7 +301,8 @@ function EventListenerReturn OnSpawnReinforcementsComplete(Object EventData, Obj
 		bDataChanged = false;
 		ReinforcementUnit = XComGameState_Unit(History.GetGameStateForObjectID(SpawnedUnitIDs[i]));
 
-		// PI determined default.LivingLOSVisibleFilter was a bug and changed to LivingGameplayVisibilityFilter
+		// Issue #250
+		// determined default.LivingLOSVisibleFilter was a bug and changed to LivingGameplayVisibilityFilter
 		class'X2TacticalVisibilityHelpers'.static.GetAllVisibleEnemyUnitsForUnit(ReinforcementUnit.ObjectID, VisibleUnits, class'X2TacticalVisibilityHelpers'.default.LivingGameplayVisibleFilter);
 
 		NewAIUnitData = XComGameState_AIUnitData(NewGameState.CreateStateObject(class'XComGameState_AIUnitData', ReinforcementUnit.GetAIUnitDataID()));
