@@ -1,7 +1,8 @@
 
 class X2UnitRadiusManager extends Actor config(GameCore);
 
-// PI Added: Config control of the test to be within N tiles of the civilian to display.
+// Variable and config for Issue #249
+// Config control of the test to be within N tiles of the civilian to display.
 var config bool IgnoreCursorLocation;
 
 var private transient TTile LastCursorTile; // the last tile the cursor was in
@@ -45,7 +46,7 @@ simulated event Tick( float DeltaTime )
 	{
 		UnitPawn = XGUnit( Unit.GetVisualizer( ) ).GetPawn( );
 
-		// Conditional for ISsue #248
+		// Conditional for Issue #248
 		// use the team from the unit state not the pawn: the pawn's
 		// team does not update when teams are swapped.
 		if ((UnitPawn == none) || (Unit.GetTeam() != eTeam_Neutral))
@@ -65,11 +66,15 @@ simulated event Tick( float DeltaTime )
 
 		ShouldDraw = UnitPawn.IsVisibleToTeam( eTeam_XCom ) &&
 						!Unit.IsDead( ) && 
-						// PI Added
-						(IgnoreCursorLocation ||
-							((TileDiff.X <= CivReactionTileRadius * 2) &&
-							 (TileDiff.Y <= CivReactionTileRadius * 2) &&
-							 (TileDiff.Z <= CivReactionTileRadius * 2)));
+						// Conditional altered for Issue #249 to use IgnoreCursorLocation
+						(
+							IgnoreCursorLocation ||
+							(
+								(TileDiff.X <= CivReactionTileRadius * 2) &&
+								(TileDiff.Y <= CivReactionTileRadius * 2) &&
+								(TileDiff.Z <= CivReactionTileRadius * 2)
+							)
+						);
 
 		if (ShouldDraw)
 		{
