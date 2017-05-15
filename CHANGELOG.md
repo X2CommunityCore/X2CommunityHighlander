@@ -179,6 +179,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - allow overrides of evac animations for specific character templates (#243)
 - Add config to disable test that hides Radius Rings when cursor is near Unit
   (#249)
+- Add config for reinforcement patrol zones when not in scamper/red alert (#252)
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)

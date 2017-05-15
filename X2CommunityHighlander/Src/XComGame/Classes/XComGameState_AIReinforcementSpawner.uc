@@ -268,10 +268,10 @@ function EventListenerReturn OnSpawnReinforcementsComplete(Object EventData, Obj
 	local XComAISpawnManager SpawnManager;
 	local Vector PingLocation;
 	local array<StateObjectReference> VisibleUnits;
-	local XComGameState_AIGroup AIGroupState, NewGroupState;
+	local XComGameState_AIGroup AIGroupState, NewGroupState; // For Issue #252
 	local bool bDataChanged;
 	local XGAIGroup Group;
-	local XComLWTuple Tuple; // PI Added
+	local XComLWTuple Tuple; // For Issue #251
 
 	World = `XWORLD;
 	History = `XCOMHISTORY;
@@ -282,13 +282,15 @@ function EventListenerReturn OnSpawnReinforcementsComplete(Object EventData, Obj
 
 	PingLocation = SpawnManager.GetCurrentXComLocation();
 
+	// Start Issue #251
 	Tuple = new class'XComLWTuple';
-    Tuple.Id = 'IgnoreReinforcementsAlert';
+	Tuple.Id = 'IgnoreReinforcementsAlert';
 	Tuple.Data.Add(1);
-    Tuple.Data[0].Kind = XCOMLWTVBool;
-    Tuple.Data[0].b = false;
+	Tuple.Data[0].Kind = XCOMLWTVBool;
+	Tuple.Data[0].b = false;
      
-    `XEVENTMGR.TriggerEvent('PlacingReinforcements', Tuple, self, NewGameState);
+	`XEVENTMGR.TriggerEvent('PlacingReinforcements', Tuple, self, NewGameState);
+	// End Issue #251
 
 	AlertInfo.AlertTileLocation = World.GetTileCoordinatesFromPosition(PingLocation);
 	AlertInfo.AlertRadius = 500;
@@ -311,6 +313,8 @@ function EventListenerReturn OnSpawnReinforcementsComplete(Object EventData, Obj
 			NewAIUnitData.Init(ReinforcementUnit.ObjectID);
 			bDataChanged = true;
 		}
+
+		// Conditional for Issue #251
 		if(!Tuple.Data[0].b && NewAIUnitData.AddAlertData(SpawnedUnitIDs[i], eAC_MapwideAlert_Hostile, AlertInfo, NewGameState) )
 		{
 			bDataChanged = true;
@@ -347,15 +351,18 @@ function EventListenerReturn OnSpawnReinforcementsComplete(Object EventData, Obj
 	{
 		// If this group isn't starting out scampering, we need to initialize the group turn so it can move properly.
 		XGAIPlayer(`BATTLE.GetAIPlayer()).m_kNav.GetGroupInfo(SpawnedUnitIDs[0], Group);
+		
+		// Start Issue #252
 		NewGroupState = ReinforcementUnit.GetGroupMembership();
 		NewGroupState.MyEncounterZoneWidth = class'Helpers_LW'.default.REINF_EZ_WIDTH;
 		NewGroupState.MyEncounterZoneDepth = class'Helpers_LW'.default.REINF_EZ_DEPTH;
 		NewGroupState.MyEncounterZoneOffsetFromLOP=0;
 		NewGroupState.MyEncounterZoneOffsetAlongLOP=class'Helpers_LW'.default.REINF_EZ_OFFSET;
-        NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState(("Give reinforcement group Patrol orders [" $ string(NewGroupState.ObjectID)) $ "]");
+		NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState(("Give reinforcement group Patrol orders [" $ string(NewGroupState.ObjectID)) $ "]");
 		NewGroupState = XComGameState_AIGroup(NewGameState.CreateStateObject(class'XComGameState_AIGroup', NewGroupState.ObjectID));
-        NewGameState.AddStateObject(NewGroupState);
+		NewGameState.AddStateObject(NewGroupState);
 		`TACTICALRULES.SubmitGameState(NewGameState);
+		// End Issue #252
 		Group.InitTurn();
 	}
 

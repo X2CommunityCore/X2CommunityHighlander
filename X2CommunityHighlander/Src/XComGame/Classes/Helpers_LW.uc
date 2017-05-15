@@ -114,10 +114,12 @@ var config bool EnablePsiTreeOrganization;
 //allow certain classes to be overridden recursively, so the override can be overridden
 var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
 
+// Start Issue #252
 //These variables are generic patrol zone settings for reinforcements who land before concealment is broken
 var config int REINF_EZ_WIDTH;
 var config int REINF_EZ_DEPTH;
 var config int REINF_EZ_OFFSET;
+// End Issue #252
 
 var config bool USE_FLOAT_PRICE_MULTIPLIER;
 var config array<float> InterestPriceMultiplierFloat;
