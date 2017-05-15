@@ -64,8 +64,9 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - hide income on BuildOutpost alert (#158)
 - override PCSRemovalContinentBonus (#170)
 - Optimise and add configurable Doom display, with greater maximums (#184)
+- allow config of extra Squad Select auto remove functionality (#240)
 - Add PsiTreeOrganisation, to force a capstone ability early to ensure it is
-  achievable
+  achievable (#197)
 
 ### Improvements
 - Prevent Secondary Weapons contributing to stat markups on Loadout/Stats

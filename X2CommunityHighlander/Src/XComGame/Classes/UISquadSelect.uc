@@ -67,10 +67,12 @@ var config array<name> SkulljackObjectives; // Objectives which require a skullj
 //Set this to 'true' before leaving screen, will set back to false on focus regain
 var bool m_bNoRefreshOnLoseFocus;
 
+// Start Issue #240
 // PI Added: Configure auto remove equipment. These have two different senses to ensure that all false values
 // maintains baseline behavior.
 var config bool NoStripWoundedInventory;	// If true, suppress the normal behavior of stripping utility items from wounded soldiers.
 var config bool AutoStripWoundedAllItems;	// If true, also strip other equipment slots on wounded soldiers.
+// End Issue #240
 
 // Constructor
 simulated function InitScreen(XComPlayerController InitController, UIMovie InitMovie, optional name InitName)
@@ -547,11 +549,13 @@ simulated function MakeWoundedSoldierItemsAvailable()
 	local array<EInventorySlot> RelevantSlots;
 	local int idx;
 
+	// Start Issue #240
 	// PI Added: INI setting to prevent wounded soldiers from having their equipment stripped.
 	if (NoStripWoundedInventory)
 	{
 		return;
 	}
+	// End Issue #240
 
 	History = `XCOMHISTORY;
 	UpdateState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Make Wounded Soldier Items Available");
@@ -561,6 +565,7 @@ simulated function MakeWoundedSoldierItemsAvailable()
 	RelevantSlots.AddItem(eInvSlot_GrenadePocket);
 	RelevantSlots.AddItem(eInvSlot_AmmoPocket);
 
+	// Start Issue #240
 	// PI Added: new INI setting to strip *all* slots from wounded soldiers.
 	if (AutoStripWoundedAllItems)
 	{
@@ -574,6 +579,7 @@ simulated function MakeWoundedSoldierItemsAvailable()
 		RelevantSlots.AddItem(eInvSlot_SenaryWeapon);
 		RelevantSlots.AddItem(eInvSlot_SeptenaryWeapon);
 	}
+	// End Issue #240
 
 	for(idx = 0; idx < XComHQ.Crew.Length; idx++)
 	{
