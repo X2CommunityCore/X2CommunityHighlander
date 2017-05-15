@@ -272,6 +272,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix X2RadiusManager using Pawn and not Unit as source of truth for a unit's
   team. (#248)
 - Fix incorrect GameplayVisibility Filter for reinforcements spawning (#250)
+- Fix showing rupture damage in damage previews for non rupturing abilities
+  (#253)
 
 
 

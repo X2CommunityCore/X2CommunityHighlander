@@ -1075,7 +1075,7 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 	local XComGameState_BaseObject TargetObj;
 	local Damageable DamageableTarget;
 	local int i, Rupture;
-	local bool HasWeaponDamage; // PI added
+	local bool HasWeaponDamage; // For Issue #253
 
 	AbilityTemplate = GetMyTemplate();
 
@@ -1107,11 +1107,14 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 	{
 		if (TargetEffects[i] != none)
 		{
-			// PI Mods: Remember if this ability has a weapon damage effect.
+			// Start Issue #253
+			// Remember if this ability has a weapon damage effect.
 			if (X2Effect_ApplyWeaponDamage(TargetEffects[i]) != none)
 			{
 				HasWeaponDamage = true;
 			}
+			// End Issue #253
+
 			TempMaxDamage = EmptyDamageValue;
 			TempMinDamage = EmptyDamageValue;
 			TargetEffects[i].GetDamagePreview(TargetRef, self, TempMinDamage, TempMaxDamage, AllowsShield);
@@ -1140,6 +1143,7 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 		}
 	}
 
+	// Start Issue #253
 	// PI Mods: Only add rupture damage to the preview if this ability is doing weapon damage.
 	// Other ability kinds don't add rupture damage even if they are damaging abilities, and
 	// many abilities don't do any damage at all and still show rupture in the preview without
@@ -1150,6 +1154,7 @@ function NormalDamagePreview(StateObjectReference TargetRef, out WeaponDamageVal
 		MinDamagePreview.Damage += Rupture;
 		MaxDamagePreview.Damage += Rupture;
 	}
+	// End Issue #253
 }
 
 event int GetEnvironmentDamagePreview( )
