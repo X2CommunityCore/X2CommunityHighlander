@@ -783,7 +783,7 @@ static function MindControlVisualizationTicked(XComGameState VisualizeGameState,
 static function MindControlVisualizationRemoved(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack, const name EffectApplyResult)
 {
 	local XComGameState_Unit UnitState;
-	local X2Action_CameraLookAt LookAtAction; // PI Added
+	local X2Action_CameraLookAt LookAtAction; // For Issue #246
 
 	UnitState = XComGameState_Unit(BuildTrack.StateObject_NewState);
 	if (UnitState == none)
@@ -795,12 +795,14 @@ static function MindControlVisualizationRemoved(XComGameState VisualizeGameState
 		return;
 	}
 
+	// Start Issue #246
 	// Camera action for mind control moved from the effect itself to the EffectRemovedVisualizationFn. Allows mods to decide how a removed
 	// MC should be visualized, including whether or not to move the camera.
 	LookAtAction = X2Action_CameraLookAt(class'X2Action_CameraLookAt'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
 	LookAtAction.UseTether = false;
 	LookAtAction.LookAtObject = UnitState;
 	LookAtAction.BlockUntilActorOnScreen = true;
+	// End Issue #246
 
 	class'X2Action_SwapTeams'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext());
 
