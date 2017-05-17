@@ -110,6 +110,16 @@ var config array<ProjectileSoundMapping> ProjectileSounds;
 var config bool EnablePsiTreeOrganization;
 // End Issue #197
 
+
+// Start Issue #261
+// Cannot be removed, Highlander doesn't use but LW2 depends on the presence of
+// this variable and crashes otherwise.
+// Configuration array to control how much damage fire does when it finishes burning
+// This is indexed by the number of turns it has been burning, which is typically 1 to 3,
+// but can be longer if the environment actor was configured with Toughness.AvailableFireFuelTurns
+var config array<int> FireEnvironmentDamageAfterNumTurns;
+// End Issue #261
+
 // Start Issue #130
 //allow certain classes to be overridden recursively, so the override can be overridden
 var config array<ModClassOverrideEntry> UIDynamicClassOverrides;
