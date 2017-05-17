@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # XCOM ModBuddy Solution File, Format Version 11.00
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "X2CommunityHighlander", "X2CommunityHighlander\X2CommunityHighlander.x2proj", "{7351D0A4-1E68-46D6-B807-1DD252CC9C03}"
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "X2CommunityHighlander", "X2CommunityHighlander\X2CommunityHighlander.x2proj", "{CF9AA2D6-E161-4EFC-A5AC-85A28B770037}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Default|XCOM 2 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7351D0A4-1E68-46D6-B807-1DD252CC9C03}.Debug|XCOM 2.ActiveCfg = Debug|XCOM 2
-		{7351D0A4-1E68-46D6-B807-1DD252CC9C03}.Debug|XCOM 2.Build.0 = Debug|XCOM 2
-		{7351D0A4-1E68-46D6-B807-1DD252CC9C03}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
-		{7351D0A4-1E68-46D6-B807-1DD252CC9C03}.Default|XCOM 2.Build.0 = Default|XCOM 2
+		{CF9AA2D6-E161-4EFC-A5AC-85A28B770037}.Debug|XCOM 2.ActiveCfg = Debug|XCOM 2
+		{CF9AA2D6-E161-4EFC-A5AC-85A28B770037}.Debug|XCOM 2.Build.0 = Debug|XCOM 2
+		{CF9AA2D6-E161-4EFC-A5AC-85A28B770037}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
+		{CF9AA2D6-E161-4EFC-A5AC-85A28B770037}.Default|XCOM 2.Build.0 = Default|XCOM 2
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
