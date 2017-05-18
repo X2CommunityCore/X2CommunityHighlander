@@ -195,6 +195,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   XComPathingPawn (#259)
 - Remove protections of AbilityTemplate Effects for easier runtime alteration
   (#12)
+- Remove private of EventLabel on AnimNotify_CinescriptEvent (#262)
 - Remove protection of ShotBreakdown on X2AbilityToHitCalc (#13)
 - Remove protection of Behaviors on X2AIBTBehaviorTree (#13)
 - Remove protection of LootTables on X2LootTable (#41)
@@ -214,6 +215,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 ### Improvements
 - Flying Enemies path searching improved to use unlimited search depth on
   movement. (#5)
+- Modify X2Effect Target Condition to be consistent with how X2AbilityTemplate
+  does it (#209)
 - Prevent grenades affectting units not in the tiles getting the world effect
   (for flying enemies) (#48)
 - Prevent SpawnUnitFromAvenger using units with eStatus_OnMission (#7)
