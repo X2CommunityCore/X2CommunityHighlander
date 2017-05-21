@@ -1017,9 +1017,13 @@ function FireProjectileInstance(int Index)
 	}
 
 	// Start Issue #49
-	// PI: Allow mods to override fire sounds: Look up the mapping for this projectile + index and
-	// play it if we find one.
-	Cue = class'Helpers_LW'.static.FindFireSound(string(ObjectArchetype.Name), Index);
+	// PI: Allow mods to override fire sounds: 
+	// Pass the full path to the projectile element's archetype as well as the name of this projectile archetype and projectile index.
+	//
+	// The first two arguments (projectile archetype+index) were the original mechanism for doing this mapping. This is not reliable
+	// on certain projectiles due to hit/miss settings etc. The 3rd argument is the preferred mechanism now to do this mapping as the
+	// projectile element archetype is reliable and easy to find in the editor.
+	Cue = class'Helpers_LW'.static.FindFireSound(string(ObjectArchetype.Name), Index, PathName(Projectiles[Index].ProjectileElement.ObjectArchetype));
 	if (Cue != none)
 	{
 		Projectiles[Index].SourceAttachActor.PlaySound(Cue);
@@ -1804,7 +1808,7 @@ function DoMainImpact(int Index, float fDeltaT, bool bShowImpactEffects)
 
 	// Start Issue #49
 	// PI: Allow mods to override death sounds.
-	Cue = class'Helpers_LW'.static.FindDeathSound(string(ObjectArchetype.Name), Index);
+	Cue = class'Helpers_LW'.static.FindDeathSound(string(ObjectArchetype.Name), Index, PathName(Projectiles[Index].ProjectileElement.ObjectArchetype));
 	if (Cue != none)
 	{
 		Projectiles[Index].TargetAttachActor.PlaySound(Cue, , , , Projectiles[Index].InitialTargetLocation);

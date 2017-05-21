@@ -104,6 +104,7 @@ static function bool ValidateEvacArea( const out TTile EvacCenterLoc, bool Inclu
 	local TTile EvacMin, EvacMax, TestTile;
 	local int NumTiles, NumValidTiles;
 	local int IsOnFloor;
+	local XComWorldData WorldData; // PI Added - Issue #264
 
 	class'XComGameState_EvacZone'.static.GetEvacMinMax2D( EvacCenterLoc, EvacMin, EvacMax );
 
@@ -113,12 +114,23 @@ static function bool ValidateEvacArea( const out TTile EvacCenterLoc, bool Inclu
 	}
 
 	NumTiles = (EvacMax.X - EvacMin.X + 1) * (EvacMax.Y - EvacMin.Y + 1);
+	WorldData = `XWORLD; // PI Added
 
 	TestTile = EvacMin;
 	while (TestTile.X <= EvacMax.X)
 	{
 		while (TestTile.Y <= EvacMax.Y)
 		{
+			// Issue #264
+			// PI Added: Reject any evac zone that has any tile out of bounds of the map.
+			// Evac zones that are partially out of bounds behave weirdly and can cause
+			// units to be unable to evac.
+			if (WorldData.IsTileOutOfRange(TestTile))
+			{
+				return false;
+			}
+			// End Issue #264
+
 			if (ValidateEvacTile( TestTile, IsOnFloor ))
 			{
 				NumValidTiles++;

@@ -262,6 +262,7 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Fix X2Action_ExitCover breaking step back location when called while already
   out of cover, resulting in unit reentering wrong tile on EnterCover (#244)
 - Remove exploit causing enemy units to enter RedAlert without scamper (#123)
+- Validate and reject EvacZones that are partially out of bounds (#264)
 - Fix XCGS_LootDrop when multiple drops active (#91)
 - Ensure Patrol Locations are within map bounds to ensure they are set (#67)
 - Fix Acid & Burn Effect disappearing when the source of the effect dies (#44)

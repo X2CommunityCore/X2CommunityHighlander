@@ -92,13 +92,25 @@ var config bool EnableRestartMissionButtonInIronman;
 
 // Start Issue #49
 // A list of replacement projectile sound effects mapping a projectile element to a sound cue name.
-// The 'ProjectileName' must be of the form ProjectileName_Index where ProjectileName is the name of the
+//
+// 'ProjectileName' can have one of two forms:
+// 
+// 1) (Preferred), the full path of the object archetype of the projectile element you want to modify. This is the
+// name as it appears in the Unreal Editor X2UnifiedProjectile "Projectile Elements" array, without the surrounding
+// X2UnifiedProjectileElement''. That is, for the vanilla beam assault rifle, the path for the element with the
+// fire and death sounds is "WP_AssaultRifle_BM.PJ_AssaultRifle_BM:X2UnifiedProjectileElement_3".
+//
+// 2) (Deprecated) The 'ProjectileName' is of the form ProjectileName_Index where ProjectileName is the name of the
 // projectile archetype, and Index is the index into the projectile array for the element that should have
 // the sound associated with it. e.g. "PJ_Shotgun_CV_15" to set index 15 in the conventional shotgun (the
 // one with the fire sound). Note that the index counts individual projectile elements, and may not exactly
 // match what is present in the editor. For example, the conventional shotgun has only two elements in the array,
 // but the first one is a volley of 15 projectiles. So the sound attached to index 1 in the array is
 // actually index 15 at runtime.
+//
+// The first form is preferred because it is always the same regardless of hit/miss settings that may impact the
+// index on some projectiles, making it impossible to statically provide the right index. The second form is 
+// still provided for backwards compatibility.
 //
 // The fire or death sound is the name of a sound cue loaded into the sound manager system. See the SoundCuePaths
 // array in XComSoundManager.
@@ -266,18 +278,27 @@ static function GetAlienUnitsInRange(TTile kLocation, int nMeters, out array<Sta
 	}
 }
 
-
 // Start Issue #49
 // Used by hooks added to X2UnifiedProjectile
-function static SoundCue FindFireSound(String ObjectArchetypeName, int Index)
+function static SoundCue FindFireSound(String ObjectArchetypeName, int Index, optional String ProjectileElementArchetypePath = "")
 {
 	local String strKey;
 	local int SoundIdx;
 	local XComSoundManager SoundMgr;
 
-	strKey = ObjectArchetypeName $ "_" $ String(Index);
+	SoundIdx = -1;
 
-	SoundIdx = default.ProjectileSounds.Find('ProjectileName', strKey);
+	// First try to search based on the projectile element, if provided.
+	if (Len(ProjectileElementArchetypePath) > 0)
+		SoundIdx = default.ProjectileSounds.Find('ProjectileName', ProjectileElementArchetypePath);
+
+	// Failing that fall-back to the old projectile archetype + index method
+	if (SoundIdx < 0)
+	{
+		strKey = ObjectArchetypeName $ "_" $ String(Index);
+		SoundIdx = default.ProjectileSounds.Find('ProjectileName', strKey);
+	}
+
 	if (SoundIdx >= 0 && default.ProjectileSounds[SoundIdx].FireSoundPath != "")
 	{
 		SoundMgr = `SOUNDMGR;
@@ -291,15 +312,25 @@ function static SoundCue FindFireSound(String ObjectArchetypeName, int Index)
 	return none;
 }
 
-function static SoundCue FindDeathSound(String ObjectArchetypeName, int Index)
+function static SoundCue FindDeathSound(String ObjectArchetypeName, int Index, optional String ProjectileElementArchetypePath = "")
 {
 	local string strKey;
 	local int SoundIdx;
 	local XComSoundManager SoundMgr;
 
-	strKey = ObjectArchetypeName $ "_" $ String(Index);
+	SoundIdx = -1;
 
-	SoundIdx = default.ProjectileSounds.Find('ProjectileName', strKey);
+	// First try to search based on the projectile element, if provided.
+	if (Len(ProjectileElementArchetypePath) > 0)
+		SoundIdx = default.ProjectileSounds.Find('ProjectileName', ProjectileElementArchetypePath);
+
+	// Failing that fall-back to the old projectile archetype + index method
+	if (SoundIdx < 0)
+	{
+		strKey = ObjectArchetypeName $ "_" $ String(Index);
+		SoundIdx = default.ProjectileSounds.Find('ProjectileName', strKey);
+	}
+
 	if (SoundIdx >= 0 && default.ProjectileSounds[SoundIdx].DeathSoundPath != "")
 	{
 		SoundMgr = `SOUNDMGR;
