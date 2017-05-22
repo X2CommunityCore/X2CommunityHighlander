@@ -4,10 +4,10 @@ Welcome to the X2CommunityHighlander Github project. This is where the work happ
 
 # What version are we at?
 
-The working version of X2CommunityHighlander is 1.2.
-It supports Long War 2, version 1.3.
+The working version of X2CommunityHighlander is 1.3.
+It supports Long War 2, version 1.4.
 
-# TODO
+# The Job List
 
 * Complete issues.
 
