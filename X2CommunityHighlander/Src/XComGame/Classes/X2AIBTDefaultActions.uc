@@ -1205,12 +1205,16 @@ function BuildVisualizationForNoiseAlert(XComGameState VisualizeGameState, out a
 	if (UnitState == none)
 		return;
 
-	`XCOMHISTORY.GetCurrentAndPreviousGameStatesForObjectID(UnitState.ObjectID, BuildTrack.StateObject_OldState, BuildTrack.StateObject_NewState, , VisualizeGameState.HistoryIndex);
-	BuildTrack.StateObject_NewState = UnitState;
-	BuildTrack.TrackActor = UnitState.GetVisualizer();
-	SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyover'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
-	SoundAndFlyOver.SetSoundAndFlyOverParameters(None, class'X2Action_Yell'.default.m_sYellMessage, '', eColor_Bad);
-	OutVisualizationTracks.AddItem(BuildTrack);
+	// only if the unit actually yells -- by default, they don't
+	if (class'Helpers_LW'.default.NoiseAlertSoundRange > 0)
+	{
+		`XCOMHISTORY.GetCurrentAndPreviousGameStatesForObjectID(UnitState.ObjectID, BuildTrack.StateObject_OldState, BuildTrack.StateObject_NewState, , VisualizeGameState.HistoryIndex);
+		BuildTrack.StateObject_NewState = UnitState;
+		BuildTrack.TrackActor = UnitState.GetVisualizer();
+		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyover'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
+		SoundAndFlyOver.SetSoundAndFlyOverParameters(None, class'X2Action_Yell'.default.m_sYellMessage, '', eColor_Bad);
+		OutVisualizationTracks.AddItem(BuildTrack);
+	}
 }
 // End Issue #21
 
