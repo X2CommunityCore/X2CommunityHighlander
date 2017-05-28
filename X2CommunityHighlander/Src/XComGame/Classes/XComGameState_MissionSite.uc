@@ -98,6 +98,7 @@ function bool CacheSelectedMissionData(int ForceLevel, int AlertLevel)
 	local MissionSchedule SelectedMissionSchedule;
 	local PrePlacedEncounterPair EncounterInfo;
 	local ConfigurableEncounter Encounter;
+	local ConfigurableEncounter EmptyConfigurableEncounter; // Variable for Issue #127
 	local X2SelectedEncounterData NewEncounter, EmptyEncounter;
 	local XComAISpawnManager SpawnManager;
 	local array<X2CharacterTemplate> SelectedCharacterTemplates;
@@ -151,6 +152,10 @@ function bool CacheSelectedMissionData(int ForceLevel, int AlertLevel)
 			{
 				continue;
 			}
+
+			// Start issue #127 -- in case EncounterInfo is a Bucket and no entries are available to spawn (tactical tags, force level), the game uses the stale encounter from the previous loop
+			Encounter = EmptyConfigurableEncounter;
+			// End issue #127
 
 			TacticalMissionManager.GetConfigurableEncounter(EncounterInfo.EncounterID, Encounter, ForceLevel, AlertLevel, XComHQ);
 
