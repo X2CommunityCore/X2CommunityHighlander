@@ -39,9 +39,10 @@ function EventListenerReturn RankUpMessageListener(Object EventData, Object Even
 	if (UnitState != None)
 	{
 		Display = Repl(RankUpMessage, "%NAME", UnitState.GetName(eNameType_RankLast));
-		`PRES.Notify(Display, default.RankUpIcon);
+		// Start issue #212 -- popup in game state spoils results of turn, comment out, leave combat log in
+		// `PRES.Notify(Display, default.RankUpIcon);
+		// End issue #212
 		`COMBATLOG(Display);
-
 		UnitState.RankUpTacticalVisualization();
 	}
 

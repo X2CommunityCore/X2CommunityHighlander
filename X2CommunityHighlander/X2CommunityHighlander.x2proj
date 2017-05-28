@@ -120,6 +120,9 @@
     <Content Include="Src\XComGame\Classes\UIDebugHistory.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\UIEventNoticesTactical.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\UIFacility_CIC.uc">
       <SubType>Content</SubType>
     </Content>
