@@ -63,6 +63,9 @@
     <Content Include="Src\XComGame\Classes\LWXComGameVersionTemplate.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\SeqAct_SpawnEvacZone.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\SeqAct_SpawnUnitFromAvenger.uc">
       <SubType>Content</SubType>
     </Content>
@@ -145,6 +148,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\UIItemCard.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\UIListItemString.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\UIMissionSummary.uc">
