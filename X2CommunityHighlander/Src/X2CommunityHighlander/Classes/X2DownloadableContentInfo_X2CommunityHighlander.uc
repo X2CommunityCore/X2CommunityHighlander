@@ -88,10 +88,10 @@ static event OnDifficultyChanged()
 
 }
 
-simulated function EnableDLCContentPopupCallback(eUIAction eAction)
-{
-
-}
+//simulated function EnableDLCContentPopupCallback(eUIAction eAction)
+//{
+//
+//}
 
 /// <summary>
 /// Called when viewing mission blades with the Shadow Chamber panel, used primarily to modify tactical tags for spawning

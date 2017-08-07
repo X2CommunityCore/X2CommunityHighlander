@@ -451,3 +451,14 @@ static function int RemoveDoomFromFortress(XComGameState_HeadquartersAlien Alien
 	return 0;
 }
 /// End Issue #230
+
+/// Start Issue #271
+/// <summary>
+/// Called from XComUnitPawn:UpdateAnimations 
+/// CustomAnimSets will be added to the pawns animsets
+/// </summary>
+static function UpdateAnimations(out array<AnimSet> CustomAnimSets, XComGameState_Unit UnitState, XComUnitPawn Pawn)
+{
+
+}
+/// End Issue #271
