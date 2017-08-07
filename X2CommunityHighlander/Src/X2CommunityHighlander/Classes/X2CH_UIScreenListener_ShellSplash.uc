@@ -1,6 +1,9 @@
-class X2CH_UIScreenListener_ShellSplash extends UIScreenListener;
+class X2CH_UIScreenListener_ShellSplash extends UIScreenListener config(Game);
 
-var UIText VersionText;
+var config bool bEnableVersionDisplay;
+
+var localized string strLWHLVersion;
+var localized string strCHLVersion;
 
 event OnInit(UIScreen Screen)
 {
@@ -9,9 +12,12 @@ event OnInit(UIScreen Screen)
 	local X2StrategyElementTemplate LWElem, CHElem;
 	local CHXComGameVersionTemplate CHVersion;
 	local LWXComGameVersionTemplate LWVersion;
-	local String VersionString;
+	local string VersionString;
 
-	if(UIShell(Screen) == none)  // this captures UIShell and UIFinalShell
+	local UIText VersionText;
+	local int iMajor, iMinor;
+
+	if(UIShell(Screen) == none || !bEnableVersionDisplay)  // this captures UIShell and UIFinalShell
 		return;
 
 	ShellScreen = UIShell(Screen);
@@ -26,23 +32,40 @@ event OnInit(UIScreen Screen)
 	if (CHElem != none)
 	{
 		CHVersion = CHXComGameVersionTemplate(CHElem);
-		VersionString = VersionString $ "X2CommunityHighlander Version " $ CHVersion.MajorVersion $ "." $ CHVersion.MinorVersion $ ". ";
+		VersionString = strCHLVersion;
+		iMajor = CHVersion.MajorVersion;
+		iMinor = CHVersion.MinorVersion;
 	}
-
-	if (LWElem != none)
+	else if (LWElem != none)
 	{
 		LWVersion = LWXComGameVersionTemplate(LWElem);
-		VersionString = VersionString $ "Long War Highlander Version " $ LWVersion.MajorVersion $ "." $ LWVersion.MinorVersion $ ". ";
+		VersionString = strLWHLVersion;
+		iMajor = LWVersion.MajorVersion;
+		iMinor = LWVersion.MinorVersion;
 	}
+	VersionString = Repl(VersionString, "%MAJOR", iMajor);
+	VersionString = Repl(VersionString, "%MINOR", iMinor);
 
-	`log("X2CH SCREEN LISTENER ON SPLASH");
+	`log("X2CH SCREEN LISTENER ON SPLASH" @ VersionString);
 	VersionText = ShellScreen.Spawn(class'UIText', ShellScreen);
-	VersionText.InitText();
-	VersionText.SetText(VersionString);
-	VersionText.AnchorTopRight();
-	VersionText.SetPosition(10,10);
-	VersionText.SetSize(400,32);
-	VersionText.Show();
+	VersionText.InitText('theVersionText');
+	VersionText.SetText(VersionString, OnTextSizeRealized);
+	// This code aligns the version text to the Main Menu Ticker
+	VersionText.AnchorBottomRight();
+	VersionText.SetY(-ShellScreen.TickerHeight + 10);
+}
+
+function OnTextSizeRealized()
+{
+	local UIText VersionText;
+	local UIShell ShellScreen;
+
+	ShellScreen = UIShell(`SCREENSTACK.GetFirstInstanceOf(class'UIShell'));
+	VersionText = UIText(ShellScreen.GetChildByName('theVersionText'));
+	VersionText.SetX(-10 - VersionText.Width);
+	// this makes the ticker shorter -- if the text gets long enough to interfere, it will automatically scroll
+	ShellScreen.TickerText.SetWidth(ShellScreen.Movie.m_v2ScaledFullscreenDimension.X - VersionText.Width - 20);
+	
 }
 
 defaultProperties

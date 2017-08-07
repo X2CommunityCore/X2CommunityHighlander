@@ -27,6 +27,9 @@
     <Content Include="Config\XComUI.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\X2CommunityHighlander.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
