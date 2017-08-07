@@ -32,6 +32,9 @@
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\X2CommunityHighlander\Classes\X2CH_UIScreenListener_ShellSplash.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\X2CommunityHighlander\Classes\X2DownloadableContentInfo_X2CommunityHighlander.uc" />
     <Content Include="Src\XComGame\Classes\AnimNotify_CinescriptEvent.uc">
       <SubType>Content</SubType>
