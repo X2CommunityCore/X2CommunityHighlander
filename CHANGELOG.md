@@ -304,6 +304,9 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 ### Mod/DLC Hooks
 - 'DLCAppendSockets': append skeleton sockets to a UnitPawn (#132)
 - 'DLCDisableTutorial': mod can disable tutorial (#180)
+- 'UpdateAnimations': mod can add new animation sets to Pawns, as well as
+  gaining access to the UnitState and Pawn itself for other modifications (to be
+  used with care, modders!) (#271)
 
 
 ### Event Hooks
