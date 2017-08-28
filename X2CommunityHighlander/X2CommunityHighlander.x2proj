@@ -285,10 +285,16 @@
     <Content Include="Src\XComGame\Classes\UIViewObjectives.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2Ability.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2AbilityTemplate.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2AbilityToHitCalc.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2AbilityToHitCalc_Hacking.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2Ability_DefaultAbilitySet.uc">
@@ -313,6 +319,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2Action_ExitCover.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2Action_Grapple.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2AIBTBehaviorTree.uc">
@@ -357,6 +366,9 @@
     <Content Include="Src\XComGame\Classes\X2Effect_PersistentStatChange.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2Effect_Reaper.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2Effect_Shredder.uc">
       <SubType>Content</SubType>
     </Content>
@@ -387,7 +399,16 @@
     <Content Include="Src\XComGame\Classes\X2StrategyElement_DefaultMissionSources.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2StrategyGameRuleset.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2TacticalGameRuleset.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2TacticalGameRulesetDataStructures.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2TacticalGameRuleset_MovementObserver.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2TargetingMethod_EvacZone.uc">
