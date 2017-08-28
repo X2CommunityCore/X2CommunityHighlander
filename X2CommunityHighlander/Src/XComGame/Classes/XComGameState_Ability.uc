@@ -1843,6 +1843,17 @@ function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Objec
 	if (UnitState == none)
 		UnitState = XComGameState_Unit(History.GetGameStateForObjectID(OwnerStateObject.ObjectID));
 
+	// Start Issue #276
+	// PI mods: Panicking units are not very vigilant (and just won't work). Impaired/burning units
+	// can be configured, as it's a behavior change to disallow EV on disoriented or burning units.
+	if (UnitState.isPanicked() ||
+		(class'Helpers_LW'.default.EverVigilantExcludeImpaired && UnitState.IsImpaired(false)) ||
+		(class'Helpers_LW'.default.EverVigilantExcludeBurning && UnitState.IsBurning()))
+	{
+		return ELR_NoInterrupt;
+	}
+	// End Issue #276
+
 	if (UnitState.NumAllReserveActionPoints() == 0)     //  don't activate overwatch if the unit is potentially doing another reserve action
 	{
 		GotValue = UnitState.GetUnitValue('NonMoveActionsThisTurn', NonMoveActionsThisTurn);
@@ -1889,7 +1900,15 @@ function EventListenerReturn EverVigilantTurnEndListener(Object EventData, Objec
 				ApplyData.TargetStateObjectRef = UnitState.GetReference();
 				VigilantEffect = class'X2Effect'.static.GetX2Effect(ApplyData.EffectRef);
 				`assert(VigilantEffect != none);
-				VigilantEffect.ApplyEffect(ApplyData, UnitState, NewGameState);
+
+				// Start Issue #276
+				// PI: Don't proceed if we failed to apply this effect.
+				if (VigilantEffect.ApplyEffect(ApplyData, UnitState, NewGameState) != 'AA_Success')
+				{
+					History.CleanupPendingGameState(NewGameState);
+					return ELR_NoInterrupt;
+				}
+				// End Issue #276
 
 				if (UnitState.NumActionPoints() == 0)
 				{

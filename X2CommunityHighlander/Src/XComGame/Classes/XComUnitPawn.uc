@@ -1888,22 +1888,24 @@ simulated function CreateVisualInventoryAttachment_Pistol(UIPawnMgr PawnMgr, EIn
 		bRegularItem = EquipmentTemplate == none || EquipmentTemplate.CosmeticUnitTemplate == "";
 		if(bRegularItem)
 		{
-			class'XGItem'.static.CreateVisualizer(ItemState, bSetAsVisualizer, self);
-			kWeapon = XGWeapon(ItemState.GetVisualizer());
+			kWeapon = XGWeapon(class'XGItem'.static.CreateVisualizer(ItemState, bSetAsVisualizer, self));
 
-			if(kWeapon.m_kOwner != none)
+			if (kWeapon != none)
 			{
-				kWeapon.m_kOwner.GetInventory().PresRemoveItem(kWeapon);
-			}
+				if(kWeapon.m_kOwner != none)
+				{
+					kWeapon.m_kOwner.GetInventory().PresRemoveItem(kWeapon);
+				}
 
-			if(PawnMgr != none)
-			{
-				PawnMgr.AssociateWeaponPawn(InvSlot, ItemState.GetVisualizer(), UnitState.GetReference().ObjectID, self);
-			}
+				if(PawnMgr != none)
+				{
+					PawnMgr.AssociateWeaponPawn(InvSlot, ItemState.GetVisualizer(), UnitState.GetReference().ObjectID, self);
+				}
 
-			kWeapon.UnitPawn = self;
-			kWeapon.m_eSlot = X2WeaponTemplate(ItemState.GetMyTemplate()).StowedLocation; // right hand slot is for Primary weapons
-			EquipWeapon(kWeapon.GetEntity(), true, false);
+				kWeapon.UnitPawn = self;
+				kWeapon.m_eSlot = X2WeaponTemplate(ItemState.GetMyTemplate()).StowedLocation; // right hand slot is for Primary weapons
+				EquipWeapon(kWeapon.GetEntity(), true, false);
+			}
 		}
 		else
 		{

@@ -59,6 +59,6 @@ function int GetVersionNumber(optional out int Major, optional out int Minor, op
 defaultproperties
 {
     MajorVersion = 1;
-    MinorVersion = 4;
+    MinorVersion = 5;
 }
 

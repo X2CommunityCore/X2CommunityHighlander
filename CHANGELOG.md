@@ -188,6 +188,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   (#249)
 - Add config for reinforcement patrol zones when not in scamper/red alert (#252)
 - Add config for AI behaviour regarding AOE Targeting and Visibility (#260)
+- Add config for Ever Vigilant being excluded when unit burning or impaired
+  (#276)
 
 ### Modding Exposures
 - Remove const from plot and parcel definition arrays (#199)
@@ -211,6 +213,8 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   provision of an AlertTile (#198)
 - Move CameraAction for X2Effect_MindControl and into the OnRemovedFn so mods
   can decide on the visualization (#246)
+- Move contents of FinalizeHackAbility_BuildGameState into a static helper
+  function so it can be called from other hack abilities. (#282)
 
 ### Improvements
 - Flying Enemies path searching improved to use unlimited search depth on
@@ -254,6 +258,12 @@ All notable changes to Vanilla Behaviour will be documented in this file.
 - Empty out pending loot for units killed by explosives (#112)
 - Visualization Fixes for Hacking to accomodate effect addition/removal better
   than vanilla does (#242)
+- Fix rescued soldier VIPs becoming wounded because the VIP proxy unit had less
+  max HP than actual soldier. (#277)
+- Show Defense stat on UISoldierHeader, hiding hack stat for PsiOps to prevent
+  overflow. (#280)
+- Alter Tactical Interrupt Handling for Movement. (#284)
+- Improve handling of event ticking when units change team. (#286)
 
 ### Fixes
 - Fix for Restart Mission (#227)
@@ -293,9 +303,13 @@ All notable changes to Vanilla Behaviour will be documented in this file.
   future mission. (#257)
 - Fix issue where wounded units could recover health permanently when deployed
   in an Avenger mission, resulting in a bad UnitState. (#258)
-
-
-
+- Allow Escape key to cancel hacks. (#278)
+- Fix Divide by Zero errors in hacking UI. (#279)
+- Fix GetHackDefenseForTarget when hack defense drops below zero. (#281)
+- Fix Grapple not resetting bSteppingOutOfCover. (#283)
+- When handling loot, check for existing BattleDataState and HQState on the
+  current state object. (#285)
+- Ensure max objective count correctly spawns in SelectObjectiveSpawns (#287)
 
 
 

@@ -71,6 +71,9 @@ var bool m_bNoRefreshOnLoseFocus;
 // PI Added: Configure auto remove equipment. These have two different senses to ensure that all false values
 // maintains baseline behavior.
 var config bool NoStripWoundedInventory;	// If true, suppress the normal behavior of stripping utility items from wounded soldiers.
+var config bool NoStripOnTraining;			// If true, suppress the normal behavior of stripping items when a soldier is put
+											// in a training slot. Note that this is not referenced in this class but is 
+											// added here for consistency and back-compatibility to keep related flags together.
 var config bool AutoStripWoundedAllItems;	// If true, also strip other equipment slots on wounded soldiers.
 // End Issue #240
 

@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------------------
 //  FILE:    LWXComGameVersionTemplate.uc
 //  AUTHOR:  tracktwo (Pavonis Interactive)
-//  PURPOSE: Version information for the LW2 XComGame replacement. 
-// 
+//  PURPOSE: Version information for the LW2 XComGame replacement.
+//
 //  This is implemented as a template to allow mods to detect whether the LW2 XComGame replacement
 //  is installed, independent of LW2 itself. It's a template to avoid needing to compile against any
 //  new sources to get mods to build (which would then crash the game if it tried to access a function
@@ -57,6 +57,5 @@ function int GetVersionNumber(optional out int Major, optional out int Minor, op
 defaultproperties
 {
     MajorVersion = 1;
-    MinorVersion = 4;
+    MinorVersion = 5;
 }
-

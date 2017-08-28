@@ -6,7 +6,7 @@
 //  PURPOSE: Displays hacking overlay during tactical missions.
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
-//--------------------------------------------------------------------------------------- 
+//---------------------------------------------------------------------------------------
 
 class UIHackingScreen extends UIScreen;
 
@@ -23,6 +23,7 @@ var float m_hackDuration;
 var bool m_SkullJacking;
 var bool m_SkullMining;
 var bool m_hackStarted;
+var bool m_hackCanceled; // Issue #278
 var bool bWaitingForInput;
 var int m_rewardsTaken;
 
@@ -91,7 +92,7 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	m_SkullJacking = (HackAbilityTemplate.FinalizeAbilityName == 'FinalizeSKULLJACK');
 	m_SkullMining = (HackAbilityTemplate.FinalizeAbilityName == 'FinalizeSKULLMINE');
 	MC.FunctionNum("SetScreenType", (m_SkullJacking || m_SkullMining) ? 1 : 0);
-	
+
 	//set up the advent splash screen text
 	MC.BeginFunctionOp("SetAdventStartScreen");
 	MC.QueueString(m_AdventName);
@@ -110,6 +111,8 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 
 	HackOffense = class'X2AbilityToHitCalc_Hacking'.static.GetHackAttackForUnit(UnitState, FinalizeHackAbility);
 	HackDefense = class'X2AbilityToHitCalc_Hacking'.static.GetHackDefenseForTarget(HackTargetObject);
+
+	//`LOG ("Hack Defense is" @ HackDefense);
 
 	// always select the first selectable hack reward (the one in slot 1)
 	SelectedHackRewardOption = 1;
@@ -162,7 +165,7 @@ simulated function OnInit()
 		{
 			ButtonMC.Invoke("setStyle", AsParamArray);
 			// (kmartinez) Array was storing a copy of the object, so I had to remove it, modify it,
-			// then add it back in. 
+			// then add it back in.
 			AsParamArray.RemoveItem(GeneralASValue);
 			GeneralASValue.Type = AS_String;
 			GeneralASValue.s = class 'UIUtilities_Input'.static.GetBackButtonIcon();
@@ -233,14 +236,14 @@ simulated function PopulateResultsInfo()
 		}
 
 		AS_SetResultInfo(
-			i, 
-			false, 
+			i,
+			false,
 			Template.GetFriendlyName(),
 			Template.RewardImagePath,
 			Template.GetDescription(HackTargetObject),
-			strRewardUnlockedLabel, 
-			strUnlockChanceLabel, 
-			GetHackChance(i) $ "\%", 
+			strRewardUnlockedLabel,
+			strUnlockChanceLabel,
+			GetHackChance(i) $ "\%",
 			Template.bBadThing,
 			FailText);
 	}
@@ -253,7 +256,7 @@ simulated function PopulateResultsInfo()
 simulated function float GetHackChance(int RewardIndex)
 {
 	local X2HackRewardTemplate Template;
-	
+
 	Template = HackRewards[RewardIndex];
 
 	if( Template.bBadThing )
@@ -261,7 +264,7 @@ simulated function float GetHackChance(int RewardIndex)
 		`Assert(SelectedHackRewardOption != 0);
 		return 100.0 - GetHackChance(SelectedHackRewardOption);
 	}
-	else if( Template.MinHackSuccess == 0 )
+	else if( Template.MinHackSuccess == 0 || HackDefense < 1) // Issue #279 - attempted bugfix for d by 0 errors
 	{
 		return 100.0;
 	}
@@ -277,11 +280,10 @@ simulated function PopulateSoldierInfo()
 	local XGUnit Unit;
 
 	Unit = XGUnit(UnitState.GetVisualizer());
-	
-	//AS_SetSoldierInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(`GET_RANK_STR(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName())), euiState_Faded, 17), 
 	// Issue #107
-	AS_SetSoldierInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(class'LWUtilities_Ranks'.static.GetRankName(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName(), UnitState)), euiState_Faded, 17), 
-						class'UIUtilities_Text'.static.GetColoredText(Caps(UnitState.GetName(eNameType_Full)), eUIState_Normal, 22), 
+	//AS_SetSoldierInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(`GET_RANK_STR(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName())), euiState_Faded, 17),
+	AS_SetSoldierInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(class'LWUtilities_Ranks'.static.GetRankName(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName(), UnitState)), euiState_Faded, 17),
+						class'UIUtilities_Text'.static.GetColoredText(Caps(UnitState.GetName(eNameType_Full)), eUIState_Normal, 22),
 						class'UIUtilities_Text'.static.GetColoredText(Caps(UnitState.GetNickName(false)), eUIState_Header, 30),
 						//class'UIUtilities_Image'.static.GetRankIcon(Unit.GetCharacterRank(), Unit.GetVisualizedGameState().GetSoldierClassTemplateName()),
 						// Issue #107
@@ -310,7 +312,7 @@ simulated function PopulateEnemyInfo()
 			factionName = m_strAlienInfoTitle;
 		}
 
-		AS_SetEnemyInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(factionName), euiState_Faded, 17), 
+		AS_SetEnemyInfo(class'UIUtilities_Text'.static.GetColoredText(Caps(factionName), euiState_Faded, 17),
 							class'UIUtilities_Text'.static.GetColoredText(Caps(TargetUnit.GetName(eNameType_Full)), eUIState_Normal, 22),
 							"img:///" $ template.strHackIconImage,
 							strHackAbilityLabel,
@@ -319,7 +321,7 @@ simulated function PopulateEnemyInfo()
 	else
 	{
 		VisActor = XComInteractiveLevelActor(ObjectState.GetVisualizer());
-		AS_SetEnemyInfo("", 
+		AS_SetEnemyInfo("",
 						class'UIUtilities_Text'.static.GetColoredText(Caps(ObjectState.GetLootingName()), eUIState_Normal, 22),
 						"img:///" $ class'Object'.static.PathName(VisActor.HackingIcon),
 						strHackAbilityLabel,
@@ -331,11 +333,25 @@ simulated function bool OnCancel(optional string arg = "")
 {
 	local XComGameStateContext_Ability CancelContext;
 
-	`assert(!m_hackStarted);
+	// Start Issue #278
+	// PI Mods: The input handler code only prevents cancellation with the mouse on the cancel button after
+	// a hack is started, it doesn't prevent the ESC key from triggering OnCancel, so this assertion may often
+	// fire. Just turn off the assert and guard the cancellation context in a check for hackStarted so we don't
+	// block impatient players.
+	// `assert(!m_hackStarted);
 	`assert(CancelHackAbility != none);
 
-	CancelContext = class'XComGameStateContext_Ability'.static.BuildContextFromAbility(CancelHackAbility, OriginalContext.InputContext.PrimaryTarget.ObjectID);
-	`GAMERULES.SubmitGameStateContext(CancelContext);
+	// PI Mods: Don't submit a cancel context if the hack has already been started: this refunds the cooldown
+	// so players could bypass CDs by quickly hitting ESC after starting a hack. Also don't re-cancel if it
+	// has already been canceled (e.g. by players spamming the ESC key) to avoid multiple cancel states 
+	// from being submitted and potentially restoring multiple charges.
+	if (!m_hackStarted && !m_hackCanceled)
+	{
+		CancelContext = class'XComGameStateContext_Ability'.static.BuildContextFromAbility(CancelHackAbility, OriginalContext.InputContext.PrimaryTarget.ObjectID);
+		`GAMERULES.SubmitGameStateContext(CancelContext);
+		m_hackCanceled = true;
+	}
+	// End Issue #278
 
 	ClearTimer('StartScaryComputerLoopAkEvent');
 
@@ -376,7 +392,7 @@ simulated function bool OnUnrealCommand(int ucmd, int ActionMask)
 	// Ignore releases, just pay attention to presses.
 	if ( !CheckInputIsReleaseOrDirectionRepeat(ucmd, ActionMask) )
 		return true;
-	
+
 	if( bWaitingForInput )
 	{
 		HackEnded();
@@ -388,7 +404,7 @@ simulated function bool OnUnrealCommand(int ucmd, int ActionMask)
 		case (class'UIUtilities_Input'.const.FXS_BUTTON_A) :
 		case (class'UIUtilities_Input'.const.FXS_KEY_ENTER):
 		case (class'UIUtilities_Input'.const.FXS_KEY_SPACEBAR):
-			
+
 			if( !m_hackStarted )
 			{
 				InitiateHack();
@@ -411,7 +427,7 @@ simulated function bool OnUnrealCommand(int ucmd, int ActionMask)
 			HighlightedHackRewardOption = 1;
 			RefreshPreviewState();
 			break;
-		
+
 		case class'UIUtilities_Input'.const.FXS_VIRTUAL_LSTICK_RIGHT:
 		case class'UIUtilities_Input'.const.FXS_DPAD_RIGHT:
 			SelectedHackRewardOption = 2;
@@ -453,7 +469,7 @@ simulated function OnCommand( string cmd, string arg )
 			OnHackingRewardUnlocked(m_rewardsTaken);
 		}
 		m_rewardsTaken++;
-		
+
 		break;
 
 	case "SelectReward":
@@ -599,14 +615,14 @@ simulated function AS_SetChooseRewards(string buttonLabel)
 
 
 simulated function AS_SetResultInfo(
-	int rewardID, 
-	bool bUnlocked, 
-	string unlockTitle, 
-	string unlockImage, 
-	string unlockDescription, 
-	string unlockLabel, 
-	string unlockChanceLabel, 
-	string unlockChance, 
+	int rewardID,
+	bool bUnlocked,
+	string unlockTitle,
+	string unlockImage,
+	string unlockDescription,
+	string unlockLabel,
+	string unlockChanceLabel,
+	string unlockChance,
 	bool bBadThing,
 	string failText)
 {

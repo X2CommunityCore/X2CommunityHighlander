@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------------------
 //  FILE:    X2StrategyElement_DefaultMissionSources.uc
 //  AUTHOR:  Mark Nauta
-//           
+//
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ static function X2DataTemplate CreateStartTemplate(Name TemplateName)
 	`CREATE_X2TEMPLATE(class'X2MissionSourceTemplate', Template, TemplateName);
 	Template.bStart = true;
 	Template.bSkipRewardsRecap = true;
-	Template.DifficultyValue = 1;	
+	Template.DifficultyValue = 1;
 	Template.OnSuccessFn = StartOnComplete;
 	Template.OnFailureFn = StartOnComplete;
 	Template.GetMissionDifficultyFn = GetMissionDifficultyFromTemplate;
@@ -194,7 +194,7 @@ function GuerillaOpOnFailure(XComGameState NewGameState, XComGameState_MissionSi
 			class'XComGameState_HeadquartersResistance'.static.AddGlobalEffectString(NewGameState, DarkEventState.GetPostMissionText(false), true);
 		}
 	}
-	
+
 	CleanUpGuerillaOps(NewGameState, MissionState.ObjectID);
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_GuerrillaOpsFailed');
@@ -495,7 +495,7 @@ function name SelectGuerillaOpRewardType(out array<name> ExcludeList, XComGameSt
 	local int SourceIndex, ExcludeIndex, idx;
 	local MissionRewardDeck ExcludeDeck;
 	local array<name> SkipList;
-	
+
 	SourceIndex = CalendarState.MissionRewardDecks.Find('MissionSource', 'MissionSource_GuerillaOp');
 	ExcludeIndex = CalendarState.MissionRewardExcludeDecks.Find('MissionSource', 'MissionSource_GuerillaOp');
 
@@ -538,7 +538,7 @@ function name SelectGuerillaOpRewardType(out array<name> ExcludeList, XComGameSt
 		while(RewardType == '')
 		{
 			TemplateManager = class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager();
-			
+
 			// Check if there is a valid reward that the player badly needs, if so use it as the reward
 			for (idx = 0; idx < CalendarState.MissionRewardDecks[SourceIndex].Rewards.Length; idx++)
 			{
@@ -586,7 +586,7 @@ function name SelectGuerillaOpRewardType(out array<name> ExcludeList, XComGameSt
 								{
 									CalendarState.MissionRewardDecks[SourceIndex].Rewards.Remove(idx, 1);
 									ExcludeList.AddItem(RewardType);
-									break;									
+									break;
 								}
 								else // If IsRewardAvailableFn fails, add it to the exclude list so that reward type isn't checked again
 								{
@@ -693,7 +693,7 @@ function string GetSupplyRaidOverworldMeshPath(XComGameState_MissionSite Mission
 	local name ObjectiveName;
 
 	ObjectiveName = MissionState.GeneratedMission.Mission.MissionName;
-	
+
 	switch(ObjectiveName)
 	{
 	case 'SupplyLineRaidATT':
@@ -721,7 +721,7 @@ function SupplyRaidOnFailure(XComGameState NewGameState, XComGameState_MissionSi
 	{
 		LoseContactWithMissionRegion(NewGameState, MissionState, true);
 	}
-	
+
 	MissionState.RemoveEntity(NewGameState);
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_SupplyRaidsFailed');
@@ -734,7 +734,7 @@ function SupplyRaidOnExpire(XComGameState NewGameState, XComGameState_MissionSit
 		LoseContactWithMissionRegion(NewGameState, MissionState, false);
 		`XEVENTMGR.TriggerEvent('SkippedMissionLostContact', , , NewGameState);
 	}
-	
+
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_SupplyRaidsFailed');
 }
@@ -761,7 +761,7 @@ function CreateSupplyRaidMission(XComGameState NewGameState, int MissionMonthInd
 	RewardState = RewardTemplate.CreateInstanceFromTemplate(NewGameState);
 	NewGameState.AddStateObject(RewardState);
 	MissionRewards.AddItem(RewardState);
-	
+
 	// If the player has seen a UFO but not a Landed UFO mission, force one to happen next
 	AlienHQ = class'UIUtilities_Strategy'.static.GetAlienHQ();
 	bSeenUFO = (AlienHQ.bHasPlayerBeenIntercepted || AlienHQ.bHasPlayerAvoidedUFO);
@@ -772,7 +772,7 @@ function CreateSupplyRaidMission(XComGameState NewGameState, int MissionMonthInd
 		AlienHQ.bHasPlayerSeenLandedUFOMission = true;
 		bForceLandedUFO = true;
 	}
-	
+
 	// Roll on whether this should be a Supply Raid or Landed UFO mission
 	if (bForceLandedUFO || (bSeenUFO && class'X2StrategyGameRulesetDataStructures'.static.Roll(PercentChanceLandedUFO)))
 	{
@@ -806,7 +806,7 @@ function SpawnSupplyRaidMission(XComGameState NewGameState, int MissionMonthInde
 	// Calculate Mission Expiration timer (same for each op)
 	MissionDuration = float((default.MissionMinDuration + `SYNC_RAND(default.MissionMaxDuration - default.MissionMinDuration + 1)) * 3600);
 
-	// Spawn the supply raid from the current mission event		
+	// Spawn the supply raid from the current mission event
 	MissionState = XComGameState_MissionSite(NewGameState.CreateStateObject(class'XComGameState_MissionSite', CalendarState.CurrentMissionMonth[MissionMonthIndex].Missions[0].ObjectID));
 	NewGameState.AddStateObject(MissionState);
 	MissionState.TimeUntilDespawn = MissionDuration;
@@ -873,7 +873,7 @@ function RetaliationOnSuccess(XComGameState NewGameState, XComGameState_MissionS
 }
 
 function RetaliationOnFailure(XComGameState NewGameState, XComGameState_MissionSite MissionState)
-{	
+{
 	if(!IsInStartingRegion(MissionState))
 	{
 		LoseContactWithMissionRegion(NewGameState, MissionState, true);
@@ -883,8 +883,8 @@ function RetaliationOnFailure(XComGameState NewGameState, XComGameState_MissionS
 		ModifyRegionSupplyYield(NewGameState, MissionState, class'XComGameState_WorldRegion'.static.GetRegionDisconnectSupplyChangePercent(), , true);
 	}
 
-	MissionState.RemoveEntity(NewGameState);	
-	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);	
+	MissionState.RemoveEntity(NewGameState);
+	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_RetaliationsFailed');
 }
 
@@ -899,9 +899,9 @@ function RetaliationOnExpire(XComGameState NewGameState, XComGameState_MissionSi
 	{
 		ModifyRegionSupplyYield(NewGameState, MissionState, class'XComGameState_WorldRegion'.static.GetRegionDisconnectSupplyChangePercent(), , false);
 	}
-	
+
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
-	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_RetaliationsFailed');	
+	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_RetaliationsFailed');
 }
 
 function CreateRetaliationMission(XComGameState NewGameState, int MissionMonthIndex)
@@ -1020,7 +1020,7 @@ static function X2DataTemplate CreateCouncilTemplate()
 	Template.OnFailureFn = CouncilOnFailure;
 	Template.OnExpireFn = CouncilOnExpire;
 	Template.OverworldMeshPath = "UI_3D.Overwold_Final.Council_VIP";
-	Template.MissionImage = "img://UILibrary_Common.Councilman_small";
+	Template.MissionImage = "img:///UILibrary_Common.Councilman_small";
 	Template.GetMissionDifficultyFn = GetCouncilMissionDifficulty;
 	Template.SpawnMissionsFn = SpawnCouncilMission;
 	Template.MissionPopupFn = CouncilPopup;
@@ -1059,7 +1059,7 @@ function CouncilOnFailure(XComGameState NewGameState, XComGameState_MissionSite 
 	{
 		LoseContactWithMissionRegion(NewGameState, MissionState, true);
 	}
-	
+
 	MissionState.RemoveEntity(NewGameState);
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_CouncilMissionsFailed');
@@ -1071,7 +1071,7 @@ function CouncilOnExpire(XComGameState NewGameState, XComGameState_MissionSite M
 		LoseContactWithMissionRegion(NewGameState, MissionState, false);
 		`XEVENTMGR.TriggerEvent('SkippedMissionLostContact', , , NewGameState);
 	}
-	
+
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_CouncilMissionsFailed');
 }
@@ -1238,7 +1238,7 @@ function SpawnCouncilMission(XComGameState NewGameState, int MissionMonthIndex)
 
 	// Calculate Mission Expiration timer
 	MissionDuration = float((default.MissionMinDuration + `SYNC_RAND(default.MissionMaxDuration - default.MissionMinDuration + 1)) * 3600);
-	
+
 	RegionState = GetRandomContactedRegion();
 
 	// Generate the mission reward
@@ -1251,14 +1251,14 @@ function SpawnCouncilMission(XComGameState NewGameState, int MissionMonthIndex)
 	else
 		RewardState.GenerateReward(NewGameState, , RegionState.GetReference());
 	MissionRewards.AddItem(RewardState);
-	
+
 	// All Council Missions also give an Intel reward
 	RewardTemplate = X2RewardTemplate(StratMgr.FindStrategyElementTemplate('Reward_Intel'));
 	RewardState = RewardTemplate.CreateInstanceFromTemplate(NewGameState);
 	NewGameState.AddStateObject(RewardState);
 	RewardState.GenerateReward(NewGameState, , RegionState.GetReference());
 	MissionRewards.AddItem(RewardState);
-	
+
 	MissionSource = X2MissionSourceTemplate(StratMgr.FindStrategyElementTemplate('MissionSource_Council'));
 	MissionState = XComGameState_MissionSite(NewGameState.CreateStateObject(class'XComGameState_MissionSite'));
 	NewGameState.AddStateObject(MissionState);
@@ -1268,7 +1268,7 @@ function SpawnCouncilMission(XComGameState NewGameState, int MissionMonthIndex)
 	MissionState.PickPOI(NewGameState);
 
 	`XEVENTMGR.TriggerEvent('CouncilMissionSpawned', MissionState, MissionState, NewGameState);
-	
+
 	CalendarState.CreatedMissionSources.AddItem('MissionSource_Council');
 }
 
@@ -1318,12 +1318,12 @@ function LandedUFOOnSuccess(XComGameState NewGameState, XComGameState_MissionSit
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_LandedUFOsCompleted');
 }
 function LandedUFOOnFailure(XComGameState NewGameState, XComGameState_MissionSite MissionState)
-{	
+{
 	if(!IsInStartingRegion(MissionState))
 	{
 		LoseContactWithMissionRegion(NewGameState, MissionState, true);
 	}
-	
+
 	MissionState.RemoveEntity(NewGameState);
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
 	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_LandedUFOsFailed');
@@ -1335,9 +1335,9 @@ function LandedUFOOnExpire(XComGameState NewGameState, XComGameState_MissionSite
 		LoseContactWithMissionRegion(NewGameState, MissionState, false);
 		`XEVENTMGR.TriggerEvent('SkippedMissionLostContact', , , NewGameState);
 	}
-	
+
 	class'XComGameState_HeadquartersResistance'.static.DeactivatePOI(NewGameState, MissionState.POIToSpawn);
-	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_LandedUFOsFailed');		
+	class'XComGameState_HeadquartersResistance'.static.RecordResistanceActivity(NewGameState, 'ResAct_LandedUFOsFailed');
 }
 
 function LandedUFOPopup()
@@ -1480,7 +1480,7 @@ function AlienNetworkOnSuccess(XComGameState NewGameState, XComGameState_Mission
 	ResHQ.AttemptSpawnRandomPOI(NewGameState);
 
 	AlienHQ = GetAndAddAlienHQ(NewGameState);
-	
+
 	AlienHQ.DelayDoomTimers(AlienHQ.GetFacilityDestructionDoomDelay());
 	AlienHQ.DelayFacilityTimer(AlienHQ.GetFacilityDestructionDoomDelay());
 
@@ -1494,7 +1494,7 @@ function AlienNetworkOnSuccess(XComGameState NewGameState, XComGameState_Mission
 
 	GiveRewards(NewGameState, MissionState);
 	RegionState.AlienFacility = EmptyRef;
-	  
+
 	if(MissionState.Doom > 0)
 	{
 		ParamTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
@@ -1638,7 +1638,7 @@ static function X2DataTemplate CreateMissionSource_BroadcastTemplate()
 function GoldenPathMissionOnSuccess(XComGameState NewGameState, XComGameState_MissionSite MissionState)
 {
 	local XComGameState_HeadquartersResistance ResHQ;
-	
+
 	ResHQ = class'UIUtilities_Strategy'.static.GetResistanceHQ();
 	ResHQ.AttemptSpawnRandomPOI(NewGameState);
 
@@ -1851,7 +1851,7 @@ function LoseContactWithMissionRegion(XComGameState NewGameState, XComGameState_
 	OldIncome = RegionState.GetSupplyDropReward();
 
 	RegionState.SetResistanceLevel(NewGameState, eResLevel_Unlocked);
-	
+
 	NewIncome = RegionState.GetSupplyDropReward();
 	IncomeDelta = NewIncome - OldIncome;
 
@@ -1888,7 +1888,7 @@ function ModifyRegionSupplyYield(XComGameState NewGameState, XComGameState_Missi
 			RegionState = XComGameState_WorldRegion(NewGameState.CreateStateObject(class'XComGameState_WorldRegion', MissionState.Region.ObjectID));
 			NewGameState.AddStateObject(RegionState);
 		}
-		
+
 		OldIncome = RegionState.GetSupplyDropReward();
 		RegionState.BaseSupplyDrop *= DeltaYieldPercent;
 
@@ -1897,7 +1897,7 @@ function ModifyRegionSupplyYield(XComGameState NewGameState, XComGameState_Missi
 			NewIncome = RegionState.GetSupplyDropReward();
 			TotalDelta += (NewIncome - OldIncome);
 		}
-		
+
 		if (bRecord)
 		{
 			if (DeltaYieldPercent < 1.0)
@@ -1942,8 +1942,8 @@ function ModifyContinentSupplyYield(XComGameState NewGameState, XComGameState_Mi
 		ContinentState = XComGameState_Continent(History.GetGameStateForObjectID(RegionState.Continent.ObjectID));
 
 		ParamTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
-		
-		
+
+
 		for(idx = 0; idx < ContinentState.Regions.Length; idx++)
 		{
 			RegionState = XComGameState_WorldRegion(NewGameState.GetGameStateForObjectID(ContinentState.Regions[idx].ObjectID));
@@ -2125,7 +2125,7 @@ function RemoveGPDoom(XComGameState NewGameState, XComGameState_MissionSite Miss
 	local XGParamTag ParamTag;
 	local string DoomString;
 	local XComGameState_MissionSite FortressMission;
-	
+
 	AlienHQ = GetAndAddAlienHQ(NewGameState);
 	FortressMission = AlienHQ.GetFortressMission();
 
@@ -2139,7 +2139,7 @@ function RemoveGPDoom(XComGameState NewGameState, XComGameState_MissionSite Miss
 		DoomString = MissionState.GetMissionSource().DoomLabel;
 		ParamTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
 		ParamTag.StrValue0 = string(DoomToRemove);
-		
+
 		if(DoomToRemove == 1)
 		{
 			DoomString @= `XEXPAND.ExpandString(class'UIRewardsRecap'.default.m_strAvatarProgressReducedSingular);
@@ -2448,7 +2448,7 @@ static function float GetAverageGPDoomRemoval()
 	AverageGPDoomRemoved = ((float(GetBlacksiteMinDoomRemoval()) + float(GetBlacksiteMaxDoomRemoval())) / 2.0f);
 	AverageGPDoomRemoved += ((float(GetForgeMinDoomRemoval()) + float(GetForgeMaxDoomRemoval())) / 2.0f);
 	AverageGPDoomRemoved += ((float(GetPsiGateMinDoomRemoval()) + float(GetPsiGateMaxDoomRemoval())) / 2.0f);
-	
+
 	return AverageGPDoomRemoved;
 }
 
@@ -2485,7 +2485,7 @@ function array<int> GetMonthlyDifficultyAdd()
 		return default.NormalMonthlyDifficultyAdd;
 	case 2:
 		return default.ClassicMonthlyDifficultyAdd;
-	case 3:	
+	case 3:
 		return default.ImpossibleMonthlyDifficultyAdd;
 	}
 
