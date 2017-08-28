@@ -4,7 +4,7 @@
 //
 //  PURPOSE: Extra helper functions/data. Cannot add new data to native classes (e.g. Helpers)
 //           so we need a new one.
-//--------------------------------------------------------------------------------------- 
+//---------------------------------------------------------------------------------------
 
 class Helpers_LW extends Object config(GameCore) dependson(Engine);
 
@@ -40,7 +40,7 @@ var config bool EnableCivilianYellOnPreMove;
 // out of LoS from a green unit, and that neighboring tile that they would have LoS from is the tile they will use to
 // peek. The unit will appear to be out of LoS of any unit, but any action that alerts that nearby pod will suddenly
 // bring you into LoS and activate the pod when it begins peeking. Examples are a nearby out-of-los pod activating when you
-// shoot at another pod you can see from concealment, or a nearby pod activating despite no aliens being in LoS when you 
+// shoot at another pod you can see from concealment, or a nearby pod activating despite no aliens being in LoS when you
 // break concealment by hacking an objective (which alerts all pods).
 var config bool NoPeekInYellowAlert;
 
@@ -64,7 +64,7 @@ var config bool ClassLimitHeavyWeapons;
 var config array<name> GrenadeRequiresWorldEffectToAffectUnit;
 
 // Returns 'true' if the given mission type should enable the radius manager (e.g. the thingy
-// that controls rescue rings on civvies). This is done through a config var that lists the 
+// that controls rescue rings on civvies). This is done through a config var that lists the
 // desired mission types for extensibility.
 
 var config bool EnableRestartMissionButtonInNonIronman;
@@ -73,7 +73,7 @@ var config bool EnableRestartMissionButtonInIronman;
 // A list of replacement projectile sound effects mapping a projectile element to a sound cue name.
 //
 // 'ProjectileName' can have one of two forms:
-// 
+//
 // 1) (Preferred), the full path of the object archetype of the projectile element you want to modify. This is the
 // name as it appears in the Unreal Editor X2UnifiedProjectile "Projectile Elements" array, without the surrounding
 // X2UnifiedProjectileElement''. That is, for the vanilla beam assault rifle, the path for the element with the
@@ -88,7 +88,7 @@ var config bool EnableRestartMissionButtonInIronman;
 // actually index 15 at runtime.
 //
 // The first form is preferred because it is always the same regardless of hit/miss settings that may impact the
-// index on some projectiles, making it impossible to statically provide the right index. The second form is 
+// index on some projectiles, making it impossible to statically provide the right index. The second form is
 // still provided for backwards compatibility.
 //
 // The fire or death sound is the name of a sound cue loaded into the sound manager system. See the SoundCuePaths
@@ -133,6 +133,15 @@ var config bool ClampGrazeMinDamage;
 // amount and so won't affect subsequent shots, but will still give a bonus to that particular attack.
 var config bool CumulativeRupture;
 
+// Configure ever vigilant trigger behavior: If these flags are set EV will not proc when a unit is impaired or
+// burning, respectively.
+var config bool EverVigilantExcludeImpaired;
+var config bool EverVigilantExcludeBurning;
+
+// If this flag is set then set the HP for soldier VIP proxies to have the same HP as the original soldier.
+// This addresses an issue where the soldier has more HP than the proxy and becomes wounded even if the proxy
+// was not wounded, simply because the soldier HP was greater than the proxy.
+var config bool UseUnitHPForProxies;
 
 simulated static function class<object> LWCheckForRecursiveOverride(class<object> ClassToCheck)
 {
@@ -141,7 +150,7 @@ simulated static function class<object> LWCheckForRecursiveOverride(class<object
 	local bool NeedsCheck;
 	local name BestClassName;
 
-	BestClassName = name(string(ClassToCheck)); 
+	BestClassName = name(string(ClassToCheck));
 	CurrentBestClass = ClassToCheck;
 	NeedsCheck = true;
 

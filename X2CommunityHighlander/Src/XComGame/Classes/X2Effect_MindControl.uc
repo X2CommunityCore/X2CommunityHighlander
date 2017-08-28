@@ -81,7 +81,6 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 	local XComGameState_Effect OriginalEffectState;
 	local XComGameState_Unit UnitState;
 	local StateObjectReference OriginalControllingPlayer;
-	local StateObjectReference MindControllingPlayer; // PI : Added for ticking effect listener updates
 	local int i;
 
 	super.OnEffectRemoved(ApplyEffectParameters, NewGameState, bCleansed, RemovedEffectState);
@@ -95,7 +94,6 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 
 	// now put them back on that team
 	UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', ApplyEffectParameters.TargetStateObjectRef.ObjectID));
-	MindControllingPlayer = UnitState.ControllingPlayer; // PI : save off the mind controlling player for ticking effect updates
 	UnitState.SetControllingPlayer(OriginalControllingPlayer);
 	
 	// and update other stuff that needs to be reset when they stop being mind controlled
@@ -120,65 +118,6 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 	}
 	NewGameState.AddStateObject(UnitState);
 	UpdateAIData(NewGameState, UnitState);
-
-	UpdateTickingEffectListeners(UnitState, MindControllingPlayer, OriginalControllingPlayer);
-}
-
-//PI : New helper function to re-register listeners for ticking effects
-simulated function UpdateTickingEffectListeners(XComGameState_Unit UnitState, StateObjectReference StartPlayerRef, StateObjectReference EndPlayerRef )
-{
-	local XComGameStateHistory History;
-	local X2EventManager EventMgr;
-	local XComGameState_Player StartPlayer, EndPlayer;
-	local XComGameState_Effect EffectState;
-	local X2Effect_Persistent EffectTemplate;
-	local Object ThisObj;
-
-	History = `XCOMHISTORY;
-	EventMgr = `XEVENTMGR;
-
-	StartPlayer = XComGameState_Player(History.GetGameStateForObjectID(StartPlayerRef.ObjectID));
-	// if there's no listeners on this event for the mind-controlling player, opt out early
-	if (!EventMgr.AnyListenersForEvent('PlayerTurnBegin', StartPlayer) && !EventMgr.AnyListenersForEvent('PlayerTurnEnded', StartPlayer))
-	{
-		return;
-	}
-	EndPlayer = XComGameState_Player(History.GetGameStateForObjectID(EndPlayerRef.ObjectID));
-	foreach History.IterateByClassType(class'XComGameState_Effect', EffectState)
-	{
-		// skip if the effect target isn't the mind-controlled unit
-		if (EffectState.ApplyEffectParameters.TargetStateObjectRef.ObjectID != UnitState.ObjectID)
-		{
-			continue;
-		}
-		EffectTemplate = EffectState.GetX2Effect();
-		// skip if effect isn't persistent or if it is the mind control effect
-		if (EffectTemplate == none || EffectTemplate == self)
-		{
-			continue;
-		}
-		// skip if effect is infinite or ticks every player turn start
-		if (EffectTemplate.bInfiniteDuration || EffectTemplate.bIgnorePlayerCheckOnTick)
-		{
-			continue;
-		}
-		// skip if it ticks every action -- basically this is for rulers
-		if (EffectTemplate.IsTickEveryAction(UnitState))
-		{
-			continue;
-		}
-		ThisObj = EffectState;
-		if ( EffectTemplate.WatchRule == eGameRule_PlayerTurnBegin )
-		{
-			EventMgr.UnRegisterFromEvent(ThisObj, 'PlayerTurnBegun');
-			EventMgr.RegisterForEvent( ThisObj, 'PlayerTurnBegun', EffectState.OnPlayerTurnTicked, ELD_OnStateSubmitted,, EndPlayer );
-		}
-		else if( EffectTemplate.WatchRule == eGameRule_PlayerTurnEnd )
-		{
-			EventMgr.UnRegisterFromEvent(ThisObj, 'PlayerTurnEnded');
-			EventMgr.RegisterForEvent( ThisObj, 'PlayerTurnEnded', EffectState.OnPlayerTurnTicked, ELD_OnStateSubmitted,, EndPlayer );
-		}
-	}
 }
 
 simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack, name EffectApplyResult)

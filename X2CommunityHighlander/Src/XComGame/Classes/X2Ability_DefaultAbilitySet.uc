@@ -1,15 +1,15 @@
 //---------------------------------------------------------------------------------------
 //  FILE:    X2Ability_DefaultAbilitySet.uc
 //  AUTHOR:  Ryan McFall  --  11/11/2013
-//  PURPOSE: Defines basic abilities that support tactical game play in X-Com 2. 
+//  PURPOSE: Defines basic abilities that support tactical game play in X-Com 2.
 //           Movement, firing weapons, overwatch, etc.
-//           
+//
 //  LWS : fixed rare movement bug that could cause teleporting of 1 unit within a pod
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
-class X2Ability_DefaultAbilitySet extends X2Ability 
-	dependson (XComGameStateContext_Ability) 
+class X2Ability_DefaultAbilitySet extends X2Ability
+	dependson (XComGameStateContext_Ability)
 	native(Core)
 	config(GameCore);
 
@@ -47,8 +47,8 @@ var config float TypicalMoveDelay;
 static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
-	
-	Templates.AddItem(AddStandardMoveAbility());	
+
+	Templates.AddItem(AddStandardMoveAbility());
 	Templates.AddItem(AddOverwatchShotAbility());
 	Templates.AddItem(PistolOverwatchShot());
 	Templates.AddItem(PistolReturnFire());
@@ -77,7 +77,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddMedikitStabilize());
 	Templates.AddItem(AddEvacAbility());
 	Templates.AddItem(AddGrapple());
-	Templates.AddItem(AddGrapplePowered());	
+	Templates.AddItem(AddGrapplePowered());
 	Templates.AddItem(WallBreaking());
 	Templates.AddItem(HotLoadAmmo());
 	Templates.AddItem(AddKnockoutAbility());
@@ -100,7 +100,7 @@ static function X2AbilityTemplate AddStandardMoveAbility()
 	local X2Condition_UnitStatCheck         UnitStatCheckCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'StandardMove');
-	
+
 	Template.bDontDisplayInAbilitySummary = true;
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.bMoveCost = true;
@@ -108,7 +108,7 @@ static function X2AbilityTemplate AddStandardMoveAbility()
 	ActionPointCost.AllowedTypes.RemoveItem(class'X2CharacterTemplateManager'.default.RunAndGunActionPoint);
 	Template.AbilityCosts.AddItem(ActionPointCost);
 	Template.bDisplayInUITooltip = false;
-	
+
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeDead = true;
 	UnitPropertyCondition.ExcludeCosmetic = false; //Cosmetic units are allowed movement
@@ -138,8 +138,8 @@ static function X2AbilityTemplate AddStandardMoveAbility()
 	Template.BuildNewGameStateFn = MoveAbility_BuildGameState;
 	Template.BuildVisualizationFn = MoveAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = MoveAbility_BuildInterruptGameState;
-	
-	Template.CinescriptCameraType = "StandardMovement"; 
+
+	Template.CinescriptCameraType = "StandardMovement";
 
 	return Template;
 }
@@ -158,13 +158,13 @@ static function XComGameState MoveAbility_BuildGameState(XComGameStateContext Co
 
 simulated static function XComGameState MoveAbility_FillOutGameState( XComGameState NewGameState, bool bApplyCosts )
 {
-	local XComGameState_Unit MovingUnitState, MovingSubsystem;	
+	local XComGameState_Unit MovingUnitState, MovingSubsystem;
 	local array<XComGameState_Unit> arrSubSystems;
 	local int ComponentId;
 	local XComGameState_Ability MoveAbilityState;
 	local XComGameStateContext_Ability AbilityContext;
 	local X2AbilityTemplate AbilityTemplate;
-	
+
 	//Discovery and creation of interactive level actor states
 	local int PrevActions, MovesSpent;
 	local UnitValue MovesThisTurn;
@@ -178,8 +178,8 @@ simulated static function XComGameState MoveAbility_FillOutGameState( XComGameSt
 
 	History = `XCOMHISTORY;
 
-	AbilityContext = XComGameStateContext_Ability(NewGameState.GetContext());	
-	MoveAbilityState = XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID, eReturnType_Reference));	
+	AbilityContext = XComGameStateContext_Ability(NewGameState.GetContext());
+	MoveAbilityState = XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID, eReturnType_Reference));
 	AbilityTemplate = MoveAbilityState.GetMyTemplate();
 
 	AbilityContext.ResultContext.bPathCausesDestruction = false;
@@ -262,16 +262,16 @@ simulated static function XComGameState MoveAbility_FillOutGameState( XComGameSt
 
 		`XEVENTMGR.TriggerEvent('ObjectMoved', MovingUnitState, MovingUnitState, NewGameState);
 		`XEVENTMGR.TriggerEvent('UnitMoveFinished', MovingUnitState, MovingUnitState, NewGameState);
-	}	
+	}
 
 	//Return the game state we have created
-	return NewGameState;	
+	return NewGameState;
 }
 
 simulated static function XComGameState MoveAbility_BuildInterruptGameState( XComGameStateContext Context, int InterruptStep, EInterruptionStatus InterruptionStatus)
 {
 	local XComGameState NewGameState;
-	local XComGameState_Unit MovingUnitState, MovingSubsystem;	
+	local XComGameState_Unit MovingUnitState, MovingSubsystem;
 	local array<XComGameState_Unit> arrSubSystems;
 	local int ComponentID;
 	local XComGameStateContext_Ability AbilityContext;
@@ -342,7 +342,7 @@ simulated static function XComGameState MoveAbility_BuildInterruptGameState( XCo
 	{
 		`assert(InterruptionStatus == eInterruptionStatus_Interrupt);
 		AbilityContext = XComGameStateContext_Ability(Context);
-		
+
 		//Find the longest path in tiles
 		for(MovingUnitIndex = 0; MovingUnitIndex < AbilityContext.InputContext.MovementPaths.Length; ++MovingUnitIndex)
 		{
@@ -354,14 +354,14 @@ simulated static function XComGameState MoveAbility_BuildInterruptGameState( XCo
 		if(InterruptStep < (NumMovementTiles - 1))
 		{
 			//Build the new game state frame, and unit state object for the moving unit
-			NewGameState = History.CreateNewGameState(true, Context);		
+			NewGameState = History.CreateNewGameState(true, Context);
 			AbilityContext = XComGameStateContext_Ability(NewGameState.GetContext());
 			AbilityContext.SetInterruptionStatus(InterruptionStatus);
 			AbilityContext.ResultContext.InterruptionStep = InterruptStep;
 
 			//Set the unit's new location
 			for(MovingUnitIndex = 0; MovingUnitIndex < AbilityContext.InputContext.MovementPaths.Length; ++MovingUnitIndex)
-			{	
+			{
 				MovingUnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', AbilityContext.InputContext.MovementPaths[MovingUnitIndex].MovingUnitRef.ObjectID));
 				// Moving a unit with components will also move the components to the same base tile.
 				foreach MovingUnitState.ComponentObjectIds(ComponentID)
@@ -412,7 +412,7 @@ simulated static function XComGameState MoveAbility_BuildInterruptGameState( XCo
 						MovingUnitState.MoveOrientation = Rotator(TilePosDiff);
 					}
 				}
-				
+
 				NewGameState.AddStateObject(MovingUnitState);
 				// Handle subsystems
 				foreach arrSubSystems(MovingSubsystem)
@@ -433,20 +433,20 @@ simulated static function XComGameState MoveAbility_BuildInterruptGameState( XCo
 	}
 
 	//Return the game state we have created
-	return NewGameState;	
+	return NewGameState;
 }
 
 simulated static function MoveAbility_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
 {
 	local XComGameStateHistory History;
-	local StateObjectReference MovingUnitRef;	
+	local StateObjectReference MovingUnitRef;
 	local XGUnit MovingUnitVisualizer;
 	local VisualizationTrack EmptyTrack;
 	local VisualizationTrack BuildTrack;
 	local XComGameStateContext_Ability AbilityContext;
 	local XComGameState_InteractiveObject InteractiveObject;
 	local X2Action_PlaySoundAndFlyOver CharSpeechAction;
-	local XComGameState_EnvironmentDamage DamageEvent;    
+	local XComGameState_EnvironmentDamage DamageEvent;
 	local X2Action_Delay DelayAction;
 	local bool bMoveContainsTeleport;
 	local int Index;
@@ -514,13 +514,13 @@ simulated static function MoveAbility_BuildVisualization(XComGameState Visualize
 		{
 			bMoveContainsTeleport = bMoveContainsTeleport || X2Action_MoveTeleport(BuildTrack.TrackActions[Index]) != none;
 		}
-	}		
+	}
 
 	foreach VisualizeGameState.IterateByClassType(class'XComGameState_InteractiveObject', InteractiveObject)
 	{
 		BuildTrack = EmptyTrack;
 		//Don't necessarily have a previous state, so just use the one we know about
-		BuildTrack.StateObject_OldState = InteractiveObject; 
+		BuildTrack.StateObject_OldState = InteractiveObject;
 		BuildTrack.StateObject_NewState = InteractiveObject;
 		BuildTrack.TrackActor = History.GetVisualizer(InteractiveObject.ObjectID);
 		class'X2Action_WaitForAbilityEffect'.static.AddToVisualizationTrack(BuildTrack, AbilityContext);
@@ -528,13 +528,13 @@ simulated static function MoveAbility_BuildVisualization(XComGameState Visualize
 		// Allow alien units to move through locked doors at will, but politely shut them behind
 		if( InteractiveObject.MustBeHacked() && !InteractiveObject.HasBeenHacked() && MovingUnitVisualizer.GetTeam() == eTeam_Alien && !bMoveContainsTeleport )
 		{
-			class'X2Action_InteractOpenClose'.static.AddToVisualizationTrack(BuildTrack, AbilityContext);	
+			class'X2Action_InteractOpenClose'.static.AddToVisualizationTrack(BuildTrack, AbilityContext);
 		}
 		else
 		{
-			class'X2Action_BreakInteractActor'.static.AddToVisualizationTrack(BuildTrack, AbilityContext);		
+			class'X2Action_BreakInteractActor'.static.AddToVisualizationTrack(BuildTrack, AbilityContext);
 		}
-		
+
 		OutVisualizationTracks.AddItem(BuildTrack);
 	}
 
@@ -542,7 +542,7 @@ simulated static function MoveAbility_BuildVisualization(XComGameState Visualize
 	{
 		BuildTrack = EmptyTrack;
 		//Don't necessarily have a previous state, so just use the one we know about
-		BuildTrack.StateObject_OldState = DamageEvent; 
+		BuildTrack.StateObject_OldState = DamageEvent;
 		BuildTrack.StateObject_NewState = DamageEvent;
 		BuildTrack.TrackActor = none;
 		class'X2Action_WaitForAbilityEffect'.static.AddToVisualizationTrack(BuildTrack, AbilityContext);
@@ -557,8 +557,8 @@ simulated static function MoveAbility_BuildVisForNewUnitVOCallouts(XComGameState
 	local XComGameStateHistory History;
 	local XComGameStateContext_Ability AbilityContext;
 	local X2Action_PlaySoundAndFlyOver SoundAndFlyOver;
-	local XComGameState_Unit CurrUnit;    
-	local XComGameState_Unit PrevUnit;    
+	local XComGameState_Unit CurrUnit;
+	local XComGameState_Unit PrevUnit;
 	local bool bPrevUnitIsSeen;
 	local bool bCurrUnitIsSeen;
 	local XGUnit MovingUnitVisualizer;
@@ -596,7 +596,7 @@ simulated static function MoveAbility_BuildVisForNewUnitVOCallouts(XComGameState
 //******** Overwatch Shot **********
 static function X2AbilityTemplate AddOverwatchShotAbility()
 {
-	local X2AbilityTemplate                 Template;	
+	local X2AbilityTemplate                 Template;
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
 	local X2AbilityToHitCalc_StandardAim    StandardAim;
@@ -608,41 +608,41 @@ static function X2AbilityTemplate AddOverwatchShotAbility()
 	local array<name>                       SkipExclusions;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'OverwatchShot');
-	
+
 	Template.bDontDisplayInAbilitySummary = true;
 	AmmoCost = new class'X2AbilityCost_Ammo';
-	AmmoCost.iAmmo = 1;	
+	AmmoCost.iAmmo = 1;
 	Template.AbilityCosts.AddItem(AmmoCost);
-	
+
 	ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
 	ReserveActionPointCost.iNumPoints = 1;
 	ReserveActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.OverwatchReserveActionPoint);
 	Template.AbilityCosts.AddItem(ReserveActionPointCost);
-	
+
 	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
 	StandardAim.bReactionFire = true;
 	Template.AbilityToHitCalc = StandardAim;
 	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
 
 	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
-	
+
 	TargetVisibilityCondition = new class'X2Condition_Visibility';
 	TargetVisibilityCondition.bRequireGameplayVisible = true;
 	TargetVisibilityCondition.bRequireBasicVisibility = true;
-	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots	
+	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots
 	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
 
 	Template.AbilityTargetConditions.AddItem(new class'X2Condition_EverVigilant');
 	Template.AbilityTargetConditions.AddItem(OverwatchTargetEffectsCondition());
 
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);	
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	ShooterCondition = new class'X2Condition_UnitProperty';
 	ShooterCondition.ExcludeConcealed = true;
 	Template.AbilityShooterConditions.AddItem(ShooterCondition);
 
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 	Template.AddShooterEffectExclusions(SkipExclusions);
-	
+
 	SingleTarget = new class'X2AbilityTarget_Single';
 	SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
 	Template.AbilityTargetStyle = SingleTarget;
@@ -652,7 +652,7 @@ static function X2AbilityTemplate AddOverwatchShotAbility()
 	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
 	Trigger.MethodName = 'InterruptGameState';
 	Template.AbilityTriggers.AddItem(Trigger);
-	
+
 	Template.AbilitySourceName = 'eAbilitySource_Standard';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_overwatch";
@@ -663,7 +663,7 @@ static function X2AbilityTemplate AddOverwatchShotAbility()
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = OverwatchShot_BuildVisualization;
-	Template.bAllowFreeFireWeaponUpgrade = false;	
+	Template.bAllowFreeFireWeaponUpgrade = false;
 	Template.bAllowAmmoEffects = true;
 	Template.AssociatedPassives.AddItem('HoloTargeting');
 
@@ -680,8 +680,8 @@ static function X2AbilityTemplate AddOverwatchShotAbility()
 	KnockbackEffect.KnockbackDistance = 2;
 	KnockbackEffect.bUseTargetLocation = true;
 	Template.AddTargetEffect(KnockbackEffect);
-	
-	return Template;	
+
+	return Template;
 }
 
 static function X2AbilityTemplate PistolOverwatchShotHelper(X2AbilityTemplate	Template)
@@ -702,30 +702,30 @@ static function X2AbilityTemplate PistolOverwatchShotHelper(X2AbilityTemplate	Te
 	ReserveActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.PistolOverwatchReserveActionPoint);
 	ReserveActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.ReturnFireActionPoint);
 	Template.AbilityCosts.AddItem(ReserveActionPointCost);
-	
+
 	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
 	StandardAim.bReactionFire = true;
 	Template.AbilityToHitCalc = StandardAim;
 	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
 
-	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);	
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
 	TargetVisibilityCondition = new class'X2Condition_Visibility';
 	TargetVisibilityCondition.bRequireGameplayVisible = true;
 	TargetVisibilityCondition.bRequireBasicVisibility = true;
-	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots	
+	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots
 	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
 
 	Template.AbilityTargetConditions.AddItem(new class'X2Condition_EverVigilant');
 	Template.AbilityTargetConditions.AddItem(OverwatchTargetEffectsCondition());
 
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);	
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	ShooterCondition = new class'X2Condition_UnitProperty';
 	ShooterCondition.ExcludeConcealed = true;
 	Template.AbilityShooterConditions.AddItem(ShooterCondition);
 
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 	Template.AddShooterEffectExclusions(SkipExclusions);
-	
+
 	SingleTarget = new class'X2AbilityTarget_Single';
 	SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
 	Template.AbilityTargetStyle = SingleTarget;
@@ -736,8 +736,8 @@ static function X2AbilityTemplate PistolOverwatchShotHelper(X2AbilityTemplate	Te
 	Trigger.MethodName = 'InterruptGameState';
 	Template.AbilityTriggers.AddItem(Trigger);
 
-	Template.CinescriptCameraType = "StandardGunFiring";	
-	
+	Template.CinescriptCameraType = "StandardGunFiring";
+
 	Template.AbilitySourceName = 'eAbilitySource_Standard';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_overwatch";
@@ -748,7 +748,7 @@ static function X2AbilityTemplate PistolOverwatchShotHelper(X2AbilityTemplate	Te
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-	Template.bAllowFreeFireWeaponUpgrade = false;	
+	Template.bAllowFreeFireWeaponUpgrade = false;
 	Template.bAllowAmmoEffects = true;
 
 	// Damage Effect
@@ -756,7 +756,7 @@ static function X2AbilityTemplate PistolOverwatchShotHelper(X2AbilityTemplate	Te
 	WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
 	Template.AddTargetEffect(WeaponDamageEffect);
 	Template.bAllowBonusWeaponEffects = true;
-	
+
 	KnockbackEffect = new class'X2Effect_Knockback';
 	KnockbackEffect.KnockbackDistance = 2;
 	KnockbackEffect.bUseTargetLocation = true;
@@ -780,8 +780,8 @@ static function X2AbilityTemplate PistolReturnFire()
 static function X2AbilityTemplate PistolOverwatchShot()
 {
 	local X2AbilityTemplate                 Template;
-	
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'PistolOverwatchShot');	
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'PistolOverwatchShot');
 	PistolOverwatchShotHelper(Template);
 
 	return Template;
@@ -804,7 +804,7 @@ static function X2Condition_UnitEffects OverwatchTargetEffectsCondition()
 //******** Overwatch **********
 static function X2AbilityTemplate AddOverwatchAbility()
 {
-	local X2AbilityTemplate                 Template;	
+	local X2AbilityTemplate                 Template;
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2Effect_ReserveActionPoints      ReserveActionPointsEffect;
@@ -816,20 +816,20 @@ static function X2AbilityTemplate AddOverwatchAbility()
 	local X2Condition_UnitEffects           SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'Overwatch');
-	
+
 	Template.bDontDisplayInAbilitySummary = true;
 	AmmoCost = new class'X2AbilityCost_Ammo';
 	AmmoCost.iAmmo = 1;
 	AmmoCost.bFreeCost = true;                  //  ammo is consumed by the shot, not by this, but this should verify ammo is available
 	Template.AbilityCosts.AddItem(AmmoCost);
-	
+
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.bConsumeAllPoints = true;   //  this will guarantee the unit has at least 1 action point
 	ActionPointCost.bFreeCost = true;           //  ReserveActionPoints effect will take all action points away
 	ActionPointCost.DoNotConsumeAllEffects.Length = 0;
 	ActionPointCost.DoNotConsumeAllSoldierAbilities.Length = 0;
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
@@ -838,7 +838,7 @@ static function X2AbilityTemplate AddOverwatchAbility()
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-	
+
 	ReserveActionPointsEffect = new class'X2Effect_ReserveOverwatchPoints';
 	Template.AddTargetEffect(ReserveActionPointsEffect);
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_Y;
@@ -864,7 +864,7 @@ static function X2AbilityTemplate AddOverwatchAbility()
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-	
+
 	Template.AbilitySourceName = 'eAbilitySource_Standard';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideIfOtherAvailable;
 	Template.HideIfAvailable.AddItem('LongWatch');
@@ -881,7 +881,7 @@ static function X2AbilityTemplate AddOverwatchAbility()
 
 	Template.Hostility = eHostility_Defensive;
 
-	return Template;	
+	return Template;
 }
 
 static simulated function OverwatchAbility_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
@@ -921,7 +921,7 @@ static simulated function OverwatchAbility_BuildVisualization(XComGameState Visu
 		FrameAction = X2Action_CameraFrameAbility(class'X2Action_CameraFrameAbility'.static.AddToVisualizationTrack(BuildTrack, Context));
 		FrameAction.AbilityToFrame = Context;
 	}
-					
+
 	if (UnitState != none && UnitState.GetUnitValue(class'X2Ability_SpecialistAbilitySet'.default.EverVigilantEffectName, EverVigilantValue) && EverVigilantValue.fValue > 0)
 	{
 		AbilityTemplate = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager().FindAbilityTemplate('EverVigilant');
@@ -963,7 +963,7 @@ static simulated function OverwatchAbility_BuildVisualization(XComGameState Visu
 
 static function X2AbilityTemplate PistolOverwatch()
 {
-	local X2AbilityTemplate                 Template;	
+	local X2AbilityTemplate                 Template;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2Effect_ReserveActionPoints      ReserveActionPointsEffect;
 	local array<name>                       SkipExclusions;
@@ -974,14 +974,14 @@ static function X2AbilityTemplate PistolOverwatch()
 	local X2Condition_UnitEffects           SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'PistolOverwatch');
-	
+
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.bConsumeAllPoints = true;   //  this will guarantee the unit has at least 1 action point
 	ActionPointCost.bFreeCost = true;           //  ReserveActionPoints effect will take all action points away
 	ActionPointCost.DoNotConsumeAllEffects.Length = 0;
 	ActionPointCost.DoNotConsumeAllSoldierAbilities.Length = 0;
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
@@ -990,7 +990,7 @@ static function X2AbilityTemplate PistolOverwatch()
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-	
+
 	ReserveActionPointsEffect = new class'X2Effect_ReserveOverwatchPoints';
 	Template.AddTargetEffect(ReserveActionPointsEffect);
 
@@ -1015,7 +1015,7 @@ static function X2AbilityTemplate PistolOverwatch()
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-	
+
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_pistoloverwatch";
@@ -1038,7 +1038,7 @@ static function X2AbilityTemplate PistolOverwatch()
 
 static function X2AbilityTemplate SniperRifleOverwatch()
 {
-	local X2AbilityTemplate                 Template;	
+	local X2AbilityTemplate                 Template;
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2Effect_ReserveActionPoints      ReserveActionPointsEffect;
@@ -1050,12 +1050,12 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	local X2Condition_UnitEffects           SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'SniperRifleOverwatch');
-	
-	AmmoCost = new class'X2AbilityCost_Ammo';	
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
 	AmmoCost.iAmmo = 1;
 	AmmoCost.bFreeCost = true;                  //  ammo is consumed by the shot, not by this, but this should verify ammo is available
 	Template.AbilityCosts.AddItem(AmmoCost);
-	
+
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 2;
 	ActionPointCost.bConsumeAllPoints = true;
@@ -1063,7 +1063,7 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	ActionPointCost.DoNotConsumeAllEffects.Length = 0;
 	ActionPointCost.DoNotConsumeAllSoldierAbilities.Length = 0;
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
@@ -1071,7 +1071,7 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-	
+
 	ReserveActionPointsEffect = new class'X2Effect_ReserveOverwatchPoints';
 	Template.AddTargetEffect(ReserveActionPointsEffect);
 
@@ -1096,7 +1096,7 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-	
+
 	Template.AbilitySourceName = 'eAbilitySource_Standard';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideSpecificErrors;
 	Template.HideErrors.AddItem('AA_CannotAfford_ActionPoints');
@@ -1115,13 +1115,13 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_Y;
 	Template.bNoConfirmationWithHotKey = true;
 
-	return Template;	
+	return Template;
 }
 
 //******** Reload **********
 static function X2AbilityTemplate AddReloadAbility()
 {
-	local X2AbilityTemplate                 Template;	
+	local X2AbilityTemplate                 Template;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2Condition_UnitProperty          ShooterPropertyCondition;
 	local X2Condition_AbilitySourceWeapon   WeaponCondition;
@@ -1129,12 +1129,12 @@ static function X2AbilityTemplate AddReloadAbility()
 	local array<name>                       SkipExclusions;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'Reload');
-	
+
 	Template.bDontDisplayInAbilitySummary = true;
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
-	ShooterPropertyCondition = new class'X2Condition_UnitProperty';	
+	ShooterPropertyCondition = new class'X2Condition_UnitProperty';
 	ShooterPropertyCondition.ExcludeDead = true;                    //Can't reload while dead
 	Template.AbilityShooterConditions.AddItem(ShooterPropertyCondition);
 	WeaponCondition = new class'X2Condition_AbilitySourceWeapon';
@@ -1149,9 +1149,9 @@ static function X2AbilityTemplate AddReloadAbility()
 	Template.AbilityTriggers.AddItem(InputTrigger);
 
 	Template.AbilityToHitCalc = default.DeadEye;
-	
+
 	Template.AbilityTargetStyle = default.SelfTarget;
-	
+
 	Template.AbilitySourceName = 'eAbilitySource_Standard';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailable;
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_reload";
@@ -1171,7 +1171,7 @@ static function X2AbilityTemplate AddReloadAbility()
 
 	Template.CinescriptCameraType="GenericAccentCam";
 
-	return Template;	
+	return Template;
 }
 
 simulated function XComGameState ReloadAbility_BuildGameState( XComGameStateContext Context )
@@ -1185,14 +1185,14 @@ simulated function XComGameState ReloadAbility_BuildGameState( XComGameStateCont
 	local bool bFreeReload;
 	local int i;
 
-	NewGameState = `XCOMHISTORY.CreateNewGameState(true, Context);	
-	AbilityContext = XComGameStateContext_Ability(Context);	
+	NewGameState = `XCOMHISTORY.CreateNewGameState(true, Context);
+	AbilityContext = XComGameStateContext_Ability(Context);
 	AbilityState = XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID( AbilityContext.InputContext.AbilityRef.ObjectID ));
 
 	WeaponState = AbilityState.GetSourceWeapon();
 	NewWeaponState = XComGameState_Item(NewGameState.CreateStateObject(class'XComGameState_Item', WeaponState.ObjectID));
 
-	UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', AbilityContext.InputContext.SourceObject.ObjectID));	
+	UnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', AbilityContext.InputContext.SourceObject.ObjectID));
 
 	//  check for free reload upgrade
 	bFreeReload = false;
@@ -1206,22 +1206,22 @@ simulated function XComGameState ReloadAbility_BuildGameState( XComGameStateCont
 		}
 	}
 	if (!bFreeReload)
-		AbilityState.GetMyTemplate().ApplyCost(AbilityContext, AbilityState, UnitState, NewWeaponState, NewGameState);	
+		AbilityState.GetMyTemplate().ApplyCost(AbilityContext, AbilityState, UnitState, NewWeaponState, NewGameState);
 
-	//  refill the weapon's ammo	
+	//  refill the weapon's ammo
 	NewWeaponState.Ammo = NewWeaponState.GetClipSize();
-	
+
 	NewGameState.AddStateObject(UnitState);
 	NewGameState.AddStateObject(NewWeaponState);
 
-	return NewGameState;	
+	return NewGameState;
 }
 
 simulated function ReloadAbility_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
 {
 	local XComGameStateHistory History;
 	local XComGameStateContext_Ability  Context;
-	local StateObjectReference          ShootingUnitRef;	
+	local StateObjectReference          ShootingUnitRef;
 	local X2Action_PlayAnimation		PlayAnimation;
 
 	local VisualizationTrack        EmptyTrack;
@@ -1241,7 +1241,7 @@ simulated function ReloadAbility_BuildVisualization(XComGameState VisualizeGameS
 	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(ShootingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
 	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(ShootingUnitRef.ObjectID);
 	BuildTrack.TrackActor = History.GetVisualizer(ShootingUnitRef.ObjectID);
-					
+
 	PlayAnimation = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTrack(BuildTrack, Context));
 	PlayAnimation.Params.AnimName = 'HL_Reload';
 
@@ -1257,9 +1257,9 @@ simulated function ReloadAbility_BuildVisualization(XComGameState VisualizeGameS
 //******** Interact Ability **********
 static function X2AbilityTemplate AddInteractAbility(optional name TemplateName = 'Interact')
 {
-	local X2AbilityTemplate                 Template;		
-	local X2AbilityCost_ActionPoints        ActionPointCost;	
-	local X2Condition_UnitProperty          UnitPropertyCondition;	
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
 	local X2Condition_Interactive			InteractionCondition;
 	local array<name>                       SkipExclusions;
 	//local X2Condition_Visibility			VisibilityCondition;
@@ -1273,16 +1273,16 @@ static function X2AbilityTemplate AddInteractAbility(optional name TemplateName 
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.INTERACT_PRIORITY;
 	Template.bDisplayInUITooltip = false;
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_V;
-	
+
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.MoveActionPoint);
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeDead = true;
 	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
 
-	//Disabled until we can fix the visiblity self blocking issues 
+	//Disabled until we can fix the visiblity self blocking issues
 	//VisibilityCondition = new class'X2Condition_Visibility';
 	//VisibilityCondition.bRequireLOS = true;
 	//Template.AbilityTargetConditions.AddItem(VisibilityCondition);
@@ -1329,9 +1329,9 @@ simulated function XComGameState InteractAbility_BuildGameState( XComGameStateCo
 	History = `XCOMHISTORY;
 
 	//Build the new game state frame
-	NewGameState = History.CreateNewGameState(true, Context);	
+	NewGameState = History.CreateNewGameState(true, Context);
 
-	AbilityContext = XComGameStateContext_Ability(Context);	
+	AbilityContext = XComGameStateContext_Ability(Context);
 	UnitState = XComGameState_Unit(History.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID));
 	InteractionPoints = class'X2Condition_UnitInteractions'.static.GetUnitInteractionPoints(UnitState, eInteractionType_Normal);
 
@@ -1362,7 +1362,7 @@ simulated function XComGameState InteractAbility_BuildGameState( XComGameStateCo
 	NewGameState.AddStateObject(ObjectState);
 
 	//Return the game state we have created
-	return NewGameState;	
+	return NewGameState;
 }
 
 simulated function InteractAbility_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
@@ -1370,7 +1370,7 @@ simulated function InteractAbility_BuildVisualization(XComGameState VisualizeGam
 	local XComGameStateHistory History;
 	local XComGameStateContext_Ability  Context;
 	local XComGameState_InteractiveObject InteractiveObject;
-	local StateObjectReference          InteractingUnitRef;	
+	local StateObjectReference          InteractingUnitRef;
 
 	local VisualizationTrack        EmptyTrack;
 	local VisualizationTrack        BuildTrack;
@@ -1386,7 +1386,7 @@ simulated function InteractAbility_BuildVisualization(XComGameState VisualizeGam
 	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(InteractingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
 	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(InteractingUnitRef.ObjectID);
 	BuildTrack.TrackActor = History.GetVisualizer(InteractingUnitRef.ObjectID);
-					
+
 	class'X2Action_Interact'.static.AddToVisualizationTrack(BuildTrack, Context);
 
 	InteractiveObject = XComGameState_InteractiveObject(Context.AssociatedState.GetGameStateForObjectID(Context.InputContext.PrimaryTarget.ObjectID));
@@ -1429,15 +1429,15 @@ static function X2AbilityTemplate AddObjectiveInteractAbility(optional name Temp
 //******** Hack Ability **********
 static function X2AbilityTemplate FinalizeHack()
 {
-	local X2AbilityTemplate                 Template;		
-	local X2AbilityCost_ActionPoints        ActionPointCost;	
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2AbilityTarget_Single            SingleTarget;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'FinalizeHack');
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_hack";
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.HACK_PRIORITY;
 	Template.bDisplayInUITooltip = false;
-	
+
 	// successfully completing the hack requires and costs an action point
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
@@ -1499,8 +1499,8 @@ static function X2AbilityTemplate CancelHack()
 
 static function X2AbilityTemplate AddHackAbility(optional name TemplateName = 'Hack')
 {
-	local X2AbilityTemplate             Template;		
-	local X2AbilityCost_ActionPoints        ActionPointCost;	
+	local X2AbilityTemplate             Template;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2AbilityTarget_Single            SingleTarget;
 	local X2Condition_HackingTarget         HackCondition;
 
@@ -1510,7 +1510,7 @@ static function X2AbilityTemplate AddHackAbility(optional name TemplateName = 'H
 	Template.bDisplayInUITooltip = false;
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_V;
 	Template.bUniqueSource = true;
-	
+
 	// beginning a hack requires an action point to be available, so that it can be consumed if the hack is finalized
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
@@ -1614,13 +1614,13 @@ static function XComGameState HackAbility_FillOutGameState(XComGameState NewGame
 	}
 
 	TargetUnit = XComGameState_Unit(TargetState);
-	if( AbilityContext.ResultContext.HitResult != eHit_Miss && 
+	if( AbilityContext.ResultContext.HitResult != eHit_Miss &&
 	    (AbilityTemplate.DataName == 'SKULLJACKAbility' || AbilityTemplate.DataName == 'SKULLMINEAbility') &&
 	   TargetUnit != None &&
 	   (TargetUnit.IsAdvent() || TargetUnit.GetMyTemplate().CharacterGroupName == 'Cyberus') )
 	{
 		EventManager = `XEVENTMGR;
-			
+
 		// Golden Path special triggers - only on SKULLJACK, not SKULLMINE.
 		if (AbilityTemplate.DataName == 'SKULLJACKAbility')
 		{
@@ -1643,7 +1643,14 @@ static function XComGameState HackAbility_FillOutGameState(XComGameState NewGame
 	return NewGameState;
 }
 
+// PI Mods: Move contents of FinalizeHackAbility_BuildGameState into a static helper function
+// so it can be called from other hack abilities.
 simulated function XComGameState FinalizeHackAbility_BuildGameState(XComGameStateContext Context)
+{
+	return FinalizeHackAbility_BuildGameState_Internal(Context);
+}
+
+static function XComGameState FinalizeHackAbility_BuildGameState_Internal(XComGameStateContext Context)
 {
 	local XComGameStateHistory History;
 	local XComGameState NewGameState;
@@ -1667,10 +1674,10 @@ simulated function XComGameState FinalizeHackAbility_BuildGameState(XComGameStat
 	History = `XCOMHISTORY;
 
 	//Build the new game state frame
-	NewGameState = TypicalAbility_BuildGameState(Context);	
+	NewGameState = TypicalAbility_BuildGameState(Context);
 
-	AbilityContext = XComGameStateContext_Ability(Context);	
-	AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID, eReturnType_Reference));	
+	AbilityContext = XComGameStateContext_Ability(Context);
+	AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID, eReturnType_Reference));
 	AbilityTemplate = AbilityState.GetMyTemplate();
 	UnitState = XComGameState_Unit(History.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID));
 	SourceWeaponState = XComGameState_Item(History.GetGameStateForObjectID(AbilityContext.InputContext.ItemObject.ObjectID));
@@ -1701,10 +1708,10 @@ simulated function XComGameState FinalizeHackAbility_BuildGameState(XComGameStat
 
 	bHackSuccess = class'X2HackRewardTemplateManager'.static.AcquireHackRewards(
 		HackingScreen,
-		UnitState, 
-		TargetState, 
-		AbilityContext.ResultContext.StatContestResult, 
-		NewGameState, 
+		UnitState,
+		TargetState,
+		AbilityContext.ResultContext.StatContestResult,
+		NewGameState,
 		AbilityTemplate.DataName,
 		UserSelectedReward);
 
@@ -1748,14 +1755,14 @@ simulated function XComGameState FinalizeHackAbility_BuildGameState(XComGameStat
 	HackableObject.SetHackRewardRollMods(HackRollMods);
 
 	//Return the game state we have created
-	return NewGameState;	
+	return NewGameState;
 }
 
 simulated function HackAbility_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
 {
 	local XComGameStateHistory History;
 	local XComGameStateContext_Ability  Context;
-	local StateObjectReference          InteractingUnitRef;	
+	local StateObjectReference          InteractingUnitRef;
 	local XComGameState_Unit SourceUnit;
 
 	local VisualizationTrack        EmptyTrack;
@@ -1810,7 +1817,7 @@ simulated function HackAbility_BuildVisualization(XComGameState VisualizeGameSta
 	{
 		class'X2Action_Hack'.static.AddToVisualizationTrack(BuildTrack, Context);
 	}
-	
+
 	OutVisualizationTracks.AddItem(BuildTrack);
 }
 
@@ -1982,7 +1989,7 @@ simulated function FinalizeHackAbility_BuildVisualization(XComGameState Visualiz
 				ChosenHackIndex = HackTarget.GetUserSelectedHackOption();
 				TextColor = eColor_Good;
 			}
-			
+
 			if( ChosenHackIndex >= HackRewards.Length )
 			{
 				`RedScreen("FinalizeHack Visualization Error- Selected Hack Option >= num hack reward options!  @acheng");
@@ -1991,7 +1998,7 @@ simulated function FinalizeHackAbility_BuildVisualization(XComGameState Visualiz
 
 			kTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
 			kTag.StrValue0 = HackRewardTemplate.GetFriendlyName();
-			
+
 			SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTrack(BuildTrack, AbilityContext));
 			SoundAndFlyOver.SetSoundAndFlyOverParameters(None, `XEXPAND.ExpandString(HackText), '', TextColor);
 		}
@@ -2092,9 +2099,9 @@ static function X2AbilityTemplate AddPlantExplosiveMissionDeviceAbility()
 //******** Loot Ability **********
 static function X2AbilityTemplate AddLootAbility()
 {
-	local X2AbilityTemplate                 Template;		
-	//local X2AbilityCost_ActionPoints        ActionPointCost;	
-	local X2Condition_UnitProperty          UnitPropertyCondition;	
+	local X2AbilityTemplate                 Template;
+	//local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
 	local X2Condition_Lootable              LootableCondition;
 	local X2Condition_Visibility			VisibilityCondition;
 	local X2AbilityTrigger_PlayerInput      InputTrigger;
@@ -2103,16 +2110,16 @@ static function X2AbilityTemplate AddLootAbility()
 	local X2AbilityTarget_Single            SingleTarget;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'Loot');
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_loot"; 
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_loot";
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.LOOT_PRIORITY;
 	Template.bDisplayInUITooltip = false;
 	Template.bBypassAbilityConfirm = true;
 	Template.RemoveTemplateAvailablility(Template.BITFIELD_GAMEAREA_Multiplayer); // Do not allow "Looting" in MP!
-	
+
 	//ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	//ActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.MoveActionPoint);
 	//Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeDead = true;
 	UnitPropertyCondition.ExcludeImpaired = true;
@@ -2142,7 +2149,7 @@ static function X2AbilityTemplate AddLootAbility()
 
 	SingleTarget = new class'X2AbilityTarget_Single';
 	SingleTarget.bAllowInteractiveObjects = true;
-	Template.AbilityTargetStyle = SingleTarget;	
+	Template.AbilityTargetStyle = SingleTarget;
 
 	MultiTarget = new class'X2AbilityMultiTarget_Loot';
 	MultiTarget.bUseWeaponRadius = false;
@@ -2203,7 +2210,7 @@ simulated function LootAbility_BuildVisualization(XComGameState VisualizeGameSta
 {
 	local XComGameStateHistory History;
 	local XComGameStateContext_Ability  Context;
-	local StateObjectReference          InteractingUnitRef;	
+	local StateObjectReference          InteractingUnitRef;
 	local Lootable                      LootTarget;
 
 	local VisualizationTrack        EmptyTrack;
@@ -2220,9 +2227,9 @@ simulated function LootAbility_BuildVisualization(XComGameState VisualizeGameSta
 	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(InteractingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
 	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(InteractingUnitRef.ObjectID);
 	BuildTrack.TrackActor = History.GetVisualizer(InteractingUnitRef.ObjectID);
-	
+
 	LootTarget = Lootable(History.GetGameStateForObjectID(Context.InputContext.PrimaryTarget.ObjectID));
-	class'X2Action_Loot'.static.AddToVisualizationTrackIfLooted(LootTarget, Context, BuildTrack);	
+	class'X2Action_Loot'.static.AddToVisualizationTrackIfLooted(LootTarget, Context, BuildTrack);
 	OutVisualizationTracks.AddItem(BuildTrack);
 	//****************************************************************************************
 }
@@ -2237,7 +2244,7 @@ static function X2AbilityTemplate AddHunkerDownAbility()
 	local X2Effect_PersistentStatChange     PersistentStatChangeEffect;
 	local X2AbilityTrigger_PlayerInput      InputTrigger;
 	local array<name>                       SkipExclusions;
-	
+
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'HunkerDown');
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_takecover";
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.HUNKER_DOWN_PRIORITY;
@@ -2252,8 +2259,8 @@ static function X2AbilityTemplate AddHunkerDownAbility()
 	ActionPointCost.bConsumeAllPoints = true;
 	ActionPointCost.AllowedTypes.AddItem(class'X2CharacterTemplateManager'.default.DeepCoverActionPoint);
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
-	PropertyCondition = new class'X2Condition_UnitProperty';	
+
+	PropertyCondition = new class'X2Condition_UnitProperty';
 	PropertyCondition.ExcludeDead = true;                           // Can't hunkerdown while dead
 	PropertyCondition.ExcludeFriendlyToSource = false;              // Self targeted
 	PropertyCondition.ExcludeNoCover = true;                        // Unit must be in cover.
@@ -2262,9 +2269,9 @@ static function X2AbilityTemplate AddHunkerDownAbility()
 	SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 	Template.AddShooterEffectExclusions(SkipExclusions);
-	
+
 	Template.AbilityToHitCalc = default.DeadEye;
-	
+
 	Template.AbilityTargetStyle = default.SelfTarget;
 
 	InputTrigger = new class'X2AbilityTrigger_PlayerInput';
@@ -2305,18 +2312,18 @@ simulated function HunkerDownAbility_BuildVisualization(XComGameState VisualizeG
 	InteractingUnitRef = Context.InputContext.SourceObject;
 
 	//Configure the visualization track for the shooter
-	//****************************************************************************************	
+	//****************************************************************************************
 	BuildTrack = EmptyTrack;
 	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(InteractingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
 	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(InteractingUnitRef.ObjectID);
 	BuildTrack.TrackActor = History.GetVisualizer(InteractingUnitRef.ObjectID);
 
 	UnitState = XComGameState_Unit(BuildTrack.StateObject_NewState);
-	
+
 	//Civilians on the neutral team are not allowed to have sound + flyover for hunker down
 	if( UnitState.GetTeam() != eTeam_Neutral )
 	{
-		
+
 		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTrack(BuildTrack, Context));
 		if (UnitState.HasSoldierAbility('SharpshooterAim'))
 		{
@@ -2360,7 +2367,7 @@ static function X2AbilityTemplate AddMedikitHeal(name AbilityName, int HealAmoun
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	Template.AbilityToHitCalc = default.DeadEye;
 
 	SingleTarget = new class'X2AbilityTarget_Single';
@@ -2437,7 +2444,7 @@ static function X2AbilityTemplate AddMedikitStabilize()
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
 	Template.AbilityCosts.AddItem(ActionPointCost);
-	
+
 	Template.AbilityToHitCalc = default.DeadEye;
 
 	SingleTarget = new class'X2AbilityTarget_Single';
@@ -2544,25 +2551,25 @@ simulated function XComGameState EvacAbility_BuildGameState( XComGameStateContex
 	local XComGameStateHistory History;
 	local XComGameState NewGameState;
 	local XComGameStateContext_Ability AbilityContext;
-	local XComGameState_Unit Source_OriginalState, Source_NewState;	
+	local XComGameState_Unit Source_OriginalState, Source_NewState;
 	local XComGameState_Ability AbilityState;
 	local X2AbilityTemplate AbilityTemplate;
 
 	History = `XCOMHISTORY;
 	//Build the new game state and context
-	NewGameState = History.CreateNewGameState(true, Context);	
-	AbilityContext = XComGameStateContext_Ability(Context);	
+	NewGameState = History.CreateNewGameState(true, Context);
+	AbilityContext = XComGameStateContext_Ability(Context);
 	AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID));
-	AbilityTemplate = AbilityState.GetMyTemplate();	
+	AbilityTemplate = AbilityState.GetMyTemplate();
 	if (AbilityContext.InputContext.SourceObject.ObjectID != 0)
 	{
 		Source_OriginalState = XComGameState_Unit(History.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID));
 		Source_NewState = XComGameState_Unit(NewGameState.CreateStateObject(Source_OriginalState.Class, Source_OriginalState.ObjectID));
 
 		//Trigger this ability here so that any the EvacActivated event is triggered before UnitRemovedFromPlay
-		`XEVENTMGR.TriggerEvent('EvacActivated', AbilityState, Source_NewState, NewGameState); 
+		`XEVENTMGR.TriggerEvent('EvacActivated', AbilityState, Source_NewState, NewGameState);
 
-		AbilityTemplate.ApplyCost(AbilityContext, AbilityState, Source_NewState, none, NewGameState);		
+		AbilityTemplate.ApplyCost(AbilityContext, AbilityState, Source_NewState, none, NewGameState);
 		Source_NewState.EvacuateUnit(NewGameState);
 		NewGameState.AddStateObject(Source_NewState);
 	}
@@ -2689,16 +2696,16 @@ simulated function EvacAbility_BuildVisualization(XComGameState VisualizeGameSta
 				class'X2Action_WaitForAbilityEffect'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()); //Being carried - just wait for message
 			else
 				class'X2Action_Evac'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()); //Not being carried - rope out
-			
+
 			//Note: APPLYING effect state (carrying another)
-			CarryEffect = XComGameState_Unit(BuildTrack.StateObject_OldState).GetUnitApplyingEffectState(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName); 
+			CarryEffect = XComGameState_Unit(BuildTrack.StateObject_OldState).GetUnitApplyingEffectState(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName);
 			if (CarryEffect != None)
 			{
 				//Carrying someone - send a message to them when we're done roping out
 				MessageAction = X2Action_SendInterTrackMessage(class'X2Action_SendInterTrackMessage'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
 				MessageAction.SendTrackMessageToRef = CarryEffect.ApplyEffectParameters.TargetStateObjectRef;
 			}
-			
+
 			//Hide the pawn explicitly now - in case the vis block doesn't complete immediately to trigger an update
 			class'X2Action_RemoveUnit'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext());
 
@@ -2728,7 +2735,7 @@ simulated function EvacAbility_BuildVisualization(XComGameState VisualizeGameSta
 			}
 
 		}
-		
+
 	}
 
 
@@ -2791,9 +2798,9 @@ static function X2AbilityTemplate AddGrapplePowered()
 }
 
 simulated native function BreakGrappleWindow(XComGameState NewGameState,
-											 XComDestructibleActor Window, 
-											 XComGameState_Unit BreakingUnit, 
-											 const out TTile Destination, 
+											 XComDestructibleActor Window,
+											 XComGameState_Unit BreakingUnit,
+											 const out TTile Destination,
 											 const out TTile OverhangTile);
 
 simulated function XComGameState Grapple_BuildGameState( XComGameStateContext Context )
@@ -2802,10 +2809,10 @@ simulated function XComGameState Grapple_BuildGameState( XComGameStateContext Co
 	local XComGameState NewGameState;
 	local XComGameState_Unit MovingUnitState;
 	local XComDestructibleActor WindowToBreak;
-	local XComGameState_Ability AbilityState;	
+	local XComGameState_Ability AbilityState;
 	local XComGameStateContext_Ability AbilityContext;
 	local X2AbilityTemplate AbilityTemplate;
-	
+
 	local TTile UnitTile;
 	local TTile PrevUnitTile;
 	local TTile OverhangTile;
@@ -2817,10 +2824,10 @@ simulated function XComGameState Grapple_BuildGameState( XComGameStateContext Co
 	History = `XCOMHISTORY;
 
 	//Build the new game state frame, and unit state object for the moving unit
-	NewGameState = History.CreateNewGameState(true, Context);	
+	NewGameState = History.CreateNewGameState(true, Context);
 
-	AbilityContext = XComGameStateContext_Ability(NewGameState.GetContext());	
-	AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID, eReturnType_Reference));	
+	AbilityContext = XComGameStateContext_Ability(NewGameState.GetContext());
+	AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(AbilityContext.InputContext.AbilityRef.ObjectID, eReturnType_Reference));
 	AbilityTemplate = AbilityState.GetMyTemplate();
 
 	// create a new state for the grapple unit
@@ -2855,7 +2862,7 @@ simulated function XComGameState Grapple_BuildGameState( XComGameStateContext Co
 
 		MovingUnitState.MoveOrientation = Rotator( TilePosDiff );
 	}
-	
+
 	//Apply the cost of the ability
 	AbilityTemplate.ApplyCost(AbilityContext, AbilityState, MovingUnitState, none, NewGameState);
 	NewGameState.AddStateObject(MovingUnitState);
@@ -2864,13 +2871,13 @@ simulated function XComGameState Grapple_BuildGameState( XComGameStateContext Co
 	`XEVENTMGR.TriggerEvent( 'UnitMoveFinished', MovingUnitState, MovingUnitState, NewGameState );
 
 	//Return the game state we have created
-	return NewGameState;	
+	return NewGameState;
 }
 
 simulated function Grapple_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
 {
 	local XComGameStateHistory History;
-	local StateObjectReference MovingUnitRef;	
+	local StateObjectReference MovingUnitRef;
 	local VisualizationTrack BuildTrack;
 	local VisualizationTrack EmptyTrack;
 	local XComGameStateContext_Ability AbilityContext;
@@ -2878,11 +2885,11 @@ simulated function Grapple_BuildVisualization(XComGameState VisualizeGameState, 
 	local X2Action_PlaySoundAndFlyOver CharSpeechAction;
 	local X2Action_Grapple GrappleAction;
 	local X2Action_ExitCover ExitCoverAction;
-	
+
 	History = `XCOMHISTORY;
 	AbilityContext = XComGameStateContext_Ability(VisualizeGameState.GetContext());
 	MovingUnitRef = AbilityContext.InputContext.SourceObject;
-	
+
 	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(MovingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
 	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(MovingUnitRef.ObjectID);
 	BuildTrack.TrackActor = History.GetVisualizer(MovingUnitRef.ObjectID);
@@ -2896,7 +2903,7 @@ simulated function Grapple_BuildVisualization(XComGameState VisualizeGameState, 
 	GrappleAction.DesiredLocation = AbilityContext.InputContext.TargetLocations[0];
 
 	OutVisualizationTracks.AddItem(BuildTrack);
-		
+
 	// destroy any windows we flew through
 	foreach VisualizeGameState.IterateByClassType(class'XComGameState_EnvironmentDamage', EnvironmentDamage)
 	{
@@ -3093,7 +3100,7 @@ simulated function Knockout_BuildVisualization(XComGameState VisualizeGameState,
 	BuildTrack.StateObject_OldState = History.GetGameStateForObjectID(InteractingUnitRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1);
 	BuildTrack.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(InteractingUnitRef.ObjectID);
 	BuildTrack.TrackActor = History.GetVisualizer(InteractingUnitRef.ObjectID);
-					
+
 	Ability = XComGameState_Ability(History.GetGameStateForObjectID(Context.InputContext.AbilityRef.ObjectID, eReturnType_Reference, VisualizeGameState.HistoryIndex - 1));
 	SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTrack(BuildTrack, Context));
 	SoundAndFlyOver.SetSoundAndFlyOverParameters(None, Ability.GetMyTemplate().LocFlyOverText, '', eColor_Good);
@@ -3238,7 +3245,7 @@ static function X2AbilityTemplate AddPanicAbility(Name AbilityName)
 defaultproperties
 {
 	DefaultAbilitySet(0)="StandardMove"
-	DefaultAbilitySet(1)="Interact"	
+	DefaultAbilitySet(1)="Interact"
 	DefaultAbilitySet(2)="Interact_OpenDoor"
 	DefaultAbilitySet(3)="Interact_OpenChest"
 

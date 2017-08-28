@@ -21,7 +21,7 @@ struct native ObjectiveSpawnArchetype
 	var string ArchetypePath; // full path name of the archetype to spawn
 	var int MinForceLevel; // minimum force level at which to spawn this archetype
 	var int MaxForceLevel; // maximum force level at which to spawn this archetype
-	
+
 	structdefaultproperties
 	{
 		MinForceLevel = -1
@@ -64,8 +64,8 @@ struct native MissionSourceRewardMapping
 	var string					MissionFamily;
 };
 
-// allows designers and artists to have reward units spawn in as a different kind of 
-// unit. If the original unit's template is found in the mapping array, the proxy template 
+// allows designers and artists to have reward units spawn in as a different kind of
+// unit. If the original unit's template is found in the mapping array, the proxy template
 // will spawn in tactical instead. Otherwise, we spawn the original unit
 struct native ProxyRewardUnitTemplateMapping
 {
@@ -251,11 +251,13 @@ function bool ValidateMissionSchedule(string CardLabel, Object ValidationData)
 	local XComGameStateHistory History;
 	local XComGameState_HeadquartersXCom XComHQ;
 
+	// PI Mods: Move history assignment outside the conditional
+	History = `XCOMHISTORY;
+
 	if( ValidationData == self )
 	{
 		ScheduleInMission = (ActiveMission.MissionSchedules.Find(Name(CardLabel)) != INDEX_NONE);
 
-		History = `XCOMHISTORY;
 		BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 		CheckAlertLevel = BattleData.GetAlertLevel();
 		CheckForceLevel = BattleData.GetForceLevel();
@@ -320,10 +322,10 @@ final native function int GetMissionScheduleIndex(Name LookupID);
 final native function GetMissionSchedule(Name LookupID, out MissionSchedule MissionScheduleRef);
 final native function GetActiveMissionSchedule(out MissionSchedule MissionScheduleRef);
 final native function GetConfigurableEncounter(
-	Name LookupID, 
-	out ConfigurableEncounter ConfigurableEncounterRef, 
-	optional int ForceLevel = -1, 
-	optional int AlertLevel = -1, 
+	Name LookupID,
+	out ConfigurableEncounter ConfigurableEncounterRef,
+	optional int ForceLevel = -1,
+	optional int AlertLevel = -1,
 	optional XComGameState_HeadquartersXCom XComHQ);
 
 function InitMission(XComGameState_BattleData BattleData)
@@ -342,7 +344,7 @@ function InitMission(XComGameState_BattleData BattleData)
 
 	if (Len(ForceMission.sType) > 0) // we have a mission coming from strategy
 	{
-		ActiveMission = ForceMission;	
+		ActiveMission = ForceMission;
 	}
 	else // need to see what the current TQL settings want to do
 	{
@@ -507,14 +509,14 @@ function MissionDefinition GetMissionDefinitionForSourceReward(name nSource, nam
 			break;
 		}
 	}
-	
+
 	// now that we have a mission family, determine the mission type to use
 	CardManager.GetAllCardsInDeck('MissionTypes', DeckMissionTypes);
 	foreach DeckMissionTypes(MissionType)
 	{
 		if(GetMissionDefinitionForType(MissionType, MissionDef))
 		{
-			if(MissionDef.MissionFamily == MissionFamily 
+			if(MissionDef.MissionFamily == MissionFamily
 				|| (MissionDef.MissionFamily == "" && MissionDef.sType == MissionFamily)) // missions without families are their own family
 			{
 				CardManager.MarkCardUsed('MissionTypes', MissionType);
@@ -532,13 +534,13 @@ function bool GetMissionDefinitionForType(string MissionType, out MissionDefinit
 	local int Index;
 
 	Index = arrMissions.Find('sType', MissionType);
-	
+
 	if(Index == INDEX_NONE)
 	{
 		// this can happen if mods are added and then removed
 		return false;
 	}
-	
+
 	MissionDef = arrMissions[Index];
 	return true;
 }
@@ -625,9 +627,9 @@ function name ChooseQuestItemTemplate(name MissionSource, X2RewardTemplate Missi
 		}
 	}
 
-	`log("Selected quest item template '" $ string(SelectedTemplate) 
-		$ "' for\n   Mission Source: " $ string(MissionSource) 
-		$ "\n   Mission Reward: " $ string(MissionReward.rewardObjectTemplateName) 
+	`log("Selected quest item template '" $ string(SelectedTemplate)
+		$ "' for\n   Mission Source: " $ string(MissionSource)
+		$ "\n   Mission Reward: " $ string(MissionReward.rewardObjectTemplateName)
 		$ "\n   Mission Type: " $ Mission.sType, , 'XCom_Strategy');
 
 	if (SelectedTemplate != none)
@@ -645,7 +647,7 @@ function ObjectiveSpawnInfo GetObjectiveSpawnInfoByType(string sType)
 {
 	local int idx;
 	local ObjectiveSpawnInfo EmptySpawnInfo;
-	
+
 	for(idx = 0; idx < arrObjectiveSpawnInfo.Length; idx++)
 	{
 		if(arrObjectiveSpawnInfo[idx].sMissionType == sType)
@@ -676,7 +678,7 @@ private function FixupSwappedActorDestructionLinks(XComInteractiveLevelActor New
 	local XComDestructibleActor NearbyActor;
 	local int Index;
 
-	// when swapping an interactive objective in for an actor in the world, we need to make sure that 
+	// when swapping an interactive objective in for an actor in the world, we need to make sure that
 	// any links from other actors are also propagated. For example, if we make a laptop on a table an objective,
 	// we need to make sure the relationship from the table to the laptop is recreated. Otherwise the laptop will
 	// not be destroyed when the table is.
@@ -699,7 +701,7 @@ function UpdateObjectiveVisualizerFromSwapInfo(XComInteractiveLevelActor Visuali
 	local XComLevelActor SwapActor;
 	local ParticleSystemComponent System;
 
-	// spawn the visualizer object. 
+	// spawn the visualizer object.
 	if(!SpawnInfo.bReplaceSwapActor)
 	{
 		// Replace the visuals of the spawned archetype with those of the actor already there
@@ -812,7 +814,7 @@ function CreateObjective_Interact(ObjectiveSpawnPossibility Spawn, ObjectiveSpaw
 		`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 	}
 
-	// spawn the visualizer object. 
+	// spawn the visualizer object.
 	InteractiveObject.ActorId.Location = Location; //Set the location on the state object so it can be found when the visualizer spawns
 	Visualizer = `XCOMGAME.Spawn(VisArchetype.Class,,, Location, Spawn.GetSpawnRotation(), VisArchetype, true);
 	Visualizer.SetObjectIDFromState(InteractiveObject);
@@ -825,7 +827,7 @@ function CreateObjective_Interact(ObjectiveSpawnPossibility Spawn, ObjectiveSpaw
 	InteractiveObject.SetInitialState(Visualizer);
 	Visualizer.SetObjectIDFromState(InteractiveObject);
 
-	// add a unit flag for this object if needed, since the object is created 
+	// add a unit flag for this object if needed, since the object is created
 	// after the ui has finished scanning the map for objects with flags
 	if(InteractiveObject.IsTargetable())
 	{
@@ -859,9 +861,9 @@ private function XComGameState_Unit CreatePawnCommon(XComGameState NewGameState,
 	{
 		// spawn the unit, this is a fallback in case there are no reward units...
 		SpawnManager = `SPAWNMGR;
-		
+
 		SpawnInfo = GetObjectiveSpawnInfoByType(ActiveMission.sType);
-		
+
 		// use the same proxy discovery logic that strategy does
 		CharacterTemplate = class'X2CharacterTemplateManager'.static.GetCharacterTemplateManager().FindCharacterTemplate(SpawnInfo.DefaultVIPTemplate);
 		ProxyTemplate = GetProxyTemplateFromOriginalTemplate(CharacterTemplate);
@@ -870,9 +872,9 @@ private function XComGameState_Unit CreatePawnCommon(XComGameState NewGameState,
 			CharacterTemplate = ProxyTemplate;
 		}
 
-		NewUnitRef = SpawnManager.CreateUnit(SpawnLocation, 
-											 CharacterTemplate != none ? CharacterTemplate.DataName : 'Civilian', 
-											 eTeam_Neutral, 
+		NewUnitRef = SpawnManager.CreateUnit(SpawnLocation,
+											 CharacterTemplate != none ? CharacterTemplate.DataName : 'Civilian',
+											 eTeam_Neutral,
 											 History.GetStartState() != none);
 
 		// add the unit to the reward units array. This is the normal path in TQL missions, so
@@ -892,7 +894,7 @@ private function XComGameState_Unit CreatePawnCommon(XComGameState NewGameState,
 
 	// Set the unit's location to the spawn location
 	Unit.SetVisibilityLocation(SpawnTile);
-	
+
 	// Add the objects
 	NewGameState.AddStateObject(Unit);
 
@@ -916,7 +918,7 @@ private function XComGameState_Unit CreateObjective_Pawn(ObjectiveSpawnPossibili
 
 	History = `XCOMHISTORY;
 	WorldData = `XWORLD;
-	
+
 	// create a game state for this unit (if we aren't still in the start state)
 	NewGameState = History.GetStartState();
 	if(NewGameState == none)
@@ -997,7 +999,8 @@ private function array<ObjectiveSpawnPossibility> SelectObjectiveSpawns(Objectiv
 
 	if (NumToSelect < 0) // Did not get an override: select the number of objectives by the mission type.
     {
-        NumToSelect = SpawnInfo.iMinObjectives + `SYNC_RAND_TYPED(SpawnInfo.iMaxObjectives - SpawnInfo.iMinObjectives);
+		// PI Mods: Fix the random range to correct an off-by-one error so that the max objective count is possible to spawn.
+        NumToSelect = SpawnInfo.iMinObjectives + `SYNC_RAND_TYPED(SpawnInfo.iMaxObjectives - SpawnInfo.iMinObjectives + 1);
     }
 
 	if(SpawnInfo.iMinTilesBetweenObjectives <= 0)
@@ -1015,7 +1018,7 @@ private function array<ObjectiveSpawnPossibility> SelectObjectiveSpawns(Objectiv
 
 		// We need to ensure that all selected objectives are far enough apart.
 		// try 20 times to satisfy the requirements with random picks.
-		// if this proves to not be robust enough, we may need to come up with a better 
+		// if this proves to not be robust enough, we may need to come up with a better
 		// algorithm. Please don't just make the attempt count something silly like
 		// 1000
 		for(AttemptCount = 0; arrResult.Length < NumToSelect && AttemptCount < 20; AttemptCount++)
@@ -1082,7 +1085,7 @@ function SpawnVIPWithXComSquad()
 	History = `XCOMHISTORY;
 	WorldData = `XWORLD;
 	Rules = `TACTICALRULES;
-	
+
 	// create a game state for this unit (if we aren't still in the start state)
 	NewGameState = History.GetStartState();
 	if(NewGameState == none)
@@ -1136,7 +1139,7 @@ private function bool MissionTypeSupported(ObjectiveSpawnPossibility Spawn, stri
 	local int AliasIndex;
 	local int TempIndex;
 	if (Spawn.arrMissionTypes.Find(MissionType) == INDEX_NONE)
-	{		
+	{
 		AliasIndex = arrMissionTypeAliases.Find('KeyMissionType', MissionType);
 		if (AliasIndex == INDEX_NONE)
 		{
@@ -1184,7 +1187,7 @@ private function GatherSpawnObjectives(ObjectiveSpawnInfo SpawnInfo, out array<O
 			// don't use the same spawn more than once
 			continue;
 		}
-		
+
 		// do primary/sub objective specific checks
 		SpawnLocation = Spawn.GetSpawnLocation();
 		if(IsPrimaryObjective)
@@ -1194,7 +1197,7 @@ private function GatherSpawnObjectives(ObjectiveSpawnInfo SpawnInfo, out array<O
 				// only use spawns with the same mission type
 				continue;
 			}
-	
+
 			IsSpawnInObjectiveParcel = ObjectiveParcel != none && ObjectiveParcel.IsInsideBounds(SpawnLocation);
 			if(!IsSpawnInObjectiveParcel && !SpawnInfo.bCanSpawnOutsideObjectiveParcel)
 			{
@@ -1235,7 +1238,7 @@ private function GatherSpawnObjectives(ObjectiveSpawnInfo SpawnInfo, out array<O
 		ValidSpawns.AddItem(Spawn);
 	}
 
-	// now that we have our spawn possibilities, pick a random sampling of them that fits the 
+	// now that we have our spawn possibilities, pick a random sampling of them that fits the
 	// distance requirements
 	ValidSpawns = SelectObjectiveSpawns(SpawnInfo, ValidSpawns);
 }
@@ -1257,7 +1260,7 @@ private function XComInteractiveLevelActor SelectSpawnArchetype(ObjectiveSpawnIn
 
 	BattleDataState = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 	CurrentForceLevel = BattleDataState.GetForceLevel();
-	
+
 	// find all appropriate archetypes for the given force level and then pick one
 	SelectedIndex = -1;
 	NumValidFound = 0;
@@ -1267,8 +1270,8 @@ private function XComInteractiveLevelActor SelectSpawnArchetype(ObjectiveSpawnIn
 			&& (SpawnInfo.ARCToSpawn[Index].MaxForceLevel < 0 || SpawnInfo.ARCToSpawn[Index].MaxForceLevel >= CurrentForceLevel))
 		{
 			NumValidFound++;
-			
-			// do a weighted random roll. This effectively causes every valid entry to have the same chance of 
+
+			// do a weighted random roll. This effectively causes every valid entry to have the same chance of
 			// being selected
 			if(`SYNC_RAND(NumValidFound) == 0)
 			{
@@ -1283,7 +1286,7 @@ private function XComInteractiveLevelActor SelectSpawnArchetype(ObjectiveSpawnIn
 		`Redscreen("SelectSpawnArchetype(): No valid force level found for and archetype possibility in " $ SpawnInfo.sMissionType);
 		SelectedIndex = `SYNC_RAND(SpawnInfo.ARCToSpawn.Length);
 	}
-	
+
 	SpawnArchetype = XComInteractiveLevelActor(DynamicLoadObject(SpawnInfo.ARCToSpawn[SelectedIndex].ArchetypePath, class'XComInteractiveLevelActor'));
 
 	if(SpawnArchetype == none)
@@ -1298,7 +1301,7 @@ private function SpawnMissionObjectivesForInfo(ObjectiveSpawnInfo SpawnInfo)
 	local array<ObjectiveSpawnPossibility> ValidSpawns;
 	local ObjectiveSpawnPossibility Spawn;
 	local int RewardUnitIndex;
-	local XComGameState NewGameState;	
+	local XComGameState NewGameState;
 	local XComGameState_InteractiveObject InteractiveObject;
 
 	GatherSpawnObjectives(SpawnInfo, ValidSpawns);
@@ -1312,9 +1315,9 @@ private function SpawnMissionObjectivesForInfo(ObjectiveSpawnInfo SpawnInfo)
 		{
 			CreateObjective_Interact(Spawn, SpawnInfo);
 		}
-		else // no archetype means a pawn objective 
+		else // no archetype means a pawn objective
 		{
-			CreateObjective_Pawn(Spawn, SpawnInfo, RewardUnitIndex); 
+			CreateObjective_Pawn(Spawn, SpawnInfo, RewardUnitIndex);
 			++RewardUnitIndex;
 		}
 
@@ -1324,7 +1327,7 @@ private function SpawnMissionObjectivesForInfo(ObjectiveSpawnInfo SpawnInfo)
 			if(NewGameState == none)
 			{
 				NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Configuring Associated Objective Hackable");
-			}			
+			}
 
 			InteractiveObject = Spawn.AssociatedObjectiveActor.GetInteractiveState(NewGameState);
 			InteractiveObject.SetLocked(Spawn.AssociatedLockStrength);
@@ -1335,7 +1338,7 @@ private function SpawnMissionObjectivesForInfo(ObjectiveSpawnInfo SpawnInfo)
 			}
 
 			if(`XCOMHISTORY.GetStartState() == none)
-			{	
+			{
 				`XCOMGAME.GameRuleset.SubmitGameState(NewGameState);
 			}
 		}
@@ -1428,14 +1431,14 @@ private function RollForMapLoot()
 	local array<PlotLootDefinition> PlotLootDefs;
 	local PlotLootDefinition PlotLootDef;
 	local array<ObjectiveSpawnPossibility> SpawnPossibilities;
-	local ObjectiveSpawnPossibility SpawnPossibility; 
+	local ObjectiveSpawnPossibility SpawnPossibility;
 	local ObjectiveSpawnInfo FakeSpawnInfo;
 	local ObjectiveSpawnArchetype FakeSpawnArchetype;
 	local int Index;
 
 	ParcelManager = `PARCELMGR;
-	
-	if(!GetPlotLootDefinitions(ParcelManager.PlotType.strType, PlotLootDefs)) 
+
+	if(!GetPlotLootDefinitions(ParcelManager.PlotType.strType, PlotLootDefs))
 	{
 		return; // no loot requested for this plot type
 	}
@@ -1546,7 +1549,7 @@ function bool ValidateTier1HackRewards(string CardLabel, Object ValidationData)
 {
 	local X2HackRewardTemplateManager HackRewardTemplateManager;
 	local X2HackRewardTemplate HackRewardTemplate;
-	
+
 	HackRewardTemplateManager = class'X2HackRewardTemplateManager'.static.GetHackRewardTemplateManager();
 	HackRewardTemplate = HackRewardTemplateManager.FindHackRewardTemplate(Name(CardLabel));
 
@@ -1583,7 +1586,7 @@ static private function X2CharacterTemplate GetProxyTemplateFromOriginalTemplate
 	local X2CharacterTemplate ProxyTemplate;
 	local int Index;
 
-	Index = default.ProxyRewardUnitMappings.Find('OriginalTemplate', OriginalUnitTemplate.DataName);	
+	Index = default.ProxyRewardUnitMappings.Find('OriginalTemplate', OriginalUnitTemplate.DataName);
 	if(Index != INDEX_NONE)
 	{
 		TemplateManager = class'X2CharacterTemplateManager'.static.GetCharacterTemplateManager();
@@ -1647,6 +1650,17 @@ static function XComGameState_Unit CreateProxyRewardUnitIfNeeded(XComGameState_U
 		ProxyUnit.SetControllingPlayer(OriginalUnit.ControllingPlayer);
 	}
 
+	if(class'Helpers_LW'.default.UseUnitHPForProxies)
+	{
+		// We only want to set the HP for soldiers as they may have NCE, otherwise
+		// leave scientists and engineers alone as the original unit has only 1 HP
+		// instead of the 5 HP the proxy has.
+		if(OriginalUnit.IsASoldier())
+		{
+			ProxyUnit.SetBaseMaxStat(eStat_HP, OriginalUnit.GetCurrentStat(eStat_HP));
+		}
+	}
+
 	NewStartState.AddStateObject(ProxyUnit);
 
 	return ProxyUnit;
@@ -1660,9 +1674,9 @@ cpptext
 	// Accessors for the mission schedule information structs by lookup IDs
 	const FMissionSchedule* GetMissionSchedule(const FName& LookupID) const;
 	const FConfigurableEncounter* GetConfigurableEncounter(
-		const FName& LookupID, 
-		INT ForceLevel, 
-		INT AlertLevel, 
+		const FName& LookupID,
+		INT ForceLevel,
+		INT AlertLevel,
 		const UXComGameState_HeadquartersXCom* XComHQ) const;
 	const FInclusionExclusionList* GetInclusionExclusionList(const FName& LookupID) const;
 }
